@@ -12,11 +12,12 @@ import {
   Minus
 } from "lucide-react";
 import { PokemonCard, SortOption, FilterOptions, ViewMode, PokemonSeries } from "@/lib/types";
-import { fetchPokemonCards, fetchPokemonSeries } from "@/lib/api";
+import { fetchPokemonCards, fetchPokemonSeries, fetchExpansions } from "@/lib/api";
 import Card, { CardHeader, CardContent, CardFooter } from "@/components/common/Card";
 import Button from "@/components/common/Button";
 import Loader from "@/components/ui/Loader";
 import { useCart } from "@/context/CartContext";
+import { Checkbox } from "@/components/ui/checkbox";
 
 const Inventory = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -47,6 +48,7 @@ const Inventory = () => {
   useEffect(() => {
     const loadSeries = async () => {
       try {
+        await fetchExpansions();
         const seriesData = await fetchPokemonSeries();
         setSeries(seriesData);
       } catch (error) {
@@ -296,13 +298,12 @@ const Inventory = () => {
               <div className="space-y-1 max-h-40 overflow-y-auto">
                 {series.map((serie) => (
                   <div key={serie.id} className="flex items-center">
-                    <input
-                      type="checkbox"
+                    <Checkbox
                       id={`series-${serie.id}`}
                       className="mr-2"
                       checked={filterOptions.series.includes(serie.name)}
-                      onChange={(e) => {
-                        if (e.target.checked) {
+                      onCheckedChange={(checked) => {
+                        if (checked) {
                           setFilterOptions(prev => ({
                             ...prev,
                             series: [...prev.series, serie.name]
@@ -315,7 +316,7 @@ const Inventory = () => {
                         }
                       }}
                     />
-                    <label htmlFor={`series-${serie.id}`} className="text-sm">
+                    <label htmlFor={`series-${serie.id}`} className="text-sm cursor-pointer">
                       {serie.name}
                     </label>
                   </div>
@@ -359,13 +360,12 @@ const Inventory = () => {
               <div className="space-y-1 max-h-40 overflow-y-auto">
                 {["Common", "Uncommon", "Rare", "Ultra Rare", "Secret Rare", "Promo"].map((rarity) => (
                   <div key={rarity} className="flex items-center">
-                    <input
-                      type="checkbox"
+                    <Checkbox
                       id={`rarity-${rarity}`}
                       className="mr-2"
                       checked={filterOptions.rarity.includes(rarity)}
-                      onChange={(e) => {
-                        if (e.target.checked) {
+                      onCheckedChange={(checked) => {
+                        if (checked) {
                           setFilterOptions(prev => ({
                             ...prev,
                             rarity: [...prev.rarity, rarity]
@@ -378,7 +378,7 @@ const Inventory = () => {
                         }
                       }}
                     />
-                    <label htmlFor={`rarity-${rarity}`} className="text-sm">
+                    <label htmlFor={`rarity-${rarity}`} className="text-sm cursor-pointer">
                       {rarity}
                     </label>
                   </div>
@@ -393,13 +393,12 @@ const Inventory = () => {
               <div className="space-y-1 max-h-40 overflow-y-auto">
                 {["Mint", "Near Mint", "Excellent", "Good", "Light Played", "Played"].map((condition) => (
                   <div key={condition} className="flex items-center">
-                    <input
-                      type="checkbox"
+                    <Checkbox
                       id={`condition-${condition}`}
                       className="mr-2"
                       checked={filterOptions.condition.includes(condition)}
-                      onChange={(e) => {
-                        if (e.target.checked) {
+                      onCheckedChange={(checked) => {
+                        if (checked) {
                           setFilterOptions(prev => ({
                             ...prev,
                             condition: [...prev.condition, condition]
@@ -412,7 +411,7 @@ const Inventory = () => {
                         }
                       }}
                     />
-                    <label htmlFor={`condition-${condition}`} className="text-sm">
+                    <label htmlFor={`condition-${condition}`} className="text-sm cursor-pointer">
                       {condition}
                     </label>
                   </div>
@@ -427,13 +426,12 @@ const Inventory = () => {
               <div className="space-y-1">
                 {["EN", "FR", "JP", "DE", "IT", "ES"].map((language) => (
                   <div key={language} className="flex items-center">
-                    <input
-                      type="checkbox"
+                    <Checkbox
                       id={`language-${language}`}
                       className="mr-2"
                       checked={filterOptions.language.includes(language)}
-                      onChange={(e) => {
-                        if (e.target.checked) {
+                      onCheckedChange={(checked) => {
+                        if (checked) {
                           setFilterOptions(prev => ({
                             ...prev,
                             language: [...prev.language, language]
@@ -446,7 +444,7 @@ const Inventory = () => {
                         }
                       }}
                     />
-                    <label htmlFor={`language-${language}`} className="text-sm">
+                    <label htmlFor={`language-${language}`} className="text-sm cursor-pointer">
                       {language}
                     </label>
                   </div>
@@ -459,42 +457,16 @@ const Inventory = () => {
                 Caractéristiques spéciales
               </label>
               
-              <div className="flex items-center justify-between cursor-pointer" onClick={() => {
-                setFilterOptions(prev => ({
-                  ...prev,
-                  isHolo: prev.isHolo === true ? null : true
-                }));
-              }}>
-                <label htmlFor="is-holo" className="text-sm cursor-pointer">
-                  Holographique
-                </label>
-                <div className="relative inline-flex items-center">
-                  <input 
-                    type="checkbox" 
-                    id="is-holo" 
-                    className="sr-only"
-                    checked={filterOptions.isHolo === true}
-                    onChange={() => {}}
-                  />
-                  <div className={`w-10 h-5 rounded-full transition ${
-                    filterOptions.isHolo ? 'bg-primary' : 'bg-gray-300 dark:bg-gray-600'
-                  }`}></div>
-                  <div className={`absolute w-3.5 h-3.5 bg-white rounded-full transition-transform ${
-                    filterOptions.isHolo ? 'transform translate-x-5' : 'translate-x-1'
-                  }`}></div>
-                </div>
-              </div>
-              
-              <div className="flex items-center justify-between cursor-pointer" onClick={() => {
-                setFilterOptions(prev => ({
-                  ...prev,
-                  isReverse: prev.isReverse === true ? null : true
-                }));
-              }}>
+              <div className="flex items-center justify-between">
                 <label htmlFor="is-reverse" className="text-sm cursor-pointer">
                   Reverse
                 </label>
-                <div className="relative inline-flex items-center">
+                <div className="relative inline-flex items-center cursor-pointer" onClick={() => {
+                  setFilterOptions(prev => ({
+                    ...prev,
+                    isReverse: prev.isReverse === true ? null : true
+                  }));
+                }}>
                   <input 
                     type="checkbox" 
                     id="is-reverse" 
@@ -511,16 +483,16 @@ const Inventory = () => {
                 </div>
               </div>
               
-              <div className="flex items-center justify-between cursor-pointer" onClick={() => {
-                setFilterOptions(prev => ({
-                  ...prev,
-                  isPromo: prev.isPromo === true ? null : true
-                }));
-              }}>
+              <div className="flex items-center justify-between">
                 <label htmlFor="is-promo" className="text-sm cursor-pointer">
                   Promo
                 </label>
-                <div className="relative inline-flex items-center">
+                <div className="relative inline-flex items-center cursor-pointer" onClick={() => {
+                  setFilterOptions(prev => ({
+                    ...prev,
+                    isPromo: prev.isPromo === true ? null : true
+                  }));
+                }}>
                   <input 
                     type="checkbox" 
                     id="is-promo" 
@@ -683,13 +655,12 @@ const Inventory = () => {
                       <div className="space-y-1 max-h-40 overflow-y-auto">
                         {["Common", "Uncommon", "Rare", "Ultra Rare", "Secret Rare", "Promo"].map((rarity) => (
                           <div key={rarity} className="flex items-center">
-                            <input
-                              type="checkbox"
+                            <Checkbox
                               id={`rarity-${rarity}`}
                               className="mr-2"
                               checked={filterOptions.rarity.includes(rarity)}
-                              onChange={(e) => {
-                                if (e.target.checked) {
+                              onCheckedChange={(checked) => {
+                                if (checked) {
                                   setFilterOptions(prev => ({
                                     ...prev,
                                     rarity: [...prev.rarity, rarity]
@@ -717,13 +688,12 @@ const Inventory = () => {
                       <div className="space-y-1 max-h-40 overflow-y-auto">
                         {["Mint", "Near Mint", "Excellent", "Good", "Light Played", "Played"].map((condition) => (
                           <div key={condition} className="flex items-center">
-                            <input
-                              type="checkbox"
+                            <Checkbox
                               id={`condition-${condition}`}
                               className="mr-2"
                               checked={filterOptions.condition.includes(condition)}
-                              onChange={(e) => {
-                                if (e.target.checked) {
+                              onCheckedChange={(checked) => {
+                                if (checked) {
                                   setFilterOptions(prev => ({
                                     ...prev,
                                     condition: [...prev.condition, condition]
@@ -751,13 +721,12 @@ const Inventory = () => {
                       <div className="space-y-1">
                         {["EN", "FR", "JP", "DE", "IT", "ES"].map((language) => (
                           <div key={language} className="flex items-center">
-                            <input
-                              type="checkbox"
+                            <Checkbox
                               id={`language-${language}`}
                               className="mr-2"
                               checked={filterOptions.language.includes(language)}
-                              onChange={(e) => {
-                                if (e.target.checked) {
+                              onCheckedChange={(checked) => {
+                                if (checked) {
                                   setFilterOptions(prev => ({
                                     ...prev,
                                     language: [...prev.language, language]

@@ -1,3 +1,4 @@
+
 import { PokemonSeries, PokemonCard, FilterOptions } from './types';
 
 const CARDTRADER_API_TOKEN = "eyJhbGciOiJSUzI1NiJ9.eyJpc3MiOiJjYXJkdHJhZGVyLXByb2R1Y3Rpb24iLCJzdWIiOiJhcHA6MTM5MzgiLCJhdWQiOiJhcHA6MTM5MzgiLCJleHAiOjQ4OTU2MzQ3MTcsImp0aSI6IjQxMjA3NmNjLTcyZTEtNDljOC1iODA2LTE3OTJiNmU3N2JhMyIsImlhdCI6MTczOTk2MTExNywibmFtZSI6Ik5lcm96YnJpY2tzIEFwcCAyMDI1MDIwODE3NDkxOSJ9.PkkEXit3MvxmVij_e5Eyz55k_3EYgQF-2ln9goSfMbQD3mIpDVrSkQa010BfnF9IR1L8fvswAyxk56qiUr2LKm2KXX0iKAvVRR373A3XEDwgNtGGBBAR-rxh8raL1hW8e4AH_bps1tVFTrdZ_W-Odg5egSxLFIxnLgi0a9It5KVeVkjdgLmxYuaCXspgml9TXfgJcJ2GH62izvB5eUsAj4NhobpH5q_Pyfbyw2cJu4HmilQjBSOm4NsmRW7Nd692tNT2semj1Oh1UqV1xel2WewtLaWlUAVHYt2LSMWrEw_kx9Yjk9Kz-rM67tk0nXosKklnIigJpcrmRUXf-O7qJA";
@@ -22,6 +23,7 @@ const rarityMapping = {
   'Promo': 'Promo',
 };
 
+// Ceci sera remplacé par les données de l'API
 const expansionMapping: Record<number, string> = {
   2152: 'Silver Lance',
   2153: 'Jet Black Spirit',
@@ -44,15 +46,60 @@ const expansionMapping: Record<number, string> = {
   2170: 'Team Up',
 };
 
+// Stockage des expansions récupérées de l'API
+let expansionsData: Record<number, string> = {};
+
+// Fonction pour récupérer toutes les expansions depuis l'API
+export const fetchExpansions = async (): Promise<Record<number, string>> => {
+  if (Object.keys(expansionsData).length > 0) {
+    return expansionsData;
+  }
+
+  try {
+    const response = await fetch('https://api.cardtrader.com/api/v2/expansions', {
+      headers: {
+        'Authorization': `Bearer ${CARDTRADER_API_TOKEN}`
+      }
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      
+      // Création d'un mapping des IDs vers les noms
+      expansionsData = data.reduce((acc: Record<number, string>, expansion: any) => {
+        acc[expansion.id] = expansion.name;
+        return acc;
+      }, {});
+      
+      return expansionsData;
+    } else {
+      console.error('Échec de la récupération des expansions CardTrader');
+      return expansionMapping; // Fallback au mapping statique
+    }
+  } catch (error) {
+    console.error('Erreur lors de la récupération des expansions:', error);
+    return expansionMapping; // Fallback au mapping statique
+  }
+};
+
+// Fonction pour obtenir le nom d'une expansion par son ID
+export const getExpansionName = async (expansionId: number): Promise<string> => {
+  const expansions = await fetchExpansions();
+  return expansions[expansionId] || 'Unknown Series';
+};
+
 const translationCache: Record<string, string> = {};
 
-const transformCardTraderData = (data: any[]): PokemonCard[] => {
-  return data.map((item) => {
+const transformCardTraderData = async (data: any[]): Promise<PokemonCard[]> => {
+  // Récupérer toutes les expansions dès le début
+  const expansions = await fetchExpansions();
+  
+  return Promise.all(data.map(async (item) => {
     const id = `card-${item.id}`;
     const name = item.name_en;
     const number = item.properties_hash.collector_number || 'N/A';
     const expansionId = item.expansion?.id;
-    const series = expansionMapping[expansionId] || 'Unknown Series';
+    const series = expansions[expansionId] || 'Unknown Series';
     const rarity = rarityMapping[item.properties_hash.pokemon_rarity] || 'Common';
     const condition = conditionMapping[item.properties_hash.condition] || 'Near Mint';
     const price = item.price_cents / 100;
@@ -82,7 +129,7 @@ const transformCardTraderData = (data: any[]): PokemonCard[] => {
       isPromo,
       expansionId
     };
-  });
+  }));
 };
 
 const extractUniqueSeries = (cards: PokemonCard[]): PokemonSeries[] => {
@@ -148,7 +195,7 @@ export const fetchPokemonCards = async (
   
   if (response.ok) {
     const data = await response.json();
-    let allCards = transformCardTraderData(data);
+    let allCards = await transformCardTraderData(data);
     cachedCards = allCards;
     
     if (cachedSeries.length === 0) {
@@ -197,9 +244,7 @@ export const fetchPokemonCards = async (
             return false;
           }
           
-          if (filterOptions.isHolo !== null && card.isHolo !== filterOptions.isHolo) {
-            return false;
-          }
+          // Suppression du filtre isHolo, conservez seulement isReverse et isPromo
           if (filterOptions.isReverse !== null && card.isReverse !== filterOptions.isReverse) {
             return false;
           }

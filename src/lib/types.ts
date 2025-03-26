@@ -24,7 +24,7 @@ export interface PokemonCard {
   isHolo: boolean;
   isReverse: boolean;
   isPromo: boolean;
-  expansionId?: number; // Ajout de l'ID d'expansion pour les filtres
+  expansionId?: number;
 }
 
 export interface CartItem {
@@ -53,8 +53,8 @@ export interface FilterOptions {
   priceMax: number;
   condition: string[];
   language: string[];
-  isHolo: boolean | null;
+  isHolo: boolean | null; // Conservé pour compatibilité mais on ne l'utilisera plus dans l'UI
   isReverse: boolean | null;
   isPromo: boolean | null;
-  expansionId?: number | null; // Ajout pour filtrer par ID d'expansion
+  expansionId?: number | null;
 }
