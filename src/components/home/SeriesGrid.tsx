@@ -1,40 +1,14 @@
 
-import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
 import { PokemonSeries } from "@/lib/types";
-import { fetchPokemonSeries } from "@/lib/api";
 import Card, { CardHeader, CardTitle, CardContent, CardFooter } from "@/components/common/Card";
-import Loader from "@/components/ui/Loader";
 
-const SeriesGrid = () => {
-  const [series, setSeries] = useState<PokemonSeries[]>([]);
-  const [loading, setLoading] = useState(true);
+interface SeriesGridProps {
+  series: PokemonSeries[];
+}
 
-  useEffect(() => {
-    const loadSeries = async () => {
-      try {
-        setLoading(true);
-        const data = await fetchPokemonSeries();
-        setSeries(data);
-      } catch (error) {
-        console.error("Failed to load series:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadSeries();
-  }, []);
-
-  if (loading) {
-    return (
-      <div className="min-h-[300px] flex items-center justify-center">
-        <Loader size="lg" text="Chargement des séries..." />
-      </div>
-    );
-  }
-
+const SeriesGrid = ({ series }: SeriesGridProps) => {
   return (
     <section className="container mx-auto px-4 py-12">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
@@ -54,7 +28,7 @@ const SeriesGrid = () => {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {series.map((item, index) => (
+        {series.map((item) => (
           <Link 
             key={item.id} 
             to={`/inventory?series=${encodeURIComponent(item.name)}`}
