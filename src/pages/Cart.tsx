@@ -7,7 +7,7 @@ import Button from "@/components/common/Button";
 import { toast } from "sonner";
 
 const Cart = () => {
-  const { items, removeFromCart, updateQuantity, clearCart, totalPrice } = useCart();
+  const { items, removeFromCart, updateQuantity, clearCart, totalPrice, itemCount } = useCart();
   const [username, setUsername] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -65,7 +65,7 @@ const Cart = () => {
         <div className="container mx-auto px-4 py-8">
           <h1 className="text-3xl font-bold">Votre Panier</h1>
           <p className="text-muted-foreground mt-1">
-            {items.length} article{items.length !== 1 ? 's' : ''} dans votre panier
+            {itemCount} article{itemCount !== 1 ? 's' : ''} dans votre panier
           </p>
         </div>
       </div>
@@ -92,7 +92,7 @@ const Cart = () => {
             <div className="lg:col-span-2">
               <div className="bg-card rounded-lg border overflow-hidden animate-slide-up">
                 <div className="p-4 border-b bg-muted/30">
-                  <h2 className="font-medium">Articles dans votre panier</h2>
+                  <h2 className="font-medium">Articles dans votre panier ({itemCount})</h2>
                 </div>
                 
                 <div className="divide-y">
@@ -111,9 +111,14 @@ const Cart = () => {
                       <div className="flex-1">
                         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start">
                           <div>
-                            <h3 className="font-medium">{item.card.nameFr || item.card.name}</h3>
+                            <h3 className="font-medium">
+                              {item.card.nameFr || item.card.name}
+                              <span className="ml-1 text-sm text-muted-foreground">
+                                · {item.card.series}
+                              </span>
+                            </h3>
                             <p className="text-sm text-muted-foreground">
-                              {item.card.series} · {item.card.number}
+                              #{item.card.number}
                             </p>
                             <div className="flex flex-wrap gap-2 mt-1">
                               <span className="text-xs bg-secondary px-2 py-0.5 rounded">
@@ -123,14 +128,19 @@ const Cart = () => {
                                 {item.card.condition}
                               </span>
                               {item.card.isHolo && (
-                                <span className="text-xs bg-pokemon-yellow/20 text-pokemon-black px-2 py-0.5 rounded">
+                                <span className="text-xs bg-yellow-500/20 text-yellow-700 dark:text-yellow-300 px-2 py-0.5 rounded">
                                   Holo
                                 </span>
                               )}
                             </div>
                           </div>
-                          <div className="flex items-center mt-2 sm:mt-0">
-                            <p className="font-medium">{(item.card.price * item.quantity).toFixed(2)} €</p>
+                          <div className="flex flex-col items-end mt-2 sm:mt-0">
+                            <div className="flex gap-x-2 items-center">
+                              <span className="text-sm text-muted-foreground">
+                                {item.card.price.toFixed(2)} € × {item.quantity}
+                              </span>
+                              <p className="font-medium">{(item.card.price * item.quantity).toFixed(2)} €</p>
+                            </div>
                           </div>
                         </div>
                         
@@ -187,7 +197,9 @@ const Cart = () => {
                 
                 <div className="p-4 space-y-4">
                   <div className="flex justify-between items-center">
-                    <span className="text-muted-foreground">Sous-total</span>
+                    <span className="text-muted-foreground">
+                      Sous-total ({itemCount} article{itemCount !== 1 ? 's' : ''})
+                    </span>
                     <span>{totalPrice.toFixed(2)} €</span>
                   </div>
                   

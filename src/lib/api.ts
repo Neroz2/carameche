@@ -26,6 +26,22 @@ const expansionMapping: Record<number, string> = {
   2152: 'Silver Lance',
   2153: 'Jet Black Spirit',
   2154: 'Eevee Heroes',
+  2155: 'Fusion Strike',
+  2156: 'Evolving Skies',
+  2157: 'Chilling Reign',
+  2158: 'Battle Styles',
+  2159: 'Shining Fates',
+  2160: 'Vivid Voltage',
+  2161: 'Champions Path',
+  2162: 'Darkness Ablaze',
+  2163: 'Rebel Clash',
+  2164: 'Sword & Shield',
+  2165: 'Cosmic Eclipse',
+  2166: 'Hidden Fates',
+  2167: 'Unified Minds',
+  2168: 'Unbroken Bonds',
+  2169: 'Detective Pikachu',
+  2170: 'Team Up',
 };
 
 const translationCache: Record<string, string> = {};

@@ -44,7 +44,6 @@ const Inventory = () => {
   
   const { addToCart } = useCart();
 
-  // Charger les séries disponibles
   useEffect(() => {
     const loadSeries = async () => {
       try {
@@ -58,7 +57,6 @@ const Inventory = () => {
     loadSeries();
   }, []);
 
-  // Get the series filter from URL if present
   useEffect(() => {
     const seriesParam = searchParams.get("series");
     if (seriesParam) {
@@ -69,7 +67,6 @@ const Inventory = () => {
     }
   }, [searchParams]);
 
-  // Load cards based on current filters
   useEffect(() => {
     const loadCards = async () => {
       try {
@@ -77,7 +74,6 @@ const Inventory = () => {
         const seriesFilter = filterOptions.series[0] || "";
         const { cards, total } = await fetchPokemonCards(seriesFilter, page, pageSize, filterOptions);
         
-        // Apply client-side sorting
         let sortedCards = [...cards];
         switch (sortOption) {
           case "name-asc":
@@ -114,22 +110,18 @@ const Inventory = () => {
     loadCards();
   }, [page, pageSize, sortOption, filterOptions]);
 
-  // Scroll to top when page changes
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [page]);
 
-  // Handle sort change
   const handleSortChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSortOption(event.target.value as SortOption);
   };
 
-  // Handle view mode change
   const toggleViewMode = () => {
     setViewMode(prev => prev === "grid" ? "list" : "grid");
   };
 
-  // Handle filter search input
   const handleSearchInput = (event: React.ChangeEvent<HTMLInputElement>) => {
     setFilterOptions(prev => ({
       ...prev,
@@ -137,7 +129,6 @@ const Inventory = () => {
     }));
   };
 
-  // Clear all filters
   const clearFilters = () => {
     setFilterOptions({
       search: "",
@@ -152,18 +143,15 @@ const Inventory = () => {
       isPromo: null
     });
     
-    // Also update the URL
     setSearchParams({});
   };
 
-  // Render a single card in the list view
   const renderListItem = (card: PokemonCard) => (
     <div 
       key={card.id}
       className="bg-card border rounded-md p-4 flex flex-col sm:flex-row gap-4 hover:shadow-md transition-shadow"
     >
       <div className="w-28 h-40 sm:w-32 sm:h-44 flex-shrink-0 relative">
-        {/* Ajouter un filtre de couleur pour les cartes reverse */}
         <div className={`absolute inset-0 rounded ${card.isReverse ? 'bg-gradient-to-br from-purple-400/20 to-blue-500/20' : ''}`}></div>
         <img
           src={card.image}
@@ -171,7 +159,6 @@ const Inventory = () => {
           className="w-full h-full object-cover rounded relative z-10"
           loading="lazy"
         />
-        {/* Rareté et numéro en haut */}
         <div className="absolute top-2 left-2 flex flex-col gap-1 z-20">
           <span className="bg-yellow-500 text-black text-xs px-2 py-0.5 rounded-full font-medium">
             {card.rarity}
@@ -270,7 +257,6 @@ const Inventory = () => {
 
   return (
     <div className="min-h-screen flex flex-col pb-12">
-      {/* Header section */}
       <div className="bg-card border-b">
         <div className="container mx-auto px-4 py-8">
           <h1 className="text-3xl font-bold">Inventaire des cartes</h1>
@@ -282,12 +268,10 @@ const Inventory = () => {
       </div>
 
       <div className="container mx-auto px-4 flex flex-col lg:flex-row gap-6 mt-6">
-        {/* Filters sidebar - desktop */}
         <div className="hidden lg:block w-64 space-y-6">
           <div className="bg-card rounded-lg border p-4">
             <h3 className="font-medium mb-4">Filtres</h3>
             
-            {/* Search */}
             <div className="mb-4">
               <label htmlFor="search" className="text-sm font-medium mb-1 block">
                 Recherche
@@ -305,7 +289,6 @@ const Inventory = () => {
               </div>
             </div>
             
-            {/* Séries Filter */}
             <div className="mb-4">
               <label className="text-sm font-medium mb-1 block">
                 Série
@@ -340,7 +323,6 @@ const Inventory = () => {
               </div>
             </div>
             
-            {/* Price Range */}
             <div className="mb-4">
               <label className="text-sm font-medium mb-1 block">
                 Plage de prix
@@ -370,7 +352,6 @@ const Inventory = () => {
               </div>
             </div>
             
-            {/* Rarity Filter */}
             <div className="mb-4">
               <label className="text-sm font-medium mb-1 block">
                 Rareté
@@ -405,7 +386,6 @@ const Inventory = () => {
               </div>
             </div>
             
-            {/* Condition Filter */}
             <div className="mb-4">
               <label className="text-sm font-medium mb-1 block">
                 État
@@ -440,7 +420,6 @@ const Inventory = () => {
               </div>
             </div>
             
-            {/* Language Filter */}
             <div className="mb-4">
               <label className="text-sm font-medium mb-1 block">
                 Langue
@@ -475,14 +454,18 @@ const Inventory = () => {
               </div>
             </div>
             
-            {/* Special Features as Switches */}
             <div className="mb-4 space-y-3">
               <label className="text-sm font-medium mb-1 block">
                 Caractéristiques spéciales
               </label>
               
-              <div className="flex items-center justify-between">
-                <label htmlFor="is-holo" className="text-sm">
+              <div className="flex items-center justify-between cursor-pointer" onClick={() => {
+                setFilterOptions(prev => ({
+                  ...prev,
+                  isHolo: prev.isHolo === true ? null : true
+                }));
+              }}>
+                <label htmlFor="is-holo" className="text-sm cursor-pointer">
                   Holographique
                 </label>
                 <div className="relative inline-flex items-center">
@@ -491,12 +474,7 @@ const Inventory = () => {
                     id="is-holo" 
                     className="sr-only"
                     checked={filterOptions.isHolo === true}
-                    onChange={(e) => {
-                      setFilterOptions(prev => ({
-                        ...prev,
-                        isHolo: e.target.checked ? true : null
-                      }));
-                    }}
+                    onChange={() => {}}
                   />
                   <div className={`w-10 h-5 rounded-full transition ${
                     filterOptions.isHolo ? 'bg-primary' : 'bg-gray-300 dark:bg-gray-600'
@@ -507,8 +485,13 @@ const Inventory = () => {
                 </div>
               </div>
               
-              <div className="flex items-center justify-between">
-                <label htmlFor="is-reverse" className="text-sm">
+              <div className="flex items-center justify-between cursor-pointer" onClick={() => {
+                setFilterOptions(prev => ({
+                  ...prev,
+                  isReverse: prev.isReverse === true ? null : true
+                }));
+              }}>
+                <label htmlFor="is-reverse" className="text-sm cursor-pointer">
                   Reverse
                 </label>
                 <div className="relative inline-flex items-center">
@@ -517,12 +500,7 @@ const Inventory = () => {
                     id="is-reverse" 
                     className="sr-only" 
                     checked={filterOptions.isReverse === true}
-                    onChange={(e) => {
-                      setFilterOptions(prev => ({
-                        ...prev,
-                        isReverse: e.target.checked ? true : null
-                      }));
-                    }}
+                    onChange={() => {}}
                   />
                   <div className={`w-10 h-5 rounded-full transition ${
                     filterOptions.isReverse ? 'bg-primary' : 'bg-gray-300 dark:bg-gray-600'
@@ -533,8 +511,13 @@ const Inventory = () => {
                 </div>
               </div>
               
-              <div className="flex items-center justify-between">
-                <label htmlFor="is-promo" className="text-sm">
+              <div className="flex items-center justify-between cursor-pointer" onClick={() => {
+                setFilterOptions(prev => ({
+                  ...prev,
+                  isPromo: prev.isPromo === true ? null : true
+                }));
+              }}>
+                <label htmlFor="is-promo" className="text-sm cursor-pointer">
                   Promo
                 </label>
                 <div className="relative inline-flex items-center">
@@ -543,12 +526,7 @@ const Inventory = () => {
                     id="is-promo" 
                     className="sr-only" 
                     checked={filterOptions.isPromo === true}
-                    onChange={(e) => {
-                      setFilterOptions(prev => ({
-                        ...prev,
-                        isPromo: e.target.checked ? true : null
-                      }));
-                    }}
+                    onChange={() => {}}
                   />
                   <div className={`w-10 h-5 rounded-full transition ${
                     filterOptions.isPromo ? 'bg-primary' : 'bg-gray-300 dark:bg-gray-600'
@@ -571,9 +549,7 @@ const Inventory = () => {
           </div>
         </div>
 
-        {/* Main content */}
         <div className="flex-1">
-          {/* Toolbar */}
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
             <div className="flex items-center gap-2">
               <Button 
@@ -604,7 +580,6 @@ const Inventory = () => {
                 </div>
               )}
               
-              {/* View Mode Toggle */}
               <div className="flex items-center border rounded-md overflow-hidden">
                 <button 
                   className={`p-2 ${viewMode === 'grid' ? 'bg-primary text-white' : 'hover:bg-accent'}`}
@@ -643,7 +618,6 @@ const Inventory = () => {
             </div>
           </div>
 
-          {/* Mobile filter drawer */}
           {isFilterOpen && (
             <div className="lg:hidden fixed inset-0 z-50 bg-background/95 backdrop-blur-sm animate-fade-in">
               <div className="container mx-auto px-4 py-8 h-full overflow-y-auto">
@@ -654,9 +628,7 @@ const Inventory = () => {
                   </button>
                 </div>
                 
-                {/* Filter content - same as sidebar */}
                 <div className="space-y-6">
-                  {/* Search */}
                   <div>
                     <label htmlFor="mobile-search" className="text-sm font-medium mb-1 block">
                       Recherche
@@ -674,7 +646,6 @@ const Inventory = () => {
                     </div>
                   </div>
                   
-                  {/* Price Range */}
                   <div>
                     <label className="text-sm font-medium mb-1 block">
                       Plage de prix
@@ -704,8 +675,109 @@ const Inventory = () => {
                     </div>
                   </div>
                   
-                  {/* Other filters same as sidebar */}
-                  {/* ... */}
+                  <div className="flex space-y-1">
+                    <div className="flex items-center">
+                      <label className="text-sm font-medium mb-1 block">
+                        Rareté
+                      </label>
+                      <div className="space-y-1 max-h-40 overflow-y-auto">
+                        {["Common", "Uncommon", "Rare", "Ultra Rare", "Secret Rare", "Promo"].map((rarity) => (
+                          <div key={rarity} className="flex items-center">
+                            <input
+                              type="checkbox"
+                              id={`rarity-${rarity}`}
+                              className="mr-2"
+                              checked={filterOptions.rarity.includes(rarity)}
+                              onChange={(e) => {
+                                if (e.target.checked) {
+                                  setFilterOptions(prev => ({
+                                    ...prev,
+                                    rarity: [...prev.rarity, rarity]
+                                  }));
+                                } else {
+                                  setFilterOptions(prev => ({
+                                    ...prev,
+                                    rarity: prev.rarity.filter(r => r !== rarity)
+                                  }));
+                                }
+                              }}
+                            />
+                            <label htmlFor={`rarity-${rarity}`} className="text-sm">
+                              {rarity}
+                            </label>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-center">
+                      <label className="text-sm font-medium mb-1 block">
+                        État
+                      </label>
+                      <div className="space-y-1 max-h-40 overflow-y-auto">
+                        {["Mint", "Near Mint", "Excellent", "Good", "Light Played", "Played"].map((condition) => (
+                          <div key={condition} className="flex items-center">
+                            <input
+                              type="checkbox"
+                              id={`condition-${condition}`}
+                              className="mr-2"
+                              checked={filterOptions.condition.includes(condition)}
+                              onChange={(e) => {
+                                if (e.target.checked) {
+                                  setFilterOptions(prev => ({
+                                    ...prev,
+                                    condition: [...prev.condition, condition]
+                                  }));
+                                } else {
+                                  setFilterOptions(prev => ({
+                                    ...prev,
+                                    condition: prev.condition.filter(c => c !== condition)
+                                  }));
+                                }
+                              }}
+                            />
+                            <label htmlFor={`condition-${condition}`} className="text-sm">
+                              {condition}
+                            </label>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-center">
+                      <label className="text-sm font-medium mb-1 block">
+                        Langue
+                      </label>
+                      <div className="space-y-1">
+                        {["EN", "FR", "JP", "DE", "IT", "ES"].map((language) => (
+                          <div key={language} className="flex items-center">
+                            <input
+                              type="checkbox"
+                              id={`language-${language}`}
+                              className="mr-2"
+                              checked={filterOptions.language.includes(language)}
+                              onChange={(e) => {
+                                if (e.target.checked) {
+                                  setFilterOptions(prev => ({
+                                    ...prev,
+                                    language: [...prev.language, language]
+                                  }));
+                                } else {
+                                  setFilterOptions(prev => ({
+                                    ...prev,
+                                    language: prev.language.filter(l => l !== language)
+                                  }));
+                                }
+                              }}
+                            />
+                            <label htmlFor={`language-${language}`} className="text-sm">
+                              {language}
+                            </label>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
                   
                   <div className="flex space-x-4 pt-4">
                     <Button 
@@ -730,7 +802,6 @@ const Inventory = () => {
             </div>
           )}
 
-          {/* Cards display - grid or list view */}
           {loading ? (
             <div className="min-h-[500px] flex items-center justify-center">
               <Loader size="lg" text="Chargement des cartes..." />
@@ -752,19 +823,14 @@ const Inventory = () => {
           ) : (
             <>
               {viewMode === "grid" ? (
-                // Grid View - Amélioration du design
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6">
                   {cards.map((card) => (
                     <Card 
                       key={card.id} 
-                      interactive
-                      className="overflow-hidden h-full transition-all duration-300 hover:shadow-lg"
+                      className="overflow-hidden h-full transition-all border dark:border-gray-700"
                     >
                       <div className="aspect-[3/4] relative overflow-hidden">
-                        {/* Filtre de couleur pour les cartes reverse */}
                         <div className={`absolute inset-0 ${card.isReverse ? 'bg-gradient-to-br from-purple-400/20 to-blue-500/20' : ''}`}></div>
-                        
-                        {/* Rareté et numéro en haut */}
                         <div className="absolute top-2 right-2 z-20 flex flex-col gap-1 items-end">
                           <span className="bg-yellow-500 text-black text-xs px-2 py-0.5 rounded-full font-medium">
                             {card.rarity}
@@ -773,7 +839,6 @@ const Inventory = () => {
                             # {card.number}
                           </span>
                         </div>
-                        
                         <img
                           src={card.image}
                           alt={card.nameFr || card.name}
@@ -782,16 +847,11 @@ const Inventory = () => {
                         />
                       </div>
                       <CardHeader className="pb-2">
-                        <div className="flex justify-between items-start gap-2">
-                          <div>
-                            <h3 className="font-medium truncate">{card.nameFr || card.name}</h3>
-                            <p className="text-sm text-muted-foreground">
-                              {card.series}
-                            </p>
-                          </div>
-                          <span className="text-sm font-semibold whitespace-nowrap">
-                            {card.price.toFixed(2)} €
-                          </span>
+                        <div>
+                          <h3 className="font-medium truncate">{card.nameFr || card.name}</h3>
+                          <p className="text-sm text-muted-foreground truncate">
+                            {card.series}
+                          </p>
                         </div>
                       </CardHeader>
                       <CardContent className="pb-2">
@@ -809,13 +869,41 @@ const Inventory = () => {
                           </span>
                         </div>
                       </CardContent>
-                      <CardFooter className="border-t pt-3">
+                      <CardFooter className="pt-3 border-t flex-col items-stretch gap-3">
                         <div className="w-full flex justify-between items-center">
-                          <div className="flex items-center space-x-1">
-                            <span className="text-sm text-muted-foreground">Stock: {card.stock}</span>
+                          <span className="text-lg font-semibold text-primary">
+                            {card.price.toFixed(2)} €
+                          </span>
+                          <span className="text-sm bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded-full">
+                            Stock: {card.stock}
+                          </span>
+                        </div>
+                        <div className="w-full flex gap-2 items-center">
+                          <div className="flex items-center border rounded-md dark:border-gray-700 flex-1">
+                            <button 
+                              className="p-2 hover:bg-muted transition-colors"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                addToCart(card, -1);
+                              }}
+                              disabled={card.stock === 0}
+                            >
+                              <Minus size={16} />
+                            </button>
+                            <span className="flex-1 text-center">1</span>
+                            <button 
+                              className="p-2 hover:bg-muted transition-colors"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                addToCart(card, 1);
+                              }}
+                              disabled={card.stock === 0}
+                            >
+                              <Plus size={16} />
+                            </button>
                           </div>
                           <Button
-                            size="sm"
+                            className="flex-1"
                             onClick={(e) => {
                               e.stopPropagation();
                               if (card.stock > 0) {
@@ -823,7 +911,6 @@ const Inventory = () => {
                               }
                             }}
                             disabled={card.stock === 0}
-                            icon={<ShoppingCart size={14} />}
                             variant={card.stock === 0 ? "outline" : "default"}
                           >
                             {card.stock === 0 ? "Épuisé" : "Ajouter"}
@@ -834,13 +921,11 @@ const Inventory = () => {
                   ))}
                 </div>
               ) : (
-                // List View
                 <div className="space-y-4">
                   {cards.map(renderListItem)}
                 </div>
               )}
 
-              {/* Pagination */}
               <div className="mt-8 flex justify-center items-center space-x-2">
                 <Button
                   variant="outline"

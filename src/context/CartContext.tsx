@@ -56,10 +56,18 @@ export const CartProvider = ({ children }: CartProviderProps) => {
       const existingItem = prevItems.find((item) => item.card.id === card.id);
       
       if (existingItem) {
+        // S'il y a déjà cet article dans le panier avec quantité négative, on supprime l'élément
+        if (existingItem.quantity + quantity <= 0) {
+          toast("Carte supprimée du panier", {
+            description: existingItem.card.nameFr || existingItem.card.name,
+          });
+          return prevItems.filter(item => item.card.id !== card.id);
+        }
+        
         // Make sure we don't exceed the available stock
         const newQuantity = Math.min(existingItem.quantity + quantity, card.stock);
         
-        if (newQuantity === existingItem.quantity) {
+        if (newQuantity === existingItem.quantity && quantity > 0) {
           toast("Quantité maximale atteinte", {
             description: `Vous ne pouvez pas ajouter plus de ${card.stock} exemplaires de cette carte`,
           });
@@ -76,6 +84,9 @@ export const CartProvider = ({ children }: CartProviderProps) => {
             : item
         );
       } else {
+        // Ne pas ajouter de carte si la quantité est négative ou nulle
+        if (quantity <= 0) return prevItems;
+        
         toast("Carte ajoutée au panier", {
           description: card.nameFr || card.name,
         });
