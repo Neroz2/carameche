@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { 
@@ -8,9 +9,11 @@ import {
   SlidersHorizontal,
   Plus,
   Minus,
-  X
+  X,
+  LayoutGrid,
+  LayoutList
 } from "lucide-react";
-import { PokemonCard, SortOption, FilterOptions } from "@/lib/types";
+import { PokemonCard, SortOption, FilterOptions, ViewMode } from "@/lib/types";
 import { fetchPokemonCards } from "@/lib/api";
 import Card, { CardHeader, CardContent, CardFooter } from "@/components/common/Card";
 import Button from "@/components/common/Button";
@@ -25,6 +28,7 @@ const Inventory = () => {
   const [page, setPage] = useState(1);
   const [pageSize] = useState(24);
   const [sortOption, setSortOption] = useState<SortOption>("number-asc");
+  const [viewMode, setViewMode] = useState<ViewMode>("grid");
   const [filterOptions, setFilterOptions] = useState<FilterOptions>({
     search: "",
     series: [],
@@ -107,6 +111,11 @@ const Inventory = () => {
     setSortOption(event.target.value as SortOption);
   };
 
+  // Handle view mode change
+  const toggleViewMode = () => {
+    setViewMode(prev => prev === "grid" ? "list" : "grid");
+  };
+
   // Handle filter search input
   const handleSearchInput = (event: React.ChangeEvent<HTMLInputElement>) => {
     setFilterOptions(prev => ({
@@ -133,6 +142,107 @@ const Inventory = () => {
     // Also update the URL
     setSearchParams({});
   };
+
+  // Render a single card in the list view
+  const renderListItem = (card: PokemonCard) => (
+    <div 
+      key={card.id}
+      className="bg-card border rounded-md p-4 flex flex-col sm:flex-row gap-4 hover:shadow-md transition-shadow"
+    >
+      <div className="w-28 h-40 sm:w-32 sm:h-44 flex-shrink-0 relative">
+        <img
+          src={card.image}
+          alt={card.nameFr || card.name}
+          className="w-full h-full object-cover rounded"
+          loading="lazy"
+        />
+        {(card.isHolo || card.isReverse || card.isPromo) && (
+          <div className="absolute top-2 left-2 flex flex-col gap-1">
+            {card.isHolo && (
+              <span className="bg-pokemon-yellow/90 text-black text-xs px-2 py-0.5 rounded-full">
+                Holo
+              </span>
+            )}
+            {card.isReverse && (
+              <span className="bg-pokemon-psychic/90 text-white text-xs px-2 py-0.5 rounded-full">
+                Reverse
+              </span>
+            )}
+            {card.isPromo && (
+              <span className="bg-pokemon-fire/90 text-white text-xs px-2 py-0.5 rounded-full">
+                Promo
+              </span>
+            )}
+          </div>
+        )}
+      </div>
+      <div className="flex-grow flex flex-col justify-between">
+        <div>
+          <div className="flex justify-between items-start">
+            <div>
+              <h3 className="font-medium">{card.nameFr || card.name}</h3>
+              <p className="text-sm text-muted-foreground">
+                {card.series} · {card.number}
+              </p>
+            </div>
+            <span className="text-lg font-semibold whitespace-nowrap">
+              {card.price.toFixed(2)} €
+            </span>
+          </div>
+          <div className="flex flex-wrap gap-2 mt-2">
+            <span className="text-xs bg-secondary px-2 py-1 rounded">
+              {card.rarity}
+            </span>
+            <span className="text-xs bg-secondary px-2 py-1 rounded">
+              {card.condition}
+            </span>
+            <span className="text-xs bg-secondary px-2 py-1 rounded">
+              {card.language}
+            </span>
+          </div>
+        </div>
+        <div className="flex justify-between items-center mt-4 border-t pt-3">
+          <div className="flex items-center space-x-1">
+            <Minus
+              size={18}
+              className="cursor-pointer text-muted-foreground hover:text-foreground"
+              onClick={(e) => {
+                e.stopPropagation();
+                if (card.stock > 0) {
+                  addToCart(card, -1);
+                }
+              }}
+            />
+            <span className="text-sm">{card.stock} en stock</span>
+            <Plus
+              size={18}
+              className="cursor-pointer text-muted-foreground hover:text-foreground"
+              onClick={(e) => {
+                e.stopPropagation();
+                if (card.stock > 0) {
+                  addToCart(card, 1);
+                }
+              }}
+            />
+          </div>
+          <Button
+            size="sm"
+            onClick={(e) => {
+              e.stopPropagation();
+              if (card.stock > 0) {
+                addToCart(card, 1);
+              }
+            }}
+            disabled={card.stock === 0}
+            icon={<ShoppingCart size={14} />}
+            variant={card.stock === 0 ? "outline" : "default"}
+          >
+            {card.stock === 0 ? "Épuisé" : "Ajouter"}
+          </Button>
+        </div>
+      </div>
+    </div>
+  );
 
   return (
     <div className="min-h-screen flex flex-col pb-12">
@@ -277,7 +387,7 @@ const Inventory = () => {
                 Langue
               </label>
               <div className="space-y-1">
-                {["EN", "FR"].map((language) => (
+                {["EN", "FR", "JP", "DE", "IT", "ES"].map((language) => (
                   <div key={language} className="flex items-center">
                     <input
                       type="checkbox"
@@ -409,6 +519,24 @@ const Inventory = () => {
                   </button>
                 </div>
               )}
+              
+              {/* View Mode Toggle */}
+              <div className="flex items-center border rounded-md overflow-hidden">
+                <button 
+                  className={`p-2 ${viewMode === 'grid' ? 'bg-primary text-white' : 'hover:bg-accent'}`}
+                  onClick={() => setViewMode('grid')}
+                  title="Vue en grille"
+                >
+                  <LayoutGrid size={16} />
+                </button>
+                <button 
+                  className={`p-2 ${viewMode === 'list' ? 'bg-primary text-white' : 'hover:bg-accent'}`}
+                  onClick={() => setViewMode('list')}
+                  title="Vue en liste"
+                >
+                  <LayoutList size={16} />
+                </button>
+              </div>
             </div>
             
             <div className="flex items-center w-full sm:w-auto">
@@ -518,7 +646,7 @@ const Inventory = () => {
             </div>
           )}
 
-          {/* Cards grid */}
+          {/* Cards display - grid or list view */}
           {loading ? (
             <div className="min-h-[500px] flex items-center justify-center">
               <Loader size="lg" text="Chargement des cartes..." />
@@ -539,110 +667,118 @@ const Inventory = () => {
             </div>
           ) : (
             <>
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6">
-                {cards.map((card) => (
-                  <Card 
-                    key={card.id} 
-                    interactive
-                    hover3D
-                    className="overflow-hidden h-full transition-all duration-300 hover:shadow-lg"
-                  >
-                    <div className="aspect-[3/4] relative overflow-hidden group">
-                      <img
-                        src={card.image}
-                        alt={card.nameFr || card.name}
-                        className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
-                        loading="lazy"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                      <div className="absolute top-2 left-2 flex flex-col gap-1">
-                        {card.isHolo && (
-                          <span className="bg-pokemon-yellow/90 text-black text-xs px-2 py-0.5 rounded-full">
-                            Holo
-                          </span>
-                        )}
-                        {card.isReverse && (
-                          <span className="bg-pokemon-psychic/90 text-white text-xs px-2 py-0.5 rounded-full">
-                            Reverse
-                          </span>
-                        )}
-                        {card.isPromo && (
-                          <span className="bg-pokemon-fire/90 text-white text-xs px-2 py-0.5 rounded-full">
-                            Promo
-                          </span>
-                        )}
-                      </div>
-                    </div>
-                    <CardHeader className="pb-2">
-                      <div className="flex justify-between items-start gap-2">
-                        <div>
-                          <h3 className="font-medium truncate">{card.nameFr || card.name}</h3>
-                          <p className="text-sm text-muted-foreground">
-                            {card.series} · {card.number}
-                          </p>
+              {viewMode === "grid" ? (
+                // Grid View
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6">
+                  {cards.map((card) => (
+                    <Card 
+                      key={card.id} 
+                      interactive
+                      hover3D
+                      className="overflow-hidden h-full transition-all duration-300 hover:shadow-lg"
+                    >
+                      <div className="aspect-[3/4] relative overflow-hidden group">
+                        <img
+                          src={card.image}
+                          alt={card.nameFr || card.name}
+                          className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
+                          loading="lazy"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                        <div className="absolute top-2 left-2 flex flex-col gap-1">
+                          {card.isHolo && (
+                            <span className="bg-pokemon-yellow/90 text-black text-xs px-2 py-0.5 rounded-full">
+                              Holo
+                            </span>
+                          )}
+                          {card.isReverse && (
+                            <span className="bg-pokemon-psychic/90 text-white text-xs px-2 py-0.5 rounded-full">
+                              Reverse
+                            </span>
+                          )}
+                          {card.isPromo && (
+                            <span className="bg-pokemon-fire/90 text-white text-xs px-2 py-0.5 rounded-full">
+                              Promo
+                            </span>
+                          )}
                         </div>
-                        <span className="text-sm font-semibold whitespace-nowrap">
-                          {card.price.toFixed(2)} €
-                        </span>
                       </div>
-                    </CardHeader>
-                    <CardContent className="pb-2">
-                      <div className="flex flex-wrap gap-2">
-                        <span className="text-xs bg-secondary px-2 py-1 rounded">
-                          {card.rarity}
-                        </span>
-                        <span className="text-xs bg-secondary px-2 py-1 rounded">
-                          {card.condition}
-                        </span>
-                        <span className="text-xs bg-secondary px-2 py-1 rounded">
-                          {card.language}
-                        </span>
-                      </div>
-                    </CardContent>
-                    <CardFooter className="border-t pt-3">
-                      <div className="w-full flex justify-between items-center">
-                        <div className="flex items-center space-x-1">
-                          <Minus
-                            size={18}
-                            className="cursor-pointer text-muted-foreground hover:text-foreground"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              if (card.stock > 0) {
-                                addToCart(card, -1);
-                              }
-                            }}
-                          />
-                          <span className="text-sm">{card.stock} en stock</span>
-                          <Plus
-                            size={18}
-                            className="cursor-pointer text-muted-foreground hover:text-foreground"
+                      <CardHeader className="pb-2">
+                        <div className="flex justify-between items-start gap-2">
+                          <div>
+                            <h3 className="font-medium truncate">{card.nameFr || card.name}</h3>
+                            <p className="text-sm text-muted-foreground">
+                              {card.series} · {card.number}
+                            </p>
+                          </div>
+                          <span className="text-sm font-semibold whitespace-nowrap">
+                            {card.price.toFixed(2)} €
+                          </span>
+                        </div>
+                      </CardHeader>
+                      <CardContent className="pb-2">
+                        <div className="flex flex-wrap gap-2">
+                          <span className="text-xs bg-secondary px-2 py-1 rounded">
+                            {card.rarity}
+                          </span>
+                          <span className="text-xs bg-secondary px-2 py-1 rounded">
+                            {card.condition}
+                          </span>
+                          <span className="text-xs bg-secondary px-2 py-1 rounded">
+                            {card.language}
+                          </span>
+                        </div>
+                      </CardContent>
+                      <CardFooter className="border-t pt-3">
+                        <div className="w-full flex justify-between items-center">
+                          <div className="flex items-center space-x-1">
+                            <Minus
+                              size={18}
+                              className="cursor-pointer text-muted-foreground hover:text-foreground"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                if (card.stock > 0) {
+                                  addToCart(card, -1);
+                                }
+                              }}
+                            />
+                            <span className="text-sm">{card.stock} en stock</span>
+                            <Plus
+                              size={18}
+                              className="cursor-pointer text-muted-foreground hover:text-foreground"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                if (card.stock > 0) {
+                                  addToCart(card, 1);
+                                }
+                              }}
+                            />
+                          </div>
+                          <Button
+                            size="sm"
                             onClick={(e) => {
                               e.stopPropagation();
                               if (card.stock > 0) {
                                 addToCart(card, 1);
                               }
                             }}
-                          />
+                            disabled={card.stock === 0}
+                            icon={<ShoppingCart size={14} />}
+                            variant={card.stock === 0 ? "outline" : "default"}
+                          >
+                            {card.stock === 0 ? "Épuisé" : "Ajouter"}
+                          </Button>
                         </div>
-                        <Button
-                          size="sm"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            if (card.stock > 0) {
-                              addToCart(card, 1);
-                            }
-                          }}
-                          disabled={card.stock === 0}
-                          icon={<ShoppingCart size={14} />}
-                          variant={card.stock === 0 ? "outline" : "default"}
-                        >
-                          {card.stock === 0 ? "Épuisé" : "Ajouter"}
-                        </Button>
-                      </div>
-                    </CardFooter>
-                  </Card>
-                ))}
-              </div>
+                      </CardFooter>
+                    </Card>
+                  ))}
+                </div>
+              ) : (
+                // List View
+                <div className="space-y-4">
+                  {cards.map(renderListItem)}
+                </div>
+              )}
 
               {/* Pagination */}
               <div className="mt-8 flex justify-center items-center space-x-2">

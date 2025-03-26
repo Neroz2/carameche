@@ -42,6 +42,8 @@ export interface Order {
 
 export type SortOption = "name-asc" | "name-desc" | "number-asc" | "number-desc" | "price-asc" | "price-desc";
 
+export type ViewMode = "grid" | "list";
+
 export interface FilterOptions {
   search: string;
   series: string[];

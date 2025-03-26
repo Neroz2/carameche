@@ -1,7 +1,7 @@
-
 import { PokemonSeries, PokemonCard } from './types';
 
 const CARDTRADER_API_TOKEN = "eyJhbGciOiJSUzI1NiJ9.eyJpc3MiOiJjYXJkdHJhZGVyLXByb2R1Y3Rpb24iLCJzdWIiOiJhcHA6MTM5MzgiLCJhdWQiOiJhcHA6MTM5MzgiLCJleHAiOjQ4OTU2MzQ3MTcsImp0aSI6IjQxMjA3NmNjLTcyZTEtNDljOC1iODA2LTE3OTJiNmU3N2JhMyIsImlhdCI6MTczOTk2MTExNywibmFtZSI6Ik5lcm96YnJpY2tzIEFwcCAyMDI1MDIwODE3NDkxOSJ9.PkkEXit3MvxmVij_e5Eyz55k_3EYgQF-2ln9goSfMbQD3mIpDVrSkQa010BfnF9IR1L8fvswAyxk56qiUr2LKm2KXX0iKAvVRR373A3XEDwgNtGGBBAR-rxh8raL1hW8e4AH_bps1tVFTrdZ_W-Odg5egSxLFIxnLgi0a9It5KVeVkjdgLmxYuaCXspgml9TXfgJcJ2GH62izvB5eUsAj4NhobpH5q_Pyfbyw2cJu4HmilQjBSOm4NsmRW7Nd692tNT2semj1Oh1UqV1xel2WewtLaWlUAVHYt2LSMWrEw_kx9Yjk9Kz-rM67tk0nXosKklnIigJpcrmRUXf-O7qJA";
+const IMAGE_BASE_URL = "https://www.cardtrader.com/images/blueprint/";
 
 // Mocked data for initial development
 const MOCK_SERIES: PokemonSeries[] = [
@@ -54,6 +54,66 @@ const MOCK_SERIES: PokemonSeries[] = [
     totalCards: 180
   }
 ];
+
+// Mapping pour les conditions de carte
+const conditionMapping = {
+  'Near Mint': 'Near Mint',
+  'Excellent': 'Excellent',
+  'Good': 'Good',
+  'Light Played': 'Light Played',
+  'Played': 'Played',
+  'Poor': 'Played',
+};
+
+// Mapping pour les raretés de carte
+const rarityMapping = {
+  'Common': 'Common',
+  'Uncommon': 'Uncommon',
+  'Rare': 'Rare',
+  'Holo Rare': 'Ultra Rare',
+  'Ultra Rare': 'Ultra Rare',
+  'Secret Rare': 'Secret Rare',
+  'Promo': 'Promo',
+};
+
+// Fonction pour transformer les données de l'API CardTrader en notre format
+const transformCardTraderData = (data: any[]): PokemonCard[] => {
+  return data.map((item, index) => {
+    const id = `card-${item.id}`;
+    const name = item.name_en;
+    const number = item.properties_hash.collector_number || 'N/A';
+    const series = 'Pokémon'; // On pourrait chercher le nom de l'expansion avec l'id si disponible
+    const rarity = rarityMapping[item.properties_hash.pokemon_rarity] || 'Common';
+    const condition = conditionMapping[item.properties_hash.condition] || 'Near Mint';
+    const price = item.price_cents / 100; // Convertir les centimes en euros
+    const stock = item.quantity;
+    const language = item.properties_hash.pokemon_language?.toUpperCase() || 'EN';
+    const isHolo = !!item.properties_hash.pokemon_holo;
+    const isReverse = !!item.properties_hash.pokemon_reverse;
+    const isPromo = rarity === 'Promo';
+    
+    // Utiliser l'ID du blueprint pour l'image
+    const image = `${IMAGE_BASE_URL}${item.blueprint_id}.jpg`;
+    
+    return {
+      id,
+      name,
+      nameEn: name,
+      nameFr: name, // On pourrait ajouter une traduction ici
+      number,
+      series,
+      rarity,
+      image,
+      price,
+      stock,
+      condition,
+      language,
+      isHolo,
+      isReverse,
+      isPromo
+    };
+  });
+};
 
 // Mock cards data for initial development
 const generateMockCards = (count: number): PokemonCard[] => {
@@ -111,8 +171,55 @@ export const fetchPokemonCards = async (
   page: number = 1,
   pageSize: number = 24
 ): Promise<{ cards: PokemonCard[], total: number }> => {
-  // In a real app, this would call the actual CardTrader API
-  return new Promise((resolve) => {
+  try {
+    // Tentative de récupération des données depuis l'API CardTrader
+    const response = await fetch('https://api.cardtrader.com/api/v2/products/export', {
+      headers: {
+        'Authorization': `Bearer ${CARDTRADER_API_TOKEN}`
+      }
+    });
+    
+    if (response.ok) {
+      const data = await response.json();
+      
+      // Transformer les données de l'API
+      let cardsList = transformCardTraderData(data);
+      
+      // Appliquer le filtre de série si présent
+      if (seriesFilter) {
+        cardsList = cardsList.filter(card => 
+          card.series.toLowerCase() === seriesFilter.toLowerCase()
+        );
+      }
+      
+      const total = cardsList.length;
+      const start = (page - 1) * pageSize;
+      const end = start + pageSize;
+      const paginatedCards = cardsList.slice(start, end);
+      
+      return { cards: paginatedCards, total };
+    } else {
+      console.warn('Échec de la requête CardTrader, utilisation des données mockées');
+      // Fallback to mock data on error
+      let filteredCards = [...MOCK_CARDS];
+      
+      if (seriesFilter) {
+        filteredCards = filteredCards.filter(card => 
+          card.series.toLowerCase() === seriesFilter.toLowerCase()
+        );
+      }
+      
+      const total = filteredCards.length;
+      const start = (page - 1) * pageSize;
+      const end = start + pageSize;
+      const paginatedCards = filteredCards.slice(start, end);
+      
+      return { cards: paginatedCards, total };
+    }
+  } catch (error) {
+    console.error('Erreur lors de la récupération des cartes:', error);
+    
+    // Fallback to mock data on error
     let filteredCards = [...MOCK_CARDS];
     
     if (seriesFilter) {
@@ -126,8 +233,8 @@ export const fetchPokemonCards = async (
     const end = start + pageSize;
     const paginatedCards = filteredCards.slice(start, end);
     
-    setTimeout(() => resolve({ cards: paginatedCards, total }), 500);
-  });
+    return { cards: paginatedCards, total };
+  }
 };
 
 export const fetchCardDetails = async (cardId: string): Promise<PokemonCard | null> => {
