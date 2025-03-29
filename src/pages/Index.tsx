@@ -1,6 +1,7 @@
 
 import HeroSection from "@/components/home/HeroSection";
 import SeriesGrid from "@/components/home/SeriesGrid";
+import FeaturedCards from "@/components/home/FeaturedCards";
 import { useEffect, useState } from "react";
 import { fetchPokemonSeries } from "@/lib/api";
 import { PokemonSeries } from "@/lib/types";
@@ -35,6 +36,7 @@ const Index = () => {
   return (
     <div className="min-h-screen flex flex-col">
       <HeroSection />
+      <FeaturedCards />
       {loading ? (
         <div className="flex justify-center items-center py-20">
           <Loader size="lg" text="Chargement des séries..." />

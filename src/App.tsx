@@ -10,7 +10,6 @@ import Footer from "@/components/layout/Footer";
 import Index from "./pages/Index";
 import Inventory from "./pages/Inventory";
 import Cart from "./pages/Cart";
-import Orders from "./pages/Orders";
 import Admin from "./pages/Admin";
 import NotFound from "./pages/NotFound";
 
@@ -30,7 +29,6 @@ const App = () => (
                 <Route path="/" element={<Index />} />
                 <Route path="/inventory" element={<Inventory />} />
                 <Route path="/cart" element={<Cart />} />
-                <Route path="/orders" element={<Orders />} />
                 <Route path="/admin" element={<Admin />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>

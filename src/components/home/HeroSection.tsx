@@ -62,7 +62,7 @@ const HeroSection = () => {
             {/* Main card with 3D effect */}
             <div className="pokemon-card absolute w-[220px] h-[300px] transform rotate-6 translate-x-4 z-20 animate-float animate-fade-in">
               <img 
-                src="https://archives.bulbagarden.net/media/upload/thumb/f/f5/006Charizard.png/250px-006Charizard.png" 
+                src="https://tcg.pokemon.com/assets/img/expansions/silver-tempest/cards/en-us/SWSH12_EN_179-2x.jpg" 
                 alt="Charizard Card" 
                 className="w-full h-full object-cover rounded-lg shadow-xl"
               />
@@ -72,7 +72,7 @@ const HeroSection = () => {
             {/* Background cards */}
             <div className="absolute w-[220px] h-[300px] transform -rotate-6 -translate-x-8 z-10 animate-fade-in" style={{ animationDelay: "0.2s" }}>
               <img 
-                src="https://archives.bulbagarden.net/media/upload/thumb/2/21/025Pikachu.png/250px-025Pikachu.png" 
+                src="https://tcg.pokemon.com/assets/img/expansions/crown-zenith/cards/en-us/SWSH12PT5_EN_001-2x.jpg" 
                 alt="Pikachu Card" 
                 className="w-full h-full object-cover rounded-lg shadow-lg"
               />
@@ -81,7 +81,7 @@ const HeroSection = () => {
             
             <div className="absolute w-[220px] h-[300px] transform -rotate-12 -translate-x-20 translate-y-5 z-0 opacity-80 animate-fade-in" style={{ animationDelay: "0.4s" }}>
               <img 
-                src="https://archives.bulbagarden.net/media/upload/thumb/0/0d/143Snorlax.png/250px-143Snorlax.png" 
+                src="https://tcg.pokemon.com/assets/img/expansions/crown-zenith/cards/en-us/SWSH12PT5_EN_070-2x.jpg" 
                 alt="Snorlax Card" 
                 className="w-full h-full object-cover rounded-lg shadow-lg"
               />
