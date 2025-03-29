@@ -1,6 +1,7 @@
 
 import HeroSection from "@/components/home/HeroSection";
 import SeriesGrid from "@/components/home/SeriesGrid";
+import FeaturedCards from "@/components/home/FeaturedCards";
 import { useEffect, useState } from "react";
 import { fetchPokemonSeries } from "@/lib/api";
 import { PokemonSeries } from "@/lib/types";
@@ -40,7 +41,10 @@ const Index = () => {
           <Loader size="lg" text="Chargement des séries..." />
         </div>
       ) : (
-        <SeriesGrid series={series} />
+        <>
+          <FeaturedCards />
+          <SeriesGrid series={series} />
+        </>
       )}
     </div>
   );

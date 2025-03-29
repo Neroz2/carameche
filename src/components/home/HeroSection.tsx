@@ -5,10 +5,7 @@ import { Link } from "react-router-dom";
 
 const HeroSection = () => {
   return (
-    <section className="relative overflow-hidden">
-      {/* Background with gradient */}
-      <div className="absolute inset-0 bg-gradient-to-b from-pokemon-blue/10 to-transparent z-0"></div>
-      
+    <section className="relative overflow-hidden bg-gradient-to-b from-pokemon-blue/10 via-transparent to-transparent">
       <div className="container mx-auto px-4 py-16 md:py-24 relative z-10">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
           {/* Text content */}
@@ -62,7 +59,7 @@ const HeroSection = () => {
             {/* Main card with 3D effect */}
             <div className="pokemon-card absolute w-[220px] h-[300px] transform rotate-6 translate-x-4 z-20 animate-float animate-fade-in">
               <img 
-                src="https://archives.bulbagarden.net/media/upload/thumb/f/f5/006Charizard.png/250px-006Charizard.png" 
+                src="https://assets.pokemon.com/assets/cms2/img/cards/web/EX14/EX14_EN_100.png" 
                 alt="Charizard Card" 
                 className="w-full h-full object-cover rounded-lg shadow-xl"
               />
@@ -72,7 +69,7 @@ const HeroSection = () => {
             {/* Background cards */}
             <div className="absolute w-[220px] h-[300px] transform -rotate-6 -translate-x-8 z-10 animate-fade-in" style={{ animationDelay: "0.2s" }}>
               <img 
-                src="https://archives.bulbagarden.net/media/upload/thumb/2/21/025Pikachu.png/250px-025Pikachu.png" 
+                src="https://assets.pokemon.com/assets/cms2/img/cards/web/SWSH11/SWSH11_EN_122.png" 
                 alt="Pikachu Card" 
                 className="w-full h-full object-cover rounded-lg shadow-lg"
               />
@@ -81,7 +78,7 @@ const HeroSection = () => {
             
             <div className="absolute w-[220px] h-[300px] transform -rotate-12 -translate-x-20 translate-y-5 z-0 opacity-80 animate-fade-in" style={{ animationDelay: "0.4s" }}>
               <img 
-                src="https://archives.bulbagarden.net/media/upload/thumb/0/0d/143Snorlax.png/250px-143Snorlax.png" 
+                src="https://assets.pokemon.com/assets/cms2/img/cards/web/SM10/SM10_EN_173.png" 
                 alt="Snorlax Card" 
                 className="w-full h-full object-cover rounded-lg shadow-lg"
               />

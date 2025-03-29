@@ -1,6 +1,6 @@
 
 import { useState, useEffect } from "react";
-import { Eye, ChevronDown, ChevronUp, Search, CheckCircle, Filter, X, AlertTriangle } from "lucide-react";
+import { Eye, ChevronDown, ChevronUp, Search, CheckCircle, Filter, X, AlertTriangle, BarChart, Users, ShoppingBag, DollarSign, Activity } from "lucide-react";
 import { Order } from "@/lib/types";
 import Card, { CardHeader, CardTitle, CardContent } from "@/components/common/Card";
 import Button from "@/components/common/Button";
@@ -8,6 +8,7 @@ import Loader from "@/components/ui/Loader";
 import { fetchAllOrders, updateOrderStatus } from "@/lib/orderService";
 import { toast } from "sonner";
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
+import OrderStatistics from "@/components/admin/OrderStatistics";
 
 const Admin = () => {
   const [orders, setOrders] = useState<Order[]>([]);
@@ -101,6 +102,24 @@ const Admin = () => {
     }
   };
 
+  // Calculer les statistiques
+  const totalRevenue = orders.reduce((sum, order) => {
+    return order.status !== "cancelled" ? sum + order.totalPrice : sum;
+  }, 0);
+
+  const pendingOrders = orders.filter(order => order.status === "pending").length;
+  const completedOrders = orders.filter(order => order.status === "completed").length;
+  const cancelledOrders = orders.filter(order => order.status === "cancelled").length;
+  
+  const uniqueCustomers = new Set(orders.map(order => order.username)).size;
+  
+  const totalItems = orders.reduce((sum, order) => {
+    if (order.status !== "cancelled") {
+      return sum + order.items.reduce((itemSum, item) => itemSum + item.quantity, 0);
+    }
+    return sum;
+  }, 0);
+
   // Obtenez les cartes de la commande triées par série puis par numéro
   const getSortedCards = (order: Order) => {
     return [...order.items].sort((a, b) => {
@@ -139,20 +158,149 @@ const Admin = () => {
   };
 
   return (
-    <div className="min-h-screen pb-12">
+    <div className="min-h-screen pb-12 bg-muted/20">
       {/* Header section */}
       <div className="bg-card border-b">
         <div className="container mx-auto px-4 py-8">
           <h1 className="text-3xl font-bold">Administration</h1>
           <p className="text-muted-foreground mt-1">
-            Gestion des commandes
+            Gestion des commandes et suivi de l'activité
           </p>
         </div>
       </div>
 
       <div className="container mx-auto px-4 mt-8">
+        {/* Statistiques */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+          <Card>
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-muted-foreground">Chiffre d'affaires</p>
+                  <h3 className="text-2xl font-bold mt-1">{totalRevenue.toFixed(2)} €</h3>
+                </div>
+                <div className="p-3 bg-primary/10 text-primary rounded-full">
+                  <DollarSign size={24} />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+          
+          <Card>
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-muted-foreground">Commandes totales</p>
+                  <h3 className="text-2xl font-bold mt-1">{orders.length}</h3>
+                </div>
+                <div className="p-3 bg-indigo-500/10 text-indigo-500 rounded-full">
+                  <ShoppingBag size={24} />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+          
+          <Card>
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-muted-foreground">Clients uniques</p>
+                  <h3 className="text-2xl font-bold mt-1">{uniqueCustomers}</h3>
+                </div>
+                <div className="p-3 bg-amber-500/10 text-amber-500 rounded-full">
+                  <Users size={24} />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+          
+          <Card>
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-muted-foreground">Articles vendus</p>
+                  <h3 className="text-2xl font-bold mt-1">{totalItems}</h3>
+                </div>
+                <div className="p-3 bg-teal-500/10 text-teal-500 rounded-full">
+                  <BarChart size={24} />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+        
+        {/* Statistiques des commandes */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+          <Card className="lg:col-span-2">
+            <CardHeader>
+              <CardTitle>Analyse des commandes</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <OrderStatistics orders={orders} />
+            </CardContent>
+          </Card>
+          
+          <Card>
+            <CardHeader>
+              <CardTitle>Statut des commandes</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <div className="flex justify-between items-center">
+                  <div className="flex items-center gap-2">
+                    <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
+                    <span>En attente</span>
+                  </div>
+                  <span className="font-medium">{pendingOrders}</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <div className="flex items-center gap-2">
+                    <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+                    <span>Complétées</span>
+                  </div>
+                  <span className="font-medium">{completedOrders}</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <div className="flex items-center gap-2">
+                    <div className="w-3 h-3 bg-red-500 rounded-full"></div>
+                    <span>Annulées</span>
+                  </div>
+                  <span className="font-medium">{cancelledOrders}</span>
+                </div>
+              </div>
+              
+              <div className="mt-6 pt-6 border-t">
+                <div className="relative w-full h-4 bg-gray-200 rounded-full overflow-hidden">
+                  {orders.length > 0 && (
+                    <>
+                      <div 
+                        className="absolute top-0 left-0 h-full bg-yellow-500" 
+                        style={{ width: `${(pendingOrders / orders.length) * 100}%` }}
+                      ></div>
+                      <div 
+                        className="absolute top-0 left-0 h-full bg-green-500" 
+                        style={{ 
+                          width: `${(completedOrders / orders.length) * 100}%`,
+                          marginLeft: `${(pendingOrders / orders.length) * 100}%`
+                        }}
+                      ></div>
+                      <div 
+                        className="absolute top-0 left-0 h-full bg-red-500" 
+                        style={{ 
+                          width: `${(cancelledOrders / orders.length) * 100}%`,
+                          marginLeft: `${((pendingOrders + completedOrders) / orders.length) * 100}%`
+                        }}
+                      ></div>
+                    </>
+                  )}
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
         {/* Filters */}
-        <div className="mb-6 flex flex-col sm:flex-row gap-4">
+        <div className="mb-6 flex flex-col sm:flex-row gap-4 bg-card p-4 rounded-lg border">
           <div className="relative flex-1">
             <input
               type="text"
@@ -194,7 +342,13 @@ const Admin = () => {
             {filteredOrders.map((order) => (
               <Card key={order.id} className="overflow-hidden">
                 <div
-                  className="flex flex-col sm:flex-row sm:items-center justify-between p-4 cursor-pointer"
+                  className={`flex flex-col sm:flex-row sm:items-center justify-between p-4 cursor-pointer ${
+                    order.status === "pending" 
+                      ? "border-l-4 border-l-yellow-500" 
+                      : order.status === "completed"
+                      ? "border-l-4 border-l-green-500"
+                      : "border-l-4 border-l-red-500"
+                  }`}
                   onClick={() => toggleOrderExpansion(order.id)}
                 >
                   <div className="space-y-1">
@@ -269,7 +423,14 @@ const Admin = () => {
                                         className="w-14 h-20 object-cover rounded"
                                       />
                                     </TableCell>
-                                    <TableCell className="font-medium">{item.card.nameFr || item.card.name}</TableCell>
+                                    <TableCell className="font-medium">
+                                      {item.card.nameFr || item.card.name}
+                                      {item.card.isReverse && (
+                                        <span className="ml-2 text-xs bg-purple-500/20 text-purple-700 dark:text-purple-300 px-2 py-0.5 rounded">
+                                          Reverse
+                                        </span>
+                                      )}
+                                    </TableCell>
                                     <TableCell>{item.card.number}</TableCell>
                                     <TableCell className="text-right">{item.quantity}</TableCell>
                                     <TableCell className="text-right">{(item.card.price * item.quantity).toFixed(2)} €</TableCell>

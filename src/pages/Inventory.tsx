@@ -26,7 +26,7 @@ const Inventory = () => {
   const [loading, setLoading] = useState(true);
   const [totalCards, setTotalCards] = useState(0);
   const [page, setPage] = useState(1);
-  const [pageSize] = useState(24);
+  const [pageSize] = useState(100);
   const [sortOption, setSortOption] = useState<SortOption>("number-asc");
   const [viewMode, setViewMode] = useState<ViewMode>("grid");
   const [filterOptions, setFilterOptions] = useState<FilterOptions>({
@@ -154,7 +154,11 @@ const Inventory = () => {
       className="bg-card border rounded-md p-4 flex flex-col sm:flex-row gap-4 hover:shadow-md transition-shadow"
     >
       <div className="w-28 h-40 sm:w-32 sm:h-44 flex-shrink-0 relative">
-        <div className={`absolute inset-0 rounded ${card.isReverse ? 'bg-gradient-to-br from-purple-400/20 to-blue-500/20' : ''}`}></div>
+        <div className={`absolute inset-0 rounded ${
+          card.isReverse 
+            ? 'bg-gradient-to-br from-purple-400/20 via-blue-500/20 to-purple-400/20' 
+            : ''
+        }`}></div>
         <img
           src={card.image}
           alt={card.nameFr || card.name}
@@ -168,6 +172,11 @@ const Inventory = () => {
           <span className="bg-black/70 text-white text-xs px-2 py-0.5 rounded-full">
             # {card.number}
           </span>
+          {card.isReverse && (
+            <span className="bg-purple-500 text-white text-xs px-2 py-0.5 rounded-full">
+              Reverse
+            </span>
+          )}
         </div>
       </div>
       <div className="flex-grow flex flex-col justify-between">
@@ -799,7 +808,11 @@ const Inventory = () => {
                       className="overflow-hidden h-full transition-all border dark:border-gray-700"
                     >
                       <div className="aspect-[3/4] relative overflow-hidden">
-                        <div className={`absolute inset-0 ${card.isReverse ? 'bg-gradient-to-br from-purple-400/20 to-blue-500/20' : ''}`}></div>
+                        <div className={`absolute inset-0 ${
+                          card.isReverse 
+                            ? 'bg-gradient-to-br from-purple-400/20 via-blue-500/20 to-purple-400/20' 
+                            : ''
+                        }`}></div>
                         <div className="absolute top-2 right-2 z-20 flex flex-col gap-1 items-end">
                           <span className="bg-yellow-500 text-black text-xs px-2 py-0.5 rounded-full font-medium">
                             {card.rarity}
@@ -807,6 +820,11 @@ const Inventory = () => {
                           <span className="bg-black/70 text-white text-xs px-2 py-0.5 rounded-full">
                             # {card.number}
                           </span>
+                          {card.isReverse && (
+                            <span className="bg-purple-500 text-white text-xs px-2 py-0.5 rounded-full">
+                              Reverse
+                            </span>
+                          )}
                         </div>
                         <img
                           src={card.image}
@@ -836,6 +854,12 @@ const Inventory = () => {
                             }`}></span>
                             {card.language}
                           </span>
+                          {card.isReverse && (
+                            <span className="text-xs bg-purple-500/20 text-purple-700 dark:text-purple-300 px-2 py-1 rounded flex items-center gap-1">
+                              <span className="w-2 h-2 bg-purple-500 rounded-full"></span>
+                              Reverse
+                            </span>
+                          )}
                         </div>
                       </CardContent>
                       <CardFooter className="pt-3 border-t flex-col items-stretch gap-3">
