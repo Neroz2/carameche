@@ -1,8 +1,10 @@
-
 import { PokemonCard, PokemonSeries, FilterOptions, SortOption } from "@/lib/types";
 
 // Use Vite's import.meta.env instead of process.env
 const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:3001";
+const CARDTRADER_API_URL = "https://api.cardtrader.com/api/v2/products/export";
+const CARDTRADER_API_KEY = "eyJhbGciOiJSUzI1NiJ9.eyJpc3MiOiJjYXJkdHJhZGVyLXByb2R1Y3Rpb24iLCJzdWIiOiJhcHA6MTM5MzgiLCJhdWQiOiJhcHA6MTM5MzgiLCJleHAiOjQ4OTU2MzQ3MTcsImp0aSI6IjQxMjA3NmNjLTcyZTEtNDljOC1iODA2LTE3OTJiNmU3N2JhMyIsImlhdCI6MTczOTk2MTExNywibmFtZSI6Ik5lcm96YnJpY2tzIEFwcCAyMDI1MDIwODE3NDkxOSJ9.PkkEXit3MvxmVij_e5Eyz55k_3EYgQF-2ln9goSfMbQD3mIpDVrSkQa010BfnF9IR1L8fvswAyxk56qiUr2LKm2KXX0iKAvVRR373A3XEDwgNtGGBBAR-rxh8raL1hW8e4AH_bps1tVFTrdZ_W-Odg5egSxLFIxnLgi0a9It5KVeVkjdgLmxYuaCXspgml9TXfgJcJ2GH62izvB5eUsAj4NhobpH5q_Pyfbyw2cJu4HmilQjBSOm4NsmRW7Nd692tNT2semj1Oh1UqV1xel2WewtLaWlUAVHYt2LSMWrEw_kx9Yjk9Kz-rM67tk0nXosKklnIigJpcrmRUXf-O7qJA";
+const IMAGE_BASE_URL = "https://www.cardtrader.com/images/blueprint/";
 
 // Données de démonstration pour les séries Pokémon
 const MOCK_SERIES: PokemonSeries[] = [
@@ -197,6 +199,27 @@ const MOCK_EXPANSIONS = [
   { id: 5, name: "Gym Heroes", seriesId: 2 }
 ];
 
+// Fonction pour mapper les données de l'API CardTrader au format attendu par l'application
+const mapCardTraderToAppFormat = (cardData: any): PokemonCard => {
+  return {
+    id: cardData.id.toString(),
+    name: cardData.name_en,
+    nameEn: cardData.name_en,
+    nameFr: cardData.name_en,
+    number: cardData.properties_hash.collector_number || "",
+    series: "CardTrader",
+    rarity: cardData.properties_hash.pokemon_rarity || "Common",
+    image: `${IMAGE_BASE_URL}${cardData.blueprint_id}.jpg`,
+    price: cardData.price_cents / 100,
+    stock: cardData.quantity,
+    condition: cardData.properties_hash.condition || "Near Mint",
+    language: cardData.properties_hash.pokemon_language?.toUpperCase() || "EN",
+    isHolo: false,
+    isReverse: cardData.properties_hash.pokemon_reverse || false,
+    isPromo: false
+  };
+};
+
 export const fetchPokemonSeries = async (): Promise<PokemonSeries[]> => {
   try {
     console.log("Tentative de récupération des séries depuis l'API...");
@@ -246,109 +269,118 @@ export const fetchPokemonCards = async (
   sortOption: SortOption = 'number-asc'
 ): Promise<{ cards: PokemonCard[], total: number }> => {
   try {
-    console.log("Tentative de récupération des cartes depuis l'API...");
-    let url = `${API_BASE_URL}/cards?_page=${page}&_limit=${limit}`;
+    console.log("Tentative de récupération des cartes depuis CardTrader API...");
+    const headers = {
+      "Authorization": `Bearer ${CARDTRADER_API_KEY}`
+    };
 
-    // Use series filter if provided
-    if (seriesFilter) {
-      url += `&series=${encodeURIComponent(seriesFilter)}`;
-    } else if (options.series && options.series.length > 0) {
-      options.series.forEach(series => {
-        url += `&series=${encodeURIComponent(series)}`;
-      });
-    }
-
-    // Add search query
-    if (options.search) {
-      url += `&q=${encodeURIComponent(options.search)}`;
-    }
-
-    // Add rarity filter
-    if (options.rarity && options.rarity.length > 0) {
-      options.rarity.forEach(rarity => {
-        url += `&rarity=${encodeURIComponent(rarity)}`;
-      });
-    }
-
-    // Add price range filter
-    if (options.priceMin !== undefined) {
-      url += `&price_gte=${options.priceMin}`;
-    }
-    if (options.priceMax !== undefined) {
-      url += `&price_lte=${options.priceMax}`;
-    }
-
-    // Add condition filter
-    if (options.condition && options.condition.length > 0) {
-      options.condition.forEach(condition => {
-        url += `&condition=${encodeURIComponent(condition)}`;
-      });
-    }
-
-    // Add language filter
-    if (options.language && options.language.length > 0) {
-      options.language.forEach(language => {
-        url += `&language=${encodeURIComponent(language)}`;
-      });
-    }
-
-    // Add isHolo filter
-    if (options.isHolo !== null) {
-      url += `&isHolo=${options.isHolo}`;
-    }
-
-     // Add isReverse filter
-     if (options.isReverse !== null) {
-      url += `&isReverse=${options.isReverse}`;
-    }
-
-    // Add isPromo filter
-    if (options.isPromo !== null) {
-      url += `&isPromo=${options.isPromo}`;
-    }
-
-    const response = await fetch(url);
+    const response = await fetch(CARDTRADER_API_URL, { headers });
+    
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
 
-    const cards: PokemonCard[] = await response.json();
-    const totalCount = parseInt(response.headers.get('X-Total-Count') || cards.length.toString(), 10);
+    const data = await response.json();
+    console.log("Données récupérées de CardTrader:", data);
 
-    // Sort the cards based on the sortOption
-    let sortedCards = [...cards];
+    if (!Array.isArray(data)) {
+      throw new Error("Format de données CardTrader inattendu");
+    }
+
+    // Convertir les données de CardTrader au format de notre application
+    let allCards = data.map(mapCardTraderToAppFormat);
+    
+    // Filtrer les cartes selon les critères
+    let filteredCards = [...allCards];
+    
+    // Appliquer le filtre de série
+    if (seriesFilter) {
+      filteredCards = filteredCards.filter(card => card.series === seriesFilter);
+    } else if (options.series && options.series.length > 0) {
+      filteredCards = filteredCards.filter(card => options.series.includes(card.series));
+    }
+    
+    // Appliquer la recherche
+    if (options.search) {
+      const searchLower = options.search.toLowerCase();
+      filteredCards = filteredCards.filter(card => 
+        card.name.toLowerCase().includes(searchLower) || 
+        card.nameFr.toLowerCase().includes(searchLower) ||
+        card.number.toLowerCase().includes(searchLower)
+      );
+    }
+    
+    // Appliquer le filtre de rareté
+    if (options.rarity && options.rarity.length > 0) {
+      filteredCards = filteredCards.filter(card => options.rarity.includes(card.rarity));
+    }
+    
+    // Appliquer le filtre de prix
+    if (options.priceMin !== undefined) {
+      filteredCards = filteredCards.filter(card => card.price >= options.priceMin);
+    }
+    if (options.priceMax !== undefined) {
+      filteredCards = filteredCards.filter(card => card.price <= options.priceMax);
+    }
+    
+    // Appliquer le filtre d'état
+    if (options.condition && options.condition.length > 0) {
+      filteredCards = filteredCards.filter(card => options.condition.includes(card.condition));
+    }
+    
+    // Appliquer le filtre de langue
+    if (options.language && options.language.length > 0) {
+      filteredCards = filteredCards.filter(card => options.language.includes(card.language));
+    }
+    
+    // Appliquer les filtres spéciaux
+    if (options.isHolo !== null) {
+      filteredCards = filteredCards.filter(card => card.isHolo === options.isHolo);
+    }
+    if (options.isReverse !== null) {
+      filteredCards = filteredCards.filter(card => card.isReverse === options.isReverse);
+    }
+    if (options.isPromo !== null) {
+      filteredCards = filteredCards.filter(card => card.isPromo === options.isPromo);
+    }
+    
+    // Trier les cartes
     switch (sortOption) {
       case "name-asc":
-        sortedCards.sort((a, b) => a.name.localeCompare(b.name));
+        filteredCards.sort((a, b) => a.name.localeCompare(b.name));
         break;
       case "name-desc":
-        sortedCards.sort((a, b) => b.name.localeCompare(a.name));
+        filteredCards.sort((a, b) => b.name.localeCompare(a.name));
         break;
       case "number-asc":
-        sortedCards.sort((a, b) => a.number.localeCompare(b.number));
+        filteredCards.sort((a, b) => a.number.localeCompare(b.number));
         break;
       case "number-desc":
-        sortedCards.sort((a, b) => b.number.localeCompare(a.number));
+        filteredCards.sort((a, b) => b.number.localeCompare(a.number));
         break;
       case "price-asc":
-        sortedCards.sort((a, b) => a.price - b.price);
+        filteredCards.sort((a, b) => a.price - b.price);
         break;
       case "price-desc":
-        sortedCards.sort((a, b) => b.price - a.price);
+        filteredCards.sort((a, b) => b.price - a.price);
         break;
       default:
         break;
     }
     
+    // Paginer les résultats
+    const startIndex = (page - 1) * limit;
+    const paginatedCards = filteredCards.slice(startIndex, startIndex + limit);
+    
     return {
-      cards: sortedCards,
-      total: totalCount
+      cards: paginatedCards,
+      total: filteredCards.length
     };
   } catch (error) {
-    console.error("Error fetching Pokemon cards:", error);
+    console.error("Error fetching Pokemon cards from CardTrader:", error);
     console.log("Utilisation des données de démonstration pour les cartes");
     
-    // Filtrer les cartes mockées selon les critères
+    // Utiliser les données mockées en cas d'erreur
     let filteredCards = [...MOCK_CARDS];
     
     // Appliquer le filtre de série
@@ -439,17 +471,33 @@ export const fetchPokemonCards = async (
 
 export const fetchPokemonCardById = async (id: string): Promise<PokemonCard | null> => {
   try {
-    console.log(`Tentative de récupération de la carte ${id} depuis l'API...`);
-    const response = await fetch(`${API_BASE_URL}/cards/${id}`);
+    console.log(`Tentative de récupération de la carte ${id} depuis CardTrader API...`);
+    const headers = {
+      "Authorization": `Bearer ${CARDTRADER_API_KEY}`
+    };
+
+    const response = await fetch(CARDTRADER_API_URL, { headers });
+    
     if (!response.ok) {
-      if (response.status === 404) {
-        return null;
-      }
       throw new Error(`HTTP error! status: ${response.status}`);
     }
-    return await response.json();
+
+    const data = await response.json();
+    
+    if (!Array.isArray(data)) {
+      throw new Error("Format de données CardTrader inattendu");
+    }
+
+    // Chercher la carte par ID
+    const cardData = data.find(card => card.id.toString() === id);
+    
+    if (!cardData) {
+      return null;
+    }
+    
+    return mapCardTraderToAppFormat(cardData);
   } catch (error) {
-    console.error(`Error fetching Pokemon card with id ${id}:`, error);
+    console.error(`Error fetching Pokemon card with id ${id} from CardTrader:`, error);
     console.log("Utilisation des données de démonstration pour la carte");
     
     // Chercher la carte dans les données mockées
