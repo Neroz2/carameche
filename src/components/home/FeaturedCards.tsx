@@ -31,9 +31,16 @@ const FeaturedCards = () => {
           1,  // First page
           10, // Limit to 10 cards
           { 
-            priceMin: 10, // Cards with certain value
-            isHolo: true, // Only holos for valuable cards
+            search: '',     // Add required property
+            series: [],     // Add required property
+            rarity: [],     // Add required property
+            priceMin: 10,   // Cards with certain value
+            priceMax: 1000, // Add required property
+            condition: [],  // Add required property
             language: ["FR"], // Prefer French cards
+            isHolo: true,   // Only holos for valuable cards
+            isReverse: null, // Add required property
+            isPromo: null,  // Add required property
           }
         );
         setFeaturedCards(result.cards);
