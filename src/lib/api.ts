@@ -1,3 +1,4 @@
+
 import { PokemonCard, PokemonSeries, FilterOptions, SortOption } from "@/lib/types";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
@@ -15,7 +16,23 @@ export const fetchPokemonSeries = async (): Promise<PokemonSeries[]> => {
   }
 };
 
+export const fetchExpansions = async (): Promise<any[]> => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/expansions`);
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    return await response.json();
+  } catch (error) {
+    console.error("Error fetching Pokemon expansions:", error);
+    return []; // Return empty array on error
+  }
+};
+
 export const fetchPokemonCards = async (
+  seriesFilter: string = '',
+  page: number = 1,
+  limit: number = 100,
   options: FilterOptions = {
     search: '',
     series: [],
@@ -28,23 +45,23 @@ export const fetchPokemonCards = async (
     isReverse: null,
     isPromo: null,
   },
-  page: number = 1,
-  limit: number = 100, // Passage à 100 cartes par page comme demandé
   sortOption: SortOption = 'number-asc'
-): Promise<PokemonCard[]> => {
+): Promise<{ cards: PokemonCard[], total: number }> => {
   try {
     let url = `${API_BASE_URL}/cards?_page=${page}&_limit=${limit}`;
+
+    // Use series filter if provided
+    if (seriesFilter) {
+      url += `&series=${encodeURIComponent(seriesFilter)}`;
+    } else if (options.series && options.series.length > 0) {
+      options.series.forEach(series => {
+        url += `&series=${encodeURIComponent(series)}`;
+      });
+    }
 
     // Add search query
     if (options.search) {
       url += `&q=${encodeURIComponent(options.search)}`;
-    }
-
-    // Add series filter
-    if (options.series && options.series.length > 0) {
-      options.series.forEach(series => {
-        url += `&series=${encodeURIComponent(series)}`;
-      });
     }
 
     // Add rarity filter
@@ -96,7 +113,8 @@ export const fetchPokemonCards = async (
       throw new Error(`HTTP error! status: ${response.status}`);
     }
 
-    let cards: PokemonCard[] = await response.json();
+    const cards: PokemonCard[] = await response.json();
+    const totalCount = parseInt(response.headers.get('X-Total-Count') || cards.length.toString(), 10);
 
     // Sort the cards based on the sortOption
     let sortedCards = [...cards];
@@ -123,11 +141,16 @@ export const fetchPokemonCards = async (
         break;
     }
     
-    // Return the filtered and sorted cards, with pagination
-    return sortedCards.slice((page - 1) * limit, page * limit);
+    return {
+      cards: sortedCards,
+      total: totalCount
+    };
   } catch (error) {
     console.error("Error fetching Pokemon cards:", error);
-    throw error;
+    return {
+      cards: [],
+      total: 0
+    };
   }
 };
 
