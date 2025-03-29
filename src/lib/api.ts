@@ -1,507 +1,327 @@
-import { PokemonCard, PokemonSeries, FilterOptions, SortOption } from "@/lib/types";
 
-// Use Vite's import.meta.env instead of process.env
-const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:3001";
-const CARDTRADER_API_URL = "https://api.cardtrader.com/api/v2/products/export";
-const CARDTRADER_API_KEY = "eyJhbGciOiJSUzI1NiJ9.eyJpc3MiOiJjYXJkdHJhZGVyLXByb2R1Y3Rpb24iLCJzdWIiOiJhcHA6MTM5MzgiLCJhdWQiOiJhcHA6MTM5MzgiLCJleHAiOjQ4OTU2MzQ3MTcsImp0aSI6IjQxMjA3NmNjLTcyZTEtNDljOC1iODA2LTE3OTJiNmU3N2JhMyIsImlhdCI6MTczOTk2MTExNywibmFtZSI6Ik5lcm96YnJpY2tzIEFwcCAyMDI1MDIwODE3NDkxOSJ9.PkkEXit3MvxmVij_e5Eyz55k_3EYgQF-2ln9goSfMbQD3mIpDVrSkQa010BfnF9IR1L8fvswAyxk56qiUr2LKm2KXX0iKAvVRR373A3XEDwgNtGGBBAR-rxh8raL1hW8e4AH_bps1tVFTrdZ_W-Odg5egSxLFIxnLgi0a9It5KVeVkjdgLmxYuaCXspgml9TXfgJcJ2GH62izvB5eUsAj4NhobpH5q_Pyfbyw2cJu4HmilQjBSOm4NsmRW7Nd692tNT2semj1Oh1UqV1xel2WewtLaWlUAVHYt2LSMWrEw_kx9Yjk9Kz-rM67tk0nXosKklnIigJpcrmRUXf-O7qJA";
+import { PokemonSeries, PokemonCard, FilterOptions } from './types';
+
+const CARDTRADER_API_TOKEN = "eyJhbGciOiJSUzI1NiJ9.eyJpc3MiOiJjYXJkdHJhZGVyLXByb2R1Y3Rpb24iLCJzdWIiOiJhcHA6MTM5MzgiLCJhdWQiOiJhcHA6MTM5MzgiLCJleHAiOjQ4OTU2MzQ3MTcsImp0aSI6IjQxMjA3NmNjLTcyZTEtNDljOC1iODA2LTE3OTJiNmU3N2JhMyIsImlhdCI6MTczOTk2MTExNywibmFtZSI6Ik5lcm96YnJpY2tzIEFwcCAyMDI1MDIwODE3NDkxOSJ9.PkkEXit3MvxmVij_e5Eyz55k_3EYgQF-2ln9goSfMbQD3mIpDVrSkQa010BfnF9IR1L8fvswAyxk56qiUr2LKm2KXX0iKAvVRR373A3XEDwgNtGGBBAR-rxh8raL1hW8e4AH_bps1tVFTrdZ_W-Odg5egSxLFIxnLgi0a9It5KVeVkjdgLmxYuaCXspgml9TXfgJcJ2GH62izvB5eUsAj4NhobpH5q_Pyfbyw2cJu4HmilQjBSOm4NsmRW7Nd692tNT2semj1Oh1UqV1xel2WewtLaWlUAVHYt2LSMWrEw_kx9Yjk9Kz-rM67tk0nXosKklnIigJpcrmRUXf-O7qJA";
 const IMAGE_BASE_URL = "https://www.cardtrader.com/images/blueprint/";
 
-// Données de démonstration pour les séries Pokémon
-const MOCK_SERIES: PokemonSeries[] = [
-  {
-    id: "1",
-    name: "Base Set",
-    logo: "/placeholder.svg",
-    symbol: "/placeholder.svg",
-    releaseDate: "1999-01-09",
-    totalCards: 102
-  },
-  {
-    id: "2",
-    name: "Jungle",
-    logo: "/placeholder.svg",
-    symbol: "/placeholder.svg",
-    releaseDate: "1999-06-16",
-    totalCards: 64
-  },
-  {
-    id: "3",
-    name: "Fossil",
-    logo: "/placeholder.svg",
-    symbol: "/placeholder.svg",
-    releaseDate: "1999-10-10",
-    totalCards: 62
-  },
-  {
-    id: "4",
-    name: "Team Rocket",
-    logo: "/placeholder.svg",
-    symbol: "/placeholder.svg",
-    releaseDate: "2000-04-24",
-    totalCards: 82
-  },
-  {
-    id: "5",
-    name: "Gym Heroes",
-    logo: "/placeholder.svg",
-    symbol: "/placeholder.svg",
-    releaseDate: "2000-08-14",
-    totalCards: 132
-  }
-];
-
-// Données de démonstration pour les cartes Pokémon
-const MOCK_CARDS: PokemonCard[] = [
-  {
-    id: "1",
-    name: "Pikachu",
-    nameEn: "Pikachu",
-    nameFr: "Pikachu",
-    number: "25",
-    series: "Base Set",
-    rarity: "Common",
-    image: "https://assets.pokemon.com/assets/cms2/img/cards/web/SM9/SM9_EN_55.png",
-    price: 9.99,
-    stock: 15,
-    condition: "Near Mint",
-    language: "FR",
-    isHolo: false,
-    isReverse: false,
-    isPromo: false
-  },
-  {
-    id: "2",
-    name: "Charizard",
-    nameEn: "Charizard",
-    nameFr: "Dracaufeu",
-    number: "4",
-    series: "Base Set",
-    rarity: "Rare",
-    image: "https://assets.pokemon.com/assets/cms2/img/cards/web/SM9/SM9_EN_14.png",
-    price: 299.99,
-    stock: 2,
-    condition: "Excellent",
-    language: "FR",
-    isHolo: true,
-    isReverse: false,
-    isPromo: false
-  },
-  {
-    id: "3",
-    name: "Blastoise",
-    nameEn: "Blastoise",
-    nameFr: "Tortank",
-    number: "9",
-    series: "Base Set",
-    rarity: "Rare",
-    image: "https://assets.pokemon.com/assets/cms2/img/cards/web/SM9/SM9_EN_25.png",
-    price: 189.99,
-    stock: 3,
-    condition: "Near Mint",
-    language: "FR",
-    isHolo: true,
-    isReverse: false,
-    isPromo: false
-  },
-  {
-    id: "4",
-    name: "Venusaur",
-    nameEn: "Venusaur",
-    nameFr: "Florizarre",
-    number: "15",
-    series: "Jungle",
-    rarity: "Rare",
-    image: "https://assets.pokemon.com/assets/cms2/img/cards/web/SM9/SM9_EN_1.png",
-    price: 159.99,
-    stock: 4,
-    condition: "Near Mint",
-    language: "FR",
-    isHolo: true,
-    isReverse: false,
-    isPromo: false
-  },
-  {
-    id: "5",
-    name: "Mewtwo",
-    nameEn: "Mewtwo",
-    nameFr: "Mewtwo",
-    number: "10",
-    series: "Base Set",
-    rarity: "Rare",
-    image: "https://assets.pokemon.com/assets/cms2/img/cards/web/SM9/SM9_EN_75.png",
-    price: 199.99,
-    stock: 1,
-    condition: "Mint",
-    language: "FR",
-    isHolo: true,
-    isReverse: false,
-    isPromo: false
-  },
-  {
-    id: "6",
-    name: "Jolteon",
-    nameEn: "Jolteon",
-    nameFr: "Voltali",
-    number: "20",
-    series: "Jungle",
-    rarity: "Rare",
-    image: "https://assets.pokemon.com/assets/cms2/img/cards/web/SM9/SM9_EN_45.png",
-    price: 89.99,
-    stock: 6,
-    condition: "Excellent",
-    language: "FR",
-    isHolo: true,
-    isReverse: false,
-    isPromo: false
-  },
-  {
-    id: "7",
-    name: "Snorlax",
-    nameEn: "Snorlax",
-    nameFr: "Ronflex",
-    number: "27",
-    series: "Jungle",
-    rarity: "Rare",
-    image: "https://assets.pokemon.com/assets/cms2/img/cards/web/SM9/SM9_EN_143.png",
-    price: 79.99,
-    stock: 4,
-    condition: "Near Mint",
-    language: "FR",
-    isHolo: true,
-    isReverse: false,
-    isPromo: false
-  },
-  {
-    id: "8",
-    name: "Alakazam",
-    nameEn: "Alakazam",
-    nameFr: "Alakazam",
-    number: "1",
-    series: "Base Set",
-    rarity: "Rare",
-    image: "https://assets.pokemon.com/assets/cms2/img/cards/web/SM9/SM9_EN_65.png",
-    price: 129.99,
-    stock: 3,
-    condition: "Excellent",
-    language: "FR",
-    isHolo: true,
-    isReverse: false,
-    isPromo: false
-  },
-];
-
-// Données de démonstration pour les expansions Pokémon
-const MOCK_EXPANSIONS = [
-  { id: 1, name: "Base", seriesId: 1 },
-  { id: 2, name: "Jungle", seriesId: 1 },
-  { id: 3, name: "Fossil", seriesId: 1 },
-  { id: 4, name: "Team Rocket", seriesId: 2 },
-  { id: 5, name: "Gym Heroes", seriesId: 2 }
-];
-
-// Fonction pour mapper les données de l'API CardTrader au format attendu par l'application
-const mapCardTraderToAppFormat = (cardData: any): PokemonCard => {
-  return {
-    id: cardData.id.toString(),
-    name: cardData.name_en,
-    nameEn: cardData.name_en,
-    nameFr: cardData.name_en,
-    number: cardData.properties_hash.collector_number || "",
-    series: "CardTrader",
-    rarity: cardData.properties_hash.pokemon_rarity || "Common",
-    image: `${IMAGE_BASE_URL}${cardData.blueprint_id}.jpg`,
-    price: cardData.price_cents / 100,
-    stock: cardData.quantity,
-    condition: cardData.properties_hash.condition || "Near Mint",
-    language: cardData.properties_hash.pokemon_language?.toUpperCase() || "EN",
-    isHolo: false,
-    isReverse: cardData.properties_hash.pokemon_reverse || false,
-    isPromo: false
-  };
+const conditionMapping = {
+  'Near Mint': 'Near Mint',
+  'Excellent': 'Excellent',
+  'Good': 'Good',
+  'Light Played': 'Light Played',
+  'Played': 'Played',
+  'Poor': 'Played',
 };
+
+const rarityMapping = {
+  'Common': 'Common',
+  'Uncommon': 'Uncommon',
+  'Rare': 'Rare',
+  'Holo Rare': 'Ultra Rare',
+  'Ultra Rare': 'Ultra Rare',
+  'Secret Rare': 'Secret Rare',
+  'Promo': 'Promo',
+};
+
+// Ceci sera remplacé par les données de l'API
+const expansionMapping: Record<number, string> = {
+  2152: 'Silver Lance',
+  2153: 'Jet Black Spirit',
+  2154: 'Eevee Heroes',
+  2155: 'Fusion Strike',
+  2156: 'Evolving Skies',
+  2157: 'Chilling Reign',
+  2158: 'Battle Styles',
+  2159: 'Shining Fates',
+  2160: 'Vivid Voltage',
+  2161: 'Champions Path',
+  2162: 'Darkness Ablaze',
+  2163: 'Rebel Clash',
+  2164: 'Sword & Shield',
+  2165: 'Cosmic Eclipse',
+  2166: 'Hidden Fates',
+  2167: 'Unified Minds',
+  2168: 'Unbroken Bonds',
+  2169: 'Detective Pikachu',
+  2170: 'Team Up',
+};
+
+// Stockage des expansions récupérées de l'API
+let expansionsData: Record<number, string> = {};
+
+// Fonction pour récupérer toutes les expansions depuis l'API
+export const fetchExpansions = async (): Promise<Record<number, string>> => {
+  if (Object.keys(expansionsData).length > 0) {
+    return expansionsData;
+  }
+
+  try {
+    const response = await fetch('https://api.cardtrader.com/api/v2/expansions', {
+      headers: {
+        'Authorization': `Bearer ${CARDTRADER_API_TOKEN}`
+      }
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      
+      // Création d'un mapping des IDs vers les noms
+      expansionsData = data.reduce((acc: Record<number, string>, expansion: any) => {
+        acc[expansion.id] = expansion.name;
+        return acc;
+      }, {});
+      
+      return expansionsData;
+    } else {
+      console.error('Échec de la récupération des expansions CardTrader');
+      return expansionMapping; // Fallback au mapping statique
+    }
+  } catch (error) {
+    console.error('Erreur lors de la récupération des expansions:', error);
+    return expansionMapping; // Fallback au mapping statique
+  }
+};
+
+// Fonction pour obtenir le nom d'une expansion par son ID
+export const getExpansionName = async (expansionId: number): Promise<string> => {
+  const expansions = await fetchExpansions();
+  return expansions[expansionId] || 'Unknown Series';
+};
+
+const translationCache: Record<string, string> = {};
+
+const transformCardTraderData = async (data: any[]): Promise<PokemonCard[]> => {
+  // Récupérer toutes les expansions dès le début
+  const expansions = await fetchExpansions();
+  
+  return Promise.all(data.map(async (item) => {
+    const id = `card-${item.id}`;
+    const name = item.name_en;
+    const number = item.properties_hash.collector_number || 'N/A';
+    const expansionId = item.expansion?.id;
+    const series = expansions[expansionId] || 'Unknown Series';
+    const rarity = rarityMapping[item.properties_hash.pokemon_rarity] || 'Common';
+    const condition = conditionMapping[item.properties_hash.condition] || 'Near Mint';
+    const price = item.price_cents / 100;
+    const stock = item.quantity;
+    const language = item.properties_hash.pokemon_language?.toUpperCase() || 'EN';
+    const isHolo = !!item.properties_hash.pokemon_holo;
+    const isReverse = !!item.properties_hash.pokemon_reverse;
+    const isPromo = rarity === 'Promo';
+    
+    const image = `${IMAGE_BASE_URL}${item.blueprint_id}.jpg`;
+    
+    return {
+      id,
+      name,
+      nameEn: name,
+      nameFr: name,
+      number,
+      series,
+      rarity,
+      image,
+      price,
+      stock,
+      condition,
+      language,
+      isHolo,
+      isReverse,
+      isPromo,
+      expansionId
+    };
+  }));
+};
+
+const extractUniqueSeries = (cards: PokemonCard[]): PokemonSeries[] => {
+  const seriesMap = new Map<string, PokemonSeries>();
+  
+  cards.forEach(card => {
+    if (!seriesMap.has(card.series)) {
+      seriesMap.set(card.series, {
+        id: card.expansionId?.toString() || card.series.toLowerCase().replace(/\s+/g, '-'),
+        name: card.series,
+        logo: `https://tcg.pokemon.com/assets/img/expansions/${card.series.toLowerCase().replace(/\s+/g, '-')}/logos/fr-fr/logo.png`,
+        symbol: `https://tcg.pokemon.com/assets/img/expansions/${card.series.toLowerCase().replace(/\s+/g, '-')}/symbols/symbol.png`,
+        releaseDate: new Date().toISOString().split('T')[0],
+        totalCards: 0
+      });
+    }
+  });
+  
+  cards.forEach(card => {
+    const series = seriesMap.get(card.series);
+    if (series) {
+      series.totalCards += 1;
+    }
+  });
+  
+  return Array.from(seriesMap.values());
+};
+
+let cachedCards: PokemonCard[] = [];
+let cachedSeries: PokemonSeries[] = [];
 
 export const fetchPokemonSeries = async (): Promise<PokemonSeries[]> => {
-  try {
-    console.log("Tentative de récupération des séries depuis l'API...");
-    const response = await fetch(`${API_BASE_URL}/series`);
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    return await response.json();
-  } catch (error) {
-    console.error("Error fetching Pokemon series:", error);
-    console.log("Utilisation des données de démonstration pour les séries");
-    return MOCK_SERIES;
+  if (cachedSeries.length > 0) {
+    return cachedSeries;
   }
-};
-
-export const fetchExpansions = async (): Promise<any[]> => {
-  try {
-    console.log("Tentative de récupération des expansions depuis l'API...");
-    const response = await fetch(`${API_BASE_URL}/expansions`);
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    return await response.json();
-  } catch (error) {
-    console.error("Error fetching Pokemon expansions:", error);
-    console.log("Utilisation des données de démonstration pour les expansions");
-    return MOCK_EXPANSIONS;
-  }
+  
+  const { cards } = await fetchPokemonCards();
+  const series = extractUniqueSeries(cards);
+  cachedSeries = series;
+  return series;
 };
 
 export const fetchPokemonCards = async (
-  seriesFilter: string = '',
+  seriesFilter?: string,
   page: number = 1,
-  limit: number = 100,
-  options: FilterOptions = {
-    search: '',
-    series: [],
-    rarity: [],
-    priceMin: 0,
-    priceMax: 1000,
-    condition: [],
-    language: [],
-    isHolo: null,
-    isReverse: null,
-    isPromo: null,
-  },
-  sortOption: SortOption = 'number-asc'
+  pageSize: number = 24,
+  filterOptions?: Partial<FilterOptions>
 ): Promise<{ cards: PokemonCard[], total: number }> => {
-  try {
-    console.log("Tentative de récupération des cartes depuis CardTrader API...");
-    const headers = {
-      "Authorization": `Bearer ${CARDTRADER_API_KEY}`
+  if (cachedCards.length > 0 && !seriesFilter && !filterOptions) {
+    const start = (page - 1) * pageSize;
+    const end = start + pageSize;
+    return { 
+      cards: cachedCards.slice(start, end), 
+      total: cachedCards.length 
     };
-
-    const response = await fetch(CARDTRADER_API_URL, { headers });
-    
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+  }
+  
+  const response = await fetch('https://api.cardtrader.com/api/v2/products/export', {
+    headers: {
+      'Authorization': `Bearer ${CARDTRADER_API_TOKEN}`
     }
-
+  });
+  
+  if (response.ok) {
     const data = await response.json();
-    console.log("Données récupérées de CardTrader:", data);
-
-    if (!Array.isArray(data)) {
-      throw new Error("Format de données CardTrader inattendu");
-    }
-
-    // Convertir les données de CardTrader au format de notre application
-    let allCards = data.map(mapCardTraderToAppFormat);
+    let allCards = await transformCardTraderData(data);
+    cachedCards = allCards;
     
-    // Filtrer les cartes selon les critères
-    let filteredCards = [...allCards];
-    
-    // Appliquer le filtre de série
-    if (seriesFilter) {
-      filteredCards = filteredCards.filter(card => card.series === seriesFilter);
-    } else if (options.series && options.series.length > 0) {
-      filteredCards = filteredCards.filter(card => options.series.includes(card.series));
+    if (cachedSeries.length === 0) {
+      cachedSeries = extractUniqueSeries(allCards);
     }
     
-    // Appliquer la recherche
-    if (options.search) {
-      const searchLower = options.search.toLowerCase();
-      filteredCards = filteredCards.filter(card => 
-        card.name.toLowerCase().includes(searchLower) || 
-        card.nameFr.toLowerCase().includes(searchLower) ||
-        card.number.toLowerCase().includes(searchLower)
-      );
+    let filteredCards = allCards;
+    
+    if (filterOptions || seriesFilter) {
+      filteredCards = allCards.filter(card => {
+        if (seriesFilter && card.series.toLowerCase() !== seriesFilter.toLowerCase()) {
+          return false;
+        }
+        
+        if (filterOptions) {
+          if (filterOptions.search && 
+              !card.name.toLowerCase().includes(filterOptions.search.toLowerCase()) &&
+              !card.nameFr.toLowerCase().includes(filterOptions.search.toLowerCase())) {
+            return false;
+          }
+          
+          if (filterOptions.series && filterOptions.series.length > 0 && 
+              !filterOptions.series.some(s => card.series.toLowerCase() === s.toLowerCase())) {
+            return false;
+          }
+          
+          if (filterOptions.rarity && filterOptions.rarity.length > 0 && 
+              !filterOptions.rarity.includes(card.rarity)) {
+            return false;
+          }
+          
+          if (filterOptions.condition && filterOptions.condition.length > 0 && 
+              !filterOptions.condition.includes(card.condition)) {
+            return false;
+          }
+          
+          if (filterOptions.language && filterOptions.language.length > 0 && 
+              !filterOptions.language.includes(card.language)) {
+            return false;
+          }
+          
+          if (filterOptions.priceMin && card.price < filterOptions.priceMin) {
+            return false;
+          }
+          if (filterOptions.priceMax && card.price > filterOptions.priceMax) {
+            return false;
+          }
+          
+          // Suppression du filtre isHolo, conservez seulement isReverse et isPromo
+          if (filterOptions.isReverse !== null && card.isReverse !== filterOptions.isReverse) {
+            return false;
+          }
+          if (filterOptions.isPromo !== null && card.isPromo !== filterOptions.isPromo) {
+            return false;
+          }
+          
+          if (filterOptions.expansionId && card.expansionId !== filterOptions.expansionId) {
+            return false;
+          }
+        }
+        
+        return true;
+      });
     }
     
-    // Appliquer le filtre de rareté
-    if (options.rarity && options.rarity.length > 0) {
-      filteredCards = filteredCards.filter(card => options.rarity.includes(card.rarity));
+    const total = filteredCards.length;
+    const start = (page - 1) * pageSize;
+    const end = start + pageSize;
+    const paginatedCards = filteredCards.slice(start, end);
+    
+    for (const card of paginatedCards) {
+      if (card.nameFr === card.nameEn) {
+        try {
+          card.nameFr = await translateCardName(card.nameEn);
+        } catch (error) {
+          console.error(`Erreur lors de la traduction de "${card.nameEn}":`, error);
+        }
+      }
     }
     
-    // Appliquer le filtre de prix
-    if (options.priceMin !== undefined) {
-      filteredCards = filteredCards.filter(card => card.price >= options.priceMin);
-    }
-    if (options.priceMax !== undefined) {
-      filteredCards = filteredCards.filter(card => card.price <= options.priceMax);
-    }
-    
-    // Appliquer le filtre d'état
-    if (options.condition && options.condition.length > 0) {
-      filteredCards = filteredCards.filter(card => options.condition.includes(card.condition));
-    }
-    
-    // Appliquer le filtre de langue
-    if (options.language && options.language.length > 0) {
-      filteredCards = filteredCards.filter(card => options.language.includes(card.language));
-    }
-    
-    // Appliquer les filtres spéciaux
-    if (options.isHolo !== null) {
-      filteredCards = filteredCards.filter(card => card.isHolo === options.isHolo);
-    }
-    if (options.isReverse !== null) {
-      filteredCards = filteredCards.filter(card => card.isReverse === options.isReverse);
-    }
-    if (options.isPromo !== null) {
-      filteredCards = filteredCards.filter(card => card.isPromo === options.isPromo);
-    }
-    
-    // Trier les cartes
-    switch (sortOption) {
-      case "name-asc":
-        filteredCards.sort((a, b) => a.name.localeCompare(b.name));
-        break;
-      case "name-desc":
-        filteredCards.sort((a, b) => b.name.localeCompare(a.name));
-        break;
-      case "number-asc":
-        filteredCards.sort((a, b) => a.number.localeCompare(b.number));
-        break;
-      case "number-desc":
-        filteredCards.sort((a, b) => b.number.localeCompare(a.number));
-        break;
-      case "price-asc":
-        filteredCards.sort((a, b) => a.price - b.price);
-        break;
-      case "price-desc":
-        filteredCards.sort((a, b) => b.price - a.price);
-        break;
-      default:
-        break;
-    }
-    
-    // Paginer les résultats
-    const startIndex = (page - 1) * limit;
-    const paginatedCards = filteredCards.slice(startIndex, startIndex + limit);
-    
-    return {
-      cards: paginatedCards,
-      total: filteredCards.length
-    };
-  } catch (error) {
-    console.error("Error fetching Pokemon cards from CardTrader:", error);
-    console.log("Utilisation des données de démonstration pour les cartes");
-    
-    // Utiliser les données mockées en cas d'erreur
-    let filteredCards = [...MOCK_CARDS];
-    
-    // Appliquer le filtre de série
-    if (seriesFilter) {
-      filteredCards = filteredCards.filter(card => card.series === seriesFilter);
-    } else if (options.series && options.series.length > 0) {
-      filteredCards = filteredCards.filter(card => options.series.includes(card.series));
-    }
-    
-    // Appliquer la recherche
-    if (options.search) {
-      const searchLower = options.search.toLowerCase();
-      filteredCards = filteredCards.filter(card => 
-        card.name.toLowerCase().includes(searchLower) || 
-        card.nameFr.toLowerCase().includes(searchLower) ||
-        card.number.toLowerCase().includes(searchLower)
-      );
-    }
-    
-    // Appliquer le filtre de rareté
-    if (options.rarity && options.rarity.length > 0) {
-      filteredCards = filteredCards.filter(card => options.rarity.includes(card.rarity));
-    }
-    
-    // Appliquer le filtre de prix
-    if (options.priceMin !== undefined) {
-      filteredCards = filteredCards.filter(card => card.price >= options.priceMin);
-    }
-    if (options.priceMax !== undefined) {
-      filteredCards = filteredCards.filter(card => card.price <= options.priceMax);
-    }
-    
-    // Appliquer le filtre d'état
-    if (options.condition && options.condition.length > 0) {
-      filteredCards = filteredCards.filter(card => options.condition.includes(card.condition));
-    }
-    
-    // Appliquer le filtre de langue
-    if (options.language && options.language.length > 0) {
-      filteredCards = filteredCards.filter(card => options.language.includes(card.language));
-    }
-    
-    // Appliquer les filtres spéciaux
-    if (options.isHolo !== null) {
-      filteredCards = filteredCards.filter(card => card.isHolo === options.isHolo);
-    }
-    if (options.isReverse !== null) {
-      filteredCards = filteredCards.filter(card => card.isReverse === options.isReverse);
-    }
-    if (options.isPromo !== null) {
-      filteredCards = filteredCards.filter(card => card.isPromo === options.isPromo);
-    }
-    
-    // Trier les cartes
-    switch (sortOption) {
-      case "name-asc":
-        filteredCards.sort((a, b) => a.name.localeCompare(b.name));
-        break;
-      case "name-desc":
-        filteredCards.sort((a, b) => b.name.localeCompare(a.name));
-        break;
-      case "number-asc":
-        filteredCards.sort((a, b) => a.number.localeCompare(b.number));
-        break;
-      case "number-desc":
-        filteredCards.sort((a, b) => b.number.localeCompare(a.number));
-        break;
-      case "price-asc":
-        filteredCards.sort((a, b) => a.price - b.price);
-        break;
-      case "price-desc":
-        filteredCards.sort((a, b) => b.price - a.price);
-        break;
-      default:
-        break;
-    }
-    
-    // Paginer les résultats
-    const startIndex = (page - 1) * limit;
-    const paginatedCards = filteredCards.slice(startIndex, startIndex + limit);
-    
-    return {
-      cards: paginatedCards,
-      total: filteredCards.length
-    };
+    return { cards: paginatedCards, total };
+  } else {
+    console.warn('Échec de la requête CardTrader, utilisation des données mockées');
+    return { cards: [], total: 0 };
   }
 };
 
-export const fetchPokemonCardById = async (id: string): Promise<PokemonCard | null> => {
+export const fetchCardDetails = async (cardId: string): Promise<PokemonCard | null> => {
+  if (cachedCards.length > 0) {
+    const card = cachedCards.find(card => card.id === cardId);
+    if (card) return card;
+  }
+  
   try {
-    console.log(`Tentative de récupération de la carte ${id} depuis CardTrader API...`);
-    const headers = {
-      "Authorization": `Bearer ${CARDTRADER_API_KEY}`
-    };
-
-    const response = await fetch(CARDTRADER_API_URL, { headers });
-    
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
-    const data = await response.json();
-    
-    if (!Array.isArray(data)) {
-      throw new Error("Format de données CardTrader inattendu");
-    }
-
-    // Chercher la carte par ID
-    const cardData = data.find(card => card.id.toString() === id);
-    
-    if (!cardData) {
-      return null;
-    }
-    
-    return mapCardTraderToAppFormat(cardData);
+    const { cards } = await fetchPokemonCards();
+    return cards.find(card => card.id === cardId) || null;
   } catch (error) {
-    console.error(`Error fetching Pokemon card with id ${id} from CardTrader:`, error);
-    console.log("Utilisation des données de démonstration pour la carte");
+    console.error('Erreur lors de la récupération des détails de la carte:', error);
+    return null;
+  }
+};
+
+export const translateCardName = async (englishName: string): Promise<string> => {
+  if (translationCache[englishName]) {
+    return translationCache[englishName];
+  }
+  
+  try {
+    const normalizedName = englishName.toLowerCase().replace(/[^a-z0-9]/g, '-');
+    const response = await fetch(`https://pokeapi.co/api/v2/pokemon-species/${normalizedName}`);
     
-    // Chercher la carte dans les données mockées
-    const mockCard = MOCK_CARDS.find(card => card.id === id);
-    return mockCard || null;
+    if (response.ok) {
+      const data = await response.json();
+      const frenchName = data.names.find((nameObj: any) => nameObj.language.name === 'fr')?.name;
+      
+      if (frenchName) {
+        translationCache[englishName] = frenchName;
+        return frenchName;
+      }
+    }
+    
+    const mockTranslation = `${englishName} (FR)`;
+    translationCache[englishName] = mockTranslation;
+    return mockTranslation;
+  } catch (error) {
+    console.error(`Erreur lors de la traduction de "${englishName}":`, error);
+    return englishName;
   }
 };
