@@ -1,15 +1,18 @@
 
 import { useState } from "react";
-import { Link } from "react-router-dom";
-import { ShoppingCart, Trash, ArrowLeft, ChevronUp, ChevronDown } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import { ShoppingCart, Trash, ArrowLeft, ChevronUp, ChevronDown, Search } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 import Button from "@/components/common/Button";
 import { toast } from "sonner";
+import { saveOrder } from "@/lib/orderService";
 
 const Cart = () => {
   const { items, removeFromCart, updateQuantity, clearCart, totalPrice, itemCount } = useCart();
   const [username, setUsername] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [savedOrderId, setSavedOrderId] = useState<string | null>(null);
+  const navigate = useNavigate();
 
   const handleSubmitOrder = async () => {
     if (!username.trim()) {
@@ -24,30 +27,25 @@ const Cart = () => {
 
     setIsSubmitting(true);
 
-    // Prepare order data
-    const orderData = {
-      username,
-      items,
-      totalPrice,
-      createdAt: new Date().toISOString(),
-      status: "pending"
-    };
-
     try {
-      // In a real app, this would send to Supabase
-      console.log("Submitting order:", orderData);
-      
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      // Sauvegarder la commande dans Supabase
+      const orderId = await saveOrder(username, items);
       
       // Success
       toast.success("Commande envoyée avec succès !", {
         description: "Votre commande a été enregistrée et sera traitée prochainement."
       });
       
+      // Stocker l'ID de commande temporairement
+      setSavedOrderId(orderId);
+      
       // Clear cart after successful order
       clearCart();
-      setUsername("");
+      
+      // Après 5 secondes, rediriger vers la page principale
+      setTimeout(() => {
+        navigate("/");
+      }, 5000);
     } catch (error) {
       console.error("Error submitting order:", error);
       toast.error("Erreur lors de l'envoi de la commande", {
@@ -55,6 +53,14 @@ const Cart = () => {
       });
     } finally {
       setIsSubmitting(false);
+    }
+  };
+
+  const handleTrackOrder = () => {
+    if (username.trim()) {
+      navigate(`/orders?username=${encodeURIComponent(username)}`);
+    } else {
+      toast.error("Veuillez entrer un pseudo pour suivre vos commandes");
     }
   };
 
@@ -71,7 +77,33 @@ const Cart = () => {
       </div>
 
       <div className="container mx-auto px-4 mt-8">
-        {items.length === 0 ? (
+        {savedOrderId ? (
+          <div className="bg-card rounded-lg border p-8 text-center animate-fade-in">
+            <div className="flex justify-center mb-4 text-green-500">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+              </svg>
+            </div>
+            <h2 className="text-2xl font-medium mb-2">Commande enregistrée !</h2>
+            <p className="text-muted-foreground mb-6">
+              Votre commande a été enregistrée avec succès. Vous serez redirigé vers la page d'accueil dans quelques secondes.
+            </p>
+            <div className="flex flex-col sm:flex-row justify-center gap-4">
+              <Link to="/">
+                <Button size="lg">
+                  Retour à l'accueil
+                </Button>
+              </Link>
+              <Button 
+                variant="outline" 
+                size="lg"
+                onClick={handleTrackOrder}
+              >
+                Suivre ma commande
+              </Button>
+            </div>
+          </div>
+        ) : items.length === 0 ? (
           <div className="bg-card rounded-lg border p-8 text-center">
             <div className="flex justify-center mb-4">
               <ShoppingCart className="h-16 w-16 text-muted-foreground" />
@@ -232,13 +264,24 @@ const Cart = () => {
                       Envoyer la commande
                     </Button>
                     
-                    <button 
-                      onClick={clearCart}
-                      className="text-sm text-destructive hover:underline mt-2 w-full text-center"
-                      disabled={isSubmitting || items.length === 0}
-                    >
-                      Vider le panier
-                    </button>
+                    <div className="flex mt-2 space-x-2">
+                      <button 
+                        onClick={clearCart}
+                        className="text-sm text-destructive hover:underline w-full text-center"
+                        disabled={isSubmitting || items.length === 0}
+                      >
+                        Vider le panier
+                      </button>
+                      
+                      <span className="text-muted-foreground">|</span>
+                      
+                      <button 
+                        onClick={handleTrackOrder}
+                        className="text-sm text-primary hover:underline w-full text-center"
+                      >
+                        Suivre mes commandes
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>

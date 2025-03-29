@@ -1,10 +1,13 @@
 
 import { useState, useEffect } from "react";
-import { Eye, ChevronDown, ChevronUp, Search, CheckCircle } from "lucide-react";
+import { Eye, ChevronDown, ChevronUp, Search, CheckCircle, Filter, X, AlertTriangle } from "lucide-react";
 import { Order } from "@/lib/types";
 import Card, { CardHeader, CardTitle, CardContent } from "@/components/common/Card";
 import Button from "@/components/common/Button";
 import Loader from "@/components/ui/Loader";
+import { fetchAllOrders, updateOrderStatus } from "@/lib/orderService";
+import { toast } from "sonner";
+import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
 
 const Admin = () => {
   const [orders, setOrders] = useState<Order[]>([]);
@@ -13,47 +16,16 @@ const Admin = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState<"all" | "pending" | "completed" | "cancelled">("all");
 
-  // Load mock orders
+  // Charger les commandes depuis Supabase
   useEffect(() => {
     const fetchOrders = async () => {
       try {
         setLoading(true);
-        // In a real app, this would fetch from Supabase
-        // Simulate API call
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        
-        // Generate mock orders
-        const mockOrders: Order[] = Array.from({ length: 10 }).map((_, idx) => ({
-          id: `order-${idx + 1}`,
-          username: `user${idx + 1}`,
-          items: Array.from({ length: Math.floor(Math.random() * 5) + 1 }).map((_, itemIdx) => ({
-            card: {
-              id: `card-${idx}-${itemIdx}`,
-              name: `Pokémon Card ${idx}-${itemIdx}`,
-              nameEn: `Pokémon Card ${idx}-${itemIdx}`,
-              nameFr: `Carte Pokémon ${idx}-${itemIdx}`,
-              number: `${Math.floor(Math.random() * 200) + 1}/200`,
-              series: ["Scarlet & Violet", "Paldea Evolved", "Obsidian Flames"][Math.floor(Math.random() * 3)],
-              rarity: ["Common", "Uncommon", "Rare", "Ultra Rare"][Math.floor(Math.random() * 4)],
-              image: "https://archives.bulbagarden.net/media/upload/thumb/f/f5/006Charizard.png/250px-006Charizard.png",
-              price: Math.round((Math.random() * 50 + 0.5) * 100) / 100,
-              stock: Math.floor(Math.random() * 20) + 1,
-              condition: ["Mint", "Near Mint", "Excellent"][Math.floor(Math.random() * 3)],
-              language: Math.random() > 0.5 ? "FR" : "EN",
-              isHolo: Math.random() > 0.7,
-              isReverse: Math.random() > 0.7,
-              isPromo: Math.random() > 0.9
-            },
-            quantity: Math.floor(Math.random() * 3) + 1
-          })),
-          totalPrice: Math.round((Math.random() * 100 + 10) * 100) / 100,
-          createdAt: new Date(Date.now() - Math.floor(Math.random() * 30) * 24 * 60 * 60 * 1000).toISOString(),
-          status: ["pending", "completed", "cancelled"][Math.floor(Math.random() * 3)] as "pending" | "completed" | "cancelled"
-        }));
-        
-        setOrders(mockOrders);
+        const ordersData = await fetchAllOrders();
+        setOrders(ordersData);
       } catch (error) {
         console.error("Error fetching orders:", error);
+        toast.error("Erreur lors du chargement des commandes");
       } finally {
         setLoading(false);
       }
@@ -86,25 +58,84 @@ const Admin = () => {
   });
 
   // Mark order as completed
-  const markAsCompleted = (orderId: string) => {
-    setOrders(prevOrders => 
-      prevOrders.map(order => 
-        order.id === orderId 
-          ? { ...order, status: "completed" }
-          : order
-      )
-    );
+  const markAsCompleted = async (orderId: string) => {
+    try {
+      await updateOrderStatus(orderId, "completed");
+      
+      setOrders(prevOrders => 
+        prevOrders.map(order => 
+          order.id === orderId 
+            ? { ...order, status: "completed" }
+            : order
+        )
+      );
+      
+      toast.success("Statut mis à jour", {
+        description: "La commande a été marquée comme complétée"
+      });
+    } catch (error) {
+      console.error("Error updating order status:", error);
+      toast.error("Erreur lors de la mise à jour du statut");
+    }
   };
 
   // Cancel order
-  const cancelOrder = (orderId: string) => {
-    setOrders(prevOrders => 
-      prevOrders.map(order => 
-        order.id === orderId 
-          ? { ...order, status: "cancelled" }
-          : order
-      )
-    );
+  const cancelOrder = async (orderId: string) => {
+    try {
+      await updateOrderStatus(orderId, "cancelled");
+      
+      setOrders(prevOrders => 
+        prevOrders.map(order => 
+          order.id === orderId 
+            ? { ...order, status: "cancelled" }
+            : order
+        )
+      );
+      
+      toast.success("Statut mis à jour", {
+        description: "La commande a été annulée"
+      });
+    } catch (error) {
+      console.error("Error updating order status:", error);
+      toast.error("Erreur lors de la mise à jour du statut");
+    }
+  };
+
+  // Obtenez les cartes de la commande triées par série puis par numéro
+  const getSortedCards = (order: Order) => {
+    return [...order.items].sort((a, b) => {
+      // D'abord, trier par série
+      if (a.card.series < b.card.series) return -1;
+      if (a.card.series > b.card.series) return 1;
+      
+      // Ensuite, trier par numéro de carte
+      const numA = parseInt(a.card.number.split('/')[0], 10) || 0;
+      const numB = parseInt(b.card.number.split('/')[0], 10) || 0;
+      return numA - numB;
+    });
+  };
+
+  // Regrouper les cartes par série
+  const getCardsBySeries = (order: Order) => {
+    const seriesMap: Record<string, typeof order.items> = {};
+    
+    order.items.forEach(item => {
+      if (!seriesMap[item.card.series]) {
+        seriesMap[item.card.series] = [];
+      }
+      seriesMap[item.card.series].push(item);
+    });
+    
+    // Trier les cartes par numéro dans chaque série
+    Object.keys(seriesMap).forEach(series => {
+      seriesMap[series].sort((a, b) => {
+        const numA = parseInt(a.card.number.split('/')[0], 10) || 0;
+        const numB = parseInt(b.card.number.split('/')[0], 10) || 0;
+        return numA - numB;
+      });
+    });
+    
+    return seriesMap;
   };
 
   return (
@@ -168,7 +199,7 @@ const Admin = () => {
                 >
                   <div className="space-y-1">
                     <div className="flex flex-col sm:flex-row sm:items-center gap-2">
-                      <h3 className="font-medium">Commande #{order.id}</h3>
+                      <h3 className="font-medium">Commande #{order.id.slice(0, 8)}</h3>
                       <span className={`text-xs px-2 py-0.5 rounded-full ${
                         order.status === "completed" 
                           ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200" 
@@ -209,25 +240,43 @@ const Admin = () => {
                 {expandedOrderId === order.id && (
                   <div className="border-t p-4 animate-slide-down">
                     <h4 className="font-medium mb-2">Détails de la commande</h4>
-                    <div className="space-y-4">
-                      {order.items.map((item) => (
-                        <div key={item.card.id} className="flex gap-4">
-                          <div className="w-16 h-22">
-                            <img 
-                              src={item.card.image} 
-                              alt={item.card.nameFr || item.card.name}
-                              className="w-full h-full object-cover rounded"
-                            />
+                    
+                    {/* Afficher les cartes groupées par série */}
+                    <div className="space-y-6 mb-6">
+                      {Object.entries(getCardsBySeries(order)).map(([series, items]) => (
+                        <div key={series} className="border rounded-md overflow-hidden">
+                          <div className="bg-muted/30 p-3 font-medium text-sm">
+                            {series} ({items.length} carte{items.length > 1 ? 's' : ''})
                           </div>
-                          <div className="flex-1">
-                            <p className="font-medium">{item.card.nameFr || item.card.name}</p>
-                            <p className="text-sm text-muted-foreground">
-                              {item.card.series} · {item.card.number}
-                            </p>
-                            <div className="flex justify-between items-center mt-1">
-                              <span className="text-sm">Quantité: {item.quantity}</span>
-                              <span className="font-medium">{(item.card.price * item.quantity).toFixed(2)} €</span>
-                            </div>
+                          <div className="p-3">
+                            <Table>
+                              <TableHeader>
+                                <TableRow>
+                                  <TableHead className="w-[80px]">Image</TableHead>
+                                  <TableHead>Carte</TableHead>
+                                  <TableHead>Numéro</TableHead>
+                                  <TableHead className="text-right">Qté</TableHead>
+                                  <TableHead className="text-right">Prix</TableHead>
+                                </TableRow>
+                              </TableHeader>
+                              <TableBody>
+                                {items.map((item) => (
+                                  <TableRow key={item.card.id}>
+                                    <TableCell>
+                                      <img 
+                                        src={item.card.image} 
+                                        alt={item.card.nameFr || item.card.name}
+                                        className="w-14 h-20 object-cover rounded"
+                                      />
+                                    </TableCell>
+                                    <TableCell className="font-medium">{item.card.nameFr || item.card.name}</TableCell>
+                                    <TableCell>{item.card.number}</TableCell>
+                                    <TableCell className="text-right">{item.quantity}</TableCell>
+                                    <TableCell className="text-right">{(item.card.price * item.quantity).toFixed(2)} €</TableCell>
+                                  </TableRow>
+                                ))}
+                              </TableBody>
+                            </Table>
                           </div>
                         </div>
                       ))}
@@ -250,6 +299,7 @@ const Admin = () => {
                             e.stopPropagation();
                             cancelOrder(order.id);
                           }}
+                          icon={<AlertTriangle size={16} />}
                         >
                           Annuler
                         </Button>

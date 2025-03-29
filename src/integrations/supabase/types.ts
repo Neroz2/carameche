@@ -9,7 +9,77 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      order_items: {
+        Row: {
+          card_id: string
+          card_image: string
+          card_name: string
+          card_number: string
+          card_series: string
+          id: string
+          order_id: string
+          price: number
+          quantity: number
+        }
+        Insert: {
+          card_id: string
+          card_image: string
+          card_name: string
+          card_number: string
+          card_series: string
+          id?: string
+          order_id: string
+          price: number
+          quantity: number
+        }
+        Update: {
+          card_id?: string
+          card_image?: string
+          card_name?: string
+          card_number?: string
+          card_series?: string
+          id?: string
+          order_id?: string
+          price?: number
+          quantity?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "order_items_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      orders: {
+        Row: {
+          created_at: string
+          id: string
+          status: string
+          total_items: number
+          total_price: number
+          username: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          status?: string
+          total_items: number
+          total_price: number
+          username: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          status?: string
+          total_items?: number
+          total_price?: number
+          username?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
