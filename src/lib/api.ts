@@ -1,7 +1,8 @@
 
 import { PokemonCard, PokemonSeries, FilterOptions, SortOption } from "@/lib/types";
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
+// Use Vite's import.meta.env instead of process.env
+const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:3001";
 
 export const fetchPokemonSeries = async (): Promise<PokemonSeries[]> => {
   try {

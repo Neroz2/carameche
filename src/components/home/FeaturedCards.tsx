@@ -25,14 +25,18 @@ const FeaturedCards = () => {
   useEffect(() => {
     const fetchFeatured = async () => {
       try {
-        // On limite à 10 cartes pour la section "cartes populaires"
-        const cards = await fetchPokemonCards({ 
-          priceMin: 10, // Cartes ayant une certaine valeur
-          isHolo: true, // Seulement les holos pour des cartes de valeur
-          language: ["FR"], // On privilégie les cartes françaises
-          limit: 10
-        });
-        setFeaturedCards(cards);
+        // Fetch 10 cards for the "featured cards" section
+        const result = await fetchPokemonCards(
+          '', // No specific series filter
+          1,  // First page
+          10, // Limit to 10 cards
+          { 
+            priceMin: 10, // Cards with certain value
+            isHolo: true, // Only holos for valuable cards
+            language: ["FR"], // Prefer French cards
+          }
+        );
+        setFeaturedCards(result.cards);
       } catch (error) {
         console.error("Erreur lors du chargement des cartes populaires:", error);
       } finally {
