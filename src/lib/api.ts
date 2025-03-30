@@ -110,12 +110,21 @@ const transformCardTraderData = async (data: any[]): Promise<PokemonCard[]> => {
     const isPromo = rarity === 'Promo';
     
     const image = `${IMAGE_BASE_URL}${item.blueprint_id}.jpg`;
+
+    // Traduire le nom immédiatement pour éviter les problèmes de recherche
+    let nameFr;
+    try {
+      nameFr = await translateCardName(name);
+    } catch (error) {
+      console.error(`Erreur lors de la traduction de "${name}":`, error);
+      nameFr = name;
+    }
     
     return {
       id,
       name,
       nameEn: name,
-      nameFr: name,
+      nameFr,
       number,
       series,
       rarity,
@@ -178,109 +187,94 @@ export const fetchPokemonCards = async (
   pageSize: number = 24,
   filterOptions?: Partial<FilterOptions>
 ): Promise<{ cards: PokemonCard[], total: number }> => {
-  if (cachedCards.length > 0 && !seriesFilter && !filterOptions) {
-    const start = (page - 1) * pageSize;
-    const end = start + pageSize;
-    return { 
-      cards: cachedCards.slice(start, end), 
-      total: cachedCards.length 
-    };
+  // Charger les cartes depuis l'API si elles ne sont pas déjà en cache
+  if (cachedCards.length === 0) {
+    try {
+      const response = await fetch('https://api.cardtrader.com/api/v2/products/export', {
+        headers: {
+          'Authorization': `Bearer ${CARDTRADER_API_TOKEN}`
+        }
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        cachedCards = await transformCardTraderData(data);
+        cachedSeries = extractUniqueSeries(cachedCards);
+      } else {
+        console.warn('Échec de la requête CardTrader, utilisation des données mockées');
+        return { cards: [], total: 0 };
+      }
+    } catch (error) {
+      console.error("Erreur lors du chargement des cartes:", error);
+      return { cards: [], total: 0 };
+    }
   }
   
-  const response = await fetch('https://api.cardtrader.com/api/v2/products/export', {
-    headers: {
-      'Authorization': `Bearer ${CARDTRADER_API_TOKEN}`
-    }
-  });
+  // Filtrer les cartes en fonction des critères
+  let filteredCards = cachedCards;
   
-  if (response.ok) {
-    const data = await response.json();
-    let allCards = await transformCardTraderData(data);
-    cachedCards = allCards;
-    
-    if (cachedSeries.length === 0) {
-      cachedSeries = extractUniqueSeries(allCards);
-    }
-    
-    let filteredCards = allCards;
-    
-    if (filterOptions || seriesFilter) {
-      filteredCards = allCards.filter(card => {
-        if (seriesFilter && card.series.toLowerCase() !== seriesFilter.toLowerCase()) {
+  if (filterOptions || seriesFilter) {
+    filteredCards = cachedCards.filter(card => {
+      if (seriesFilter && card.series.toLowerCase() !== seriesFilter.toLowerCase()) {
+        return false;
+      }
+      
+      if (filterOptions) {
+        if (filterOptions.search && 
+            !card.name.toLowerCase().includes(filterOptions.search.toLowerCase()) &&
+            !card.nameFr.toLowerCase().includes(filterOptions.search.toLowerCase())) {
           return false;
         }
         
-        if (filterOptions) {
-          if (filterOptions.search && 
-              !card.name.toLowerCase().includes(filterOptions.search.toLowerCase()) &&
-              !card.nameFr.toLowerCase().includes(filterOptions.search.toLowerCase())) {
-            return false;
-          }
-          
-          if (filterOptions.series && filterOptions.series.length > 0 && 
-              !filterOptions.series.some(s => card.series.toLowerCase() === s.toLowerCase())) {
-            return false;
-          }
-          
-          if (filterOptions.rarity && filterOptions.rarity.length > 0 && 
-              !filterOptions.rarity.includes(card.rarity)) {
-            return false;
-          }
-          
-          if (filterOptions.condition && filterOptions.condition.length > 0 && 
-              !filterOptions.condition.includes(card.condition)) {
-            return false;
-          }
-          
-          if (filterOptions.language && filterOptions.language.length > 0 && 
-              !filterOptions.language.includes(card.language)) {
-            return false;
-          }
-          
-          if (filterOptions.priceMin && card.price < filterOptions.priceMin) {
-            return false;
-          }
-          if (filterOptions.priceMax && card.price > filterOptions.priceMax) {
-            return false;
-          }
-          
-          // Suppression du filtre isHolo, conservez seulement isReverse et isPromo
-          if (filterOptions.isReverse !== null && card.isReverse !== filterOptions.isReverse) {
-            return false;
-          }
-          if (filterOptions.isPromo !== null && card.isPromo !== filterOptions.isPromo) {
-            return false;
-          }
-          
-          if (filterOptions.expansionId && card.expansionId !== filterOptions.expansionId) {
-            return false;
-          }
+        if (filterOptions.series && filterOptions.series.length > 0 && 
+            !filterOptions.series.some(s => card.series.toLowerCase() === s.toLowerCase())) {
+          return false;
         }
         
-        return true;
-      });
-    }
-    
-    const total = filteredCards.length;
-    const start = (page - 1) * pageSize;
-    const end = start + pageSize;
-    const paginatedCards = filteredCards.slice(start, end);
-    
-    for (const card of paginatedCards) {
-      if (card.nameFr === card.nameEn) {
-        try {
-          card.nameFr = await translateCardName(card.nameEn);
-        } catch (error) {
-          console.error(`Erreur lors de la traduction de "${card.nameEn}":`, error);
+        if (filterOptions.rarity && filterOptions.rarity.length > 0 && 
+            !filterOptions.rarity.includes(card.rarity)) {
+          return false;
+        }
+        
+        if (filterOptions.condition && filterOptions.condition.length > 0 && 
+            !filterOptions.condition.includes(card.condition)) {
+          return false;
+        }
+        
+        if (filterOptions.language && filterOptions.language.length > 0 && 
+            !filterOptions.language.includes(card.language)) {
+          return false;
+        }
+        
+        if (filterOptions.priceMin && card.price < filterOptions.priceMin) {
+          return false;
+        }
+        if (filterOptions.priceMax && card.price > filterOptions.priceMax) {
+          return false;
+        }
+        
+        if (filterOptions.isReverse !== null && card.isReverse !== filterOptions.isReverse) {
+          return false;
+        }
+        if (filterOptions.isPromo !== null && card.isPromo !== filterOptions.isPromo) {
+          return false;
+        }
+        
+        if (filterOptions.expansionId && card.expansionId !== filterOptions.expansionId) {
+          return false;
         }
       }
-    }
-    
-    return { cards: paginatedCards, total };
-  } else {
-    console.warn('Échec de la requête CardTrader, utilisation des données mockées');
-    return { cards: [], total: 0 };
+      
+      return true;
+    });
   }
+  
+  const total = filteredCards.length;
+  const start = (page - 1) * pageSize;
+  const end = start + pageSize;
+  const paginatedCards = filteredCards.slice(start, end);
+  
+  return { cards: paginatedCards, total };
 };
 
 export const fetchCardDetails = async (cardId: string): Promise<PokemonCard | null> => {
@@ -304,7 +298,16 @@ export const translateCardName = async (englishName: string): Promise<string> =>
   }
   
   try {
-    const normalizedName = englishName.toLowerCase().replace(/[^a-z0-9]/g, '-');
+    // Normaliser le nom pour l'API Pokemon
+    const normalizedName = englishName.toLowerCase()
+      .replace(/\s+v$/i, '') // Supprimer le "V" à la fin
+      .replace(/\s+vmax$/i, '') // Supprimer le "VMAX" à la fin
+      .replace(/\s+gx$/i, '') // Supprimer le "GX" à la fin
+      .replace(/\s+ex$/i, '') // Supprimer le "EX" à la fin
+      .replace(/[^a-z0-9]/g, '-') // Remplacer les caractères spéciaux par des tirets
+      .replace(/-+/g, '-') // Éviter les tirets multiples
+      .replace(/^-|-$/g, ''); // Supprimer les tirets au début et à la fin
+    
     const response = await fetch(`https://pokeapi.co/api/v2/pokemon-species/${normalizedName}`);
     
     if (response.ok) {
@@ -312,16 +315,25 @@ export const translateCardName = async (englishName: string): Promise<string> =>
       const frenchName = data.names.find((nameObj: any) => nameObj.language.name === 'fr')?.name;
       
       if (frenchName) {
-        translationCache[englishName] = frenchName;
-        return frenchName;
+        // Ajouter les suffixes (V, VMAX, GX, etc.) au nom traduit si présents dans le nom anglais
+        let suffixedName = frenchName;
+        if (/\s+v$/i.test(englishName)) suffixedName += ' V';
+        if (/\s+vmax$/i.test(englishName)) suffixedName += ' VMAX';
+        if (/\s+gx$/i.test(englishName)) suffixedName += ' GX';
+        if (/\s+ex$/i.test(englishName)) suffixedName += ' EX';
+        
+        translationCache[englishName] = suffixedName;
+        return suffixedName;
       }
     }
     
-    const mockTranslation = `${englishName} (FR)`;
-    translationCache[englishName] = mockTranslation;
-    return mockTranslation;
+    // Fallback pour les noms qui ne sont pas des Pokémon standards
+    // ou si l'API ne répond pas correctement
+    translationCache[englishName] = englishName;
+    return englishName;
   } catch (error) {
     console.error(`Erreur lors de la traduction de "${englishName}":`, error);
+    translationCache[englishName] = englishName;
     return englishName;
   }
 };

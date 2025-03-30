@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { 
@@ -26,7 +27,7 @@ const Inventory = () => {
   const [loading, setLoading] = useState(true);
   const [totalCards, setTotalCards] = useState(0);
   const [page, setPage] = useState(1);
-  const [pageSize] = useState(100);
+  const [pageSize] = useState(100); // Changé à 100 cartes par page
   const [sortOption, setSortOption] = useState<SortOption>("number-asc");
   const [viewMode, setViewMode] = useState<ViewMode>("grid");
   const [filterOptions, setFilterOptions] = useState<FilterOptions>({
@@ -45,9 +46,11 @@ const Inventory = () => {
   
   const { addToCart } = useCart();
 
+  // Chargement des séries dès l'initialisation de la page
   useEffect(() => {
     const loadSeries = async () => {
       try {
+        // S'assurer que les expansions sont chargées avant de récupérer les séries
         await fetchExpansions();
         const seriesData = await fetchPokemonSeries();
         setSeries(seriesData);
@@ -59,6 +62,7 @@ const Inventory = () => {
     loadSeries();
   }, []);
 
+  // Récupérer le paramètre de série depuis l'URL
   useEffect(() => {
     const seriesParam = searchParams.get("series");
     if (seriesParam) {
@@ -69,6 +73,7 @@ const Inventory = () => {
     }
   }, [searchParams]);
 
+  // Chargement des cartes avec les filtres appliqués
   useEffect(() => {
     const loadCards = async () => {
       try {
@@ -112,6 +117,7 @@ const Inventory = () => {
     loadCards();
   }, [page, pageSize, sortOption, filterOptions]);
 
+  // Remonter en haut de la page lors du changement de page
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [page]);
@@ -304,7 +310,7 @@ const Inventory = () => {
               <label className="text-sm font-medium mb-1 block">
                 Série
               </label>
-              <div className="space-y-1 max-h-40 overflow-y-auto">
+              <div className="space-y-1 max-h-60 overflow-y-auto">
                 {series.map((serie) => (
                   <div key={serie.id} className="flex items-center">
                     <Checkbox
@@ -805,7 +811,9 @@ const Inventory = () => {
                   {cards.map((card) => (
                     <Card 
                       key={card.id} 
-                      className="overflow-hidden h-full transition-all border dark:border-gray-700"
+                      className={`overflow-hidden h-full transition-all border dark:border-gray-700 ${
+                        card.isReverse ? 'bg-gradient-to-br from-purple-500/5 via-blue-500/5 to-purple-500/5' : ''
+                      }`}
                     >
                       <div className="aspect-[3/4] relative overflow-hidden">
                         <div className={`absolute inset-0 ${
