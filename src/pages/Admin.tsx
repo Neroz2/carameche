@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Eye, ChevronDown, ChevronUp, Search, CheckCircle, Filter, X, AlertTriangle, BarChart, Users, ShoppingBag, DollarSign, Activity } from "lucide-react";
 import { Order } from "@/lib/types";
@@ -9,6 +8,7 @@ import { fetchAllOrders, updateOrderStatus } from "@/lib/orderService";
 import { toast } from "sonner";
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
 import OrderStatistics from "@/components/admin/OrderStatistics";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const Admin = () => {
   const [orders, setOrders] = useState<Order[]>([]);
@@ -229,249 +229,267 @@ const Admin = () => {
           </Card>
         </div>
         
-        {/* Statistiques des commandes */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-          <Card className="lg:col-span-2">
-            <CardHeader>
-              <CardTitle>Analyse des commandes</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <OrderStatistics orders={orders} />
-            </CardContent>
-          </Card>
+        {/* Tabs for Statistics and Orders */}
+        <Tabs defaultValue="statistics" className="w-full">
+          <TabsList className="w-full mb-6">
+            <TabsTrigger value="statistics" className="flex-1">
+              <Activity size={16} className="mr-2" />
+              Statistiques
+            </TabsTrigger>
+            <TabsTrigger value="orders" className="flex-1">
+              <ShoppingBag size={16} className="mr-2" />
+              Commandes
+            </TabsTrigger>
+          </TabsList>
           
-          <Card>
-            <CardHeader>
-              <CardTitle>Statut des commandes</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                <div className="flex justify-between items-center">
-                  <div className="flex items-center gap-2">
-                    <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
-                    <span>En attente</span>
-                  </div>
-                  <span className="font-medium">{pendingOrders}</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <div className="flex items-center gap-2">
-                    <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-                    <span>Complétées</span>
-                  </div>
-                  <span className="font-medium">{completedOrders}</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <div className="flex items-center gap-2">
-                    <div className="w-3 h-3 bg-red-500 rounded-full"></div>
-                    <span>Annulées</span>
-                  </div>
-                  <span className="font-medium">{cancelledOrders}</span>
-                </div>
-              </div>
+          <TabsContent value="statistics" className="mt-0">
+            {/* Statistiques des commandes */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              <Card className="lg:col-span-2">
+                <CardHeader>
+                  <CardTitle>Analyse des commandes</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <OrderStatistics orders={orders} />
+                </CardContent>
+              </Card>
               
-              <div className="mt-6 pt-6 border-t">
-                <div className="relative w-full h-4 bg-gray-200 rounded-full overflow-hidden">
-                  {orders.length > 0 && (
-                    <>
-                      <div 
-                        className="absolute top-0 left-0 h-full bg-yellow-500" 
-                        style={{ width: `${(pendingOrders / orders.length) * 100}%` }}
-                      ></div>
-                      <div 
-                        className="absolute top-0 left-0 h-full bg-green-500" 
-                        style={{ 
-                          width: `${(completedOrders / orders.length) * 100}%`,
-                          marginLeft: `${(pendingOrders / orders.length) * 100}%`
-                        }}
-                      ></div>
-                      <div 
-                        className="absolute top-0 left-0 h-full bg-red-500" 
-                        style={{ 
-                          width: `${(cancelledOrders / orders.length) * 100}%`,
-                          marginLeft: `${((pendingOrders + completedOrders) / orders.length) * 100}%`
-                        }}
-                      ></div>
-                    </>
-                  )}
-                </div>
+              <Card>
+                <CardHeader>
+                  <CardTitle>Statut des commandes</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    <div className="flex justify-between items-center">
+                      <div className="flex items-center gap-2">
+                        <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
+                        <span>En attente</span>
+                      </div>
+                      <span className="font-medium">{pendingOrders}</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <div className="flex items-center gap-2">
+                        <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+                        <span>Complétées</span>
+                      </div>
+                      <span className="font-medium">{completedOrders}</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <div className="flex items-center gap-2">
+                        <div className="w-3 h-3 bg-red-500 rounded-full"></div>
+                        <span>Annulées</span>
+                      </div>
+                      <span className="font-medium">{cancelledOrders}</span>
+                    </div>
+                  </div>
+                  
+                  <div className="mt-6 pt-6 border-t">
+                    <div className="relative w-full h-4 bg-gray-200 rounded-full overflow-hidden">
+                      {orders.length > 0 && (
+                        <>
+                          <div 
+                            className="absolute top-0 left-0 h-full bg-yellow-500" 
+                            style={{ width: `${(pendingOrders / orders.length) * 100}%` }}
+                          ></div>
+                          <div 
+                            className="absolute top-0 left-0 h-full bg-green-500" 
+                            style={{ 
+                              width: `${(completedOrders / orders.length) * 100}%`,
+                              marginLeft: `${(pendingOrders / orders.length) * 100}%`
+                            }}
+                          ></div>
+                          <div 
+                            className="absolute top-0 left-0 h-full bg-red-500" 
+                            style={{ 
+                              width: `${(cancelledOrders / orders.length) * 100}%`,
+                              marginLeft: `${((pendingOrders + completedOrders) / orders.length) * 100}%`
+                            }}
+                          ></div>
+                        </>
+                      )}
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </TabsContent>
+          
+          <TabsContent value="orders" className="mt-0">
+            {/* Filters */}
+            <div className="mb-6 flex flex-col sm:flex-row gap-4 bg-card p-4 rounded-lg border">
+              <div className="relative flex-1">
+                <input
+                  type="text"
+                  placeholder="Rechercher par ID, utilisateur ou produit..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="w-full p-2 pl-9 rounded-md border border-input"
+                />
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" size={16} />
               </div>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Filters */}
-        <div className="mb-6 flex flex-col sm:flex-row gap-4 bg-card p-4 rounded-lg border">
-          <div className="relative flex-1">
-            <input
-              type="text"
-              placeholder="Rechercher par ID, utilisateur ou produit..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full p-2 pl-9 rounded-md border border-input"
-            />
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" size={16} />
-          </div>
-          <div>
-            <select
-              value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value as any)}
-              className="w-full sm:w-40 p-2 rounded-md border border-input bg-background"
-            >
-              <option value="all">Tous les statuts</option>
-              <option value="pending">En attente</option>
-              <option value="completed">Complétées</option>
-              <option value="cancelled">Annulées</option>
-            </select>
-          </div>
-        </div>
-
-        {/* Orders list */}
-        {loading ? (
-          <div className="min-h-[300px] flex items-center justify-center">
-            <Loader size="lg" text="Chargement des commandes..." />
-          </div>
-        ) : filteredOrders.length === 0 ? (
-          <div className="bg-card rounded-lg border p-8 text-center">
-            <h3 className="text-xl font-medium mb-2">Aucune commande trouvée</h3>
-            <p className="text-muted-foreground">
-              Essayez de modifier vos filtres ou d'effectuer une recherche différente.
-            </p>
-          </div>
-        ) : (
-          <div className="space-y-4">
-            {filteredOrders.map((order) => (
-              <Card key={order.id} className="overflow-hidden">
-                <div
-                  className={`flex flex-col sm:flex-row sm:items-center justify-between p-4 cursor-pointer ${
-                    order.status === "pending" 
-                      ? "border-l-4 border-l-yellow-500" 
-                      : order.status === "completed"
-                      ? "border-l-4 border-l-green-500"
-                      : "border-l-4 border-l-red-500"
-                  }`}
-                  onClick={() => toggleOrderExpansion(order.id)}
+              <div>
+                <select
+                  value={statusFilter}
+                  onChange={(e) => setStatusFilter(e.target.value as any)}
+                  className="w-full sm:w-40 p-2 rounded-md border border-input bg-background"
                 >
-                  <div className="space-y-1">
-                    <div className="flex flex-col sm:flex-row sm:items-center gap-2">
-                      <h3 className="font-medium">Commande #{order.id.slice(0, 8)}</h3>
-                      <span className={`text-xs px-2 py-0.5 rounded-full ${
-                        order.status === "completed" 
-                          ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200" 
-                          : order.status === "cancelled"
-                          ? "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200"
-                          : "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200"
-                      }`}>
-                        {order.status === "completed" 
-                          ? "Complétée" 
-                          : order.status === "cancelled"
-                          ? "Annulée"
-                          : "En attente"
-                        }
-                      </span>
-                    </div>
-                    <p className="text-sm text-muted-foreground">
-                      Client: <span className="font-medium">{order.username}</span> · 
-                      {new Date(order.createdAt).toLocaleDateString('fr-FR', { 
-                        year: 'numeric', 
-                        month: 'long', 
-                        day: 'numeric',
-                        hour: '2-digit',
-                        minute: '2-digit'
-                      })}
-                    </p>
-                    <p className="text-sm">
-                      {order.items.length} article{order.items.length !== 1 ? 's' : ''} · 
-                      <span className="font-medium"> {order.totalPrice.toFixed(2)} €</span>
-                    </p>
-                  </div>
-                  <div className="flex items-center gap-2 mt-2 sm:mt-0">
-                    <span className="text-muted-foreground">
-                      {expandedOrderId === order.id ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
-                    </span>
-                  </div>
-                </div>
-                
-                {expandedOrderId === order.id && (
-                  <div className="border-t p-4 animate-slide-down">
-                    <h4 className="font-medium mb-2">Détails de la commande</h4>
-                    
-                    {/* Afficher les cartes groupées par série */}
-                    <div className="space-y-6 mb-6">
-                      {Object.entries(getCardsBySeries(order)).map(([series, items]) => (
-                        <div key={series} className="border rounded-md overflow-hidden">
-                          <div className="bg-muted/30 p-3 font-medium text-sm">
-                            {series} ({items.length} carte{items.length > 1 ? 's' : ''})
-                          </div>
-                          <div className="p-3">
-                            <Table>
-                              <TableHeader>
-                                <TableRow>
-                                  <TableHead className="w-[80px]">Image</TableHead>
-                                  <TableHead>Carte</TableHead>
-                                  <TableHead>Numéro</TableHead>
-                                  <TableHead className="text-right">Qté</TableHead>
-                                  <TableHead className="text-right">Prix</TableHead>
-                                </TableRow>
-                              </TableHeader>
-                              <TableBody>
-                                {items.map((item) => (
-                                  <TableRow key={item.card.id}>
-                                    <TableCell>
-                                      <img 
-                                        src={item.card.image} 
-                                        alt={item.card.nameFr || item.card.name}
-                                        className="w-14 h-20 object-cover rounded"
-                                      />
-                                    </TableCell>
-                                    <TableCell className="font-medium">
-                                      {item.card.nameFr || item.card.name}
-                                      {item.card.isReverse && (
-                                        <span className="ml-2 text-xs bg-purple-500/20 text-purple-700 dark:text-purple-300 px-2 py-0.5 rounded">
-                                          Reverse
-                                        </span>
-                                      )}
-                                    </TableCell>
-                                    <TableCell>{item.card.number}</TableCell>
-                                    <TableCell className="text-right">{item.quantity}</TableCell>
-                                    <TableCell className="text-right">{(item.card.price * item.quantity).toFixed(2)} €</TableCell>
-                                  </TableRow>
-                                ))}
-                              </TableBody>
-                            </Table>
-                          </div>
+                  <option value="all">Tous les statuts</option>
+                  <option value="pending">En attente</option>
+                  <option value="completed">Complétées</option>
+                  <option value="cancelled">Annulées</option>
+                </select>
+              </div>
+            </div>
+
+            {/* Orders list */}
+            {loading ? (
+              <div className="min-h-[300px] flex items-center justify-center">
+                <Loader size="lg" text="Chargement des commandes..." />
+              </div>
+            ) : filteredOrders.length === 0 ? (
+              <div className="bg-card rounded-lg border p-8 text-center">
+                <h3 className="text-xl font-medium mb-2">Aucune commande trouvée</h3>
+                <p className="text-muted-foreground">
+                  Essayez de modifier vos filtres ou d'effectuer une recherche différente.
+                </p>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {filteredOrders.map((order) => (
+                  <Card key={order.id} className="overflow-hidden">
+                    <div
+                      className={`flex flex-col sm:flex-row sm:items-center justify-between p-4 cursor-pointer ${
+                        order.status === "pending" 
+                          ? "border-l-4 border-l-yellow-500" 
+                          : order.status === "completed"
+                          ? "border-l-4 border-l-green-500"
+                          : "border-l-4 border-l-red-500"
+                      }`}
+                      onClick={() => toggleOrderExpansion(order.id)}
+                    >
+                      <div className="space-y-1">
+                        <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+                          <h3 className="font-medium">Commande #{order.id.slice(0, 8)}</h3>
+                          <span className={`text-xs px-2 py-0.5 rounded-full ${
+                            order.status === "completed" 
+                              ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200" 
+                              : order.status === "cancelled"
+                              ? "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200"
+                              : "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200"
+                          }`}>
+                            {order.status === "completed" 
+                              ? "Complétée" 
+                              : order.status === "cancelled"
+                              ? "Annulée"
+                              : "En attente"
+                            }
+                          </span>
                         </div>
-                      ))}
+                        <p className="text-sm text-muted-foreground">
+                          Client: <span className="font-medium">{order.username}</span> · 
+                          {new Date(order.createdAt).toLocaleDateString('fr-FR', { 
+                            year: 'numeric', 
+                            month: 'long', 
+                            day: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit'
+                          })}
+                        </p>
+                        <p className="text-sm">
+                          {order.items.length} article{order.items.length !== 1 ? 's' : ''} · 
+                          <span className="font-medium"> {order.totalPrice.toFixed(2)} €</span>
+                        </p>
+                      </div>
+                      <div className="flex items-center gap-2 mt-2 sm:mt-0">
+                        <span className="text-muted-foreground">
+                          {expandedOrderId === order.id ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
+                        </span>
+                      </div>
                     </div>
                     
-                    {order.status === "pending" && (
-                      <div className="flex gap-4 mt-4 pt-4 border-t">
-                        <Button 
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            markAsCompleted(order.id);
-                          }}
-                          icon={<CheckCircle size={16} />}
-                        >
-                          Marquer comme complétée
-                        </Button>
-                        <Button 
-                          variant="outline" 
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            cancelOrder(order.id);
-                          }}
-                          icon={<AlertTriangle size={16} />}
-                        >
-                          Annuler
-                        </Button>
+                    {expandedOrderId === order.id && (
+                      <div className="border-t p-4 animate-slide-down">
+                        <h4 className="font-medium mb-2">Détails de la commande</h4>
+                        
+                        {/* Afficher les cartes groupées par série */}
+                        <div className="space-y-6 mb-6">
+                          {Object.entries(getCardsBySeries(order)).map(([series, items]) => (
+                            <div key={series} className="border rounded-md overflow-hidden">
+                              <div className="bg-muted/30 p-3 font-medium text-sm">
+                                {series} ({items.length} carte{items.length > 1 ? 's' : ''})
+                              </div>
+                              <div className="p-3">
+                                <Table>
+                                  <TableHeader>
+                                    <TableRow>
+                                      <TableHead className="w-[80px]">Image</TableHead>
+                                      <TableHead>Carte</TableHead>
+                                      <TableHead>Numéro</TableHead>
+                                      <TableHead className="text-right">Qté</TableHead>
+                                      <TableHead className="text-right">Prix</TableHead>
+                                    </TableRow>
+                                  </TableHeader>
+                                  <TableBody>
+                                    {items.map((item) => (
+                                      <TableRow key={item.card.id}>
+                                        <TableCell>
+                                          <img 
+                                            src={item.card.image} 
+                                            alt={item.card.nameFr || item.card.name}
+                                            className="w-14 h-20 object-cover rounded"
+                                          />
+                                        </TableCell>
+                                        <TableCell className="font-medium">
+                                          {item.card.nameFr || item.card.name}
+                                          {item.card.isReverse && (
+                                            <span className="ml-2 text-xs bg-purple-500/20 text-purple-700 dark:text-purple-300 px-2 py-0.5 rounded">
+                                              Reverse
+                                            </span>
+                                          )}
+                                        </TableCell>
+                                        <TableCell>{item.card.number}</TableCell>
+                                        <TableCell className="text-right">{item.quantity}</TableCell>
+                                        <TableCell className="text-right">{(item.card.price * item.quantity).toFixed(2)} €</TableCell>
+                                      </TableRow>
+                                    ))}
+                                  </TableBody>
+                                </Table>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                        
+                        {order.status === "pending" && (
+                          <div className="flex gap-4 mt-4 pt-4 border-t">
+                            <Button 
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                markAsCompleted(order.id);
+                              }}
+                              icon={<CheckCircle size={16} />}
+                            >
+                              Marquer comme complétée
+                            </Button>
+                            <Button 
+                              variant="outline" 
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                cancelOrder(order.id);
+                              }}
+                              icon={<AlertTriangle size={16} />}
+                            >
+                              Annuler
+                            </Button>
+                          </div>
+                        )}
                       </div>
                     )}
-                  </div>
-                )}
-              </Card>
-            ))}
-          </div>
-        )}
+                  </Card>
+                ))}
+              </div>
+            )}
+          </TabsContent>
+        </Tabs>
       </div>
     </div>
   );

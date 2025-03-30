@@ -11,13 +11,29 @@ const Index = () => {
   const [series, setSeries] = useState<PokemonSeries[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // Récupérer les séries depuis l'API
+  // Récupérer les séries depuis l'API avec mise en cache
   useEffect(() => {
+    const cachedSeries = sessionStorage.getItem('pokemonSeries');
+    
     const loadSeries = async () => {
       try {
         setLoading(true);
-        const seriesData = await fetchPokemonSeries();
-        setSeries(seriesData);
+        
+        // Utiliser les données en cache si disponibles
+        if (cachedSeries) {
+          setSeries(JSON.parse(cachedSeries));
+          setLoading(false);
+          
+          // Rafraîchir les données en arrière-plan
+          const freshData = await fetchPokemonSeries();
+          setSeries(freshData);
+          sessionStorage.setItem('pokemonSeries', JSON.stringify(freshData));
+        } else {
+          // Sinon, charger depuis l'API
+          const seriesData = await fetchPokemonSeries();
+          setSeries(seriesData);
+          sessionStorage.setItem('pokemonSeries', JSON.stringify(seriesData));
+        }
       } catch (error) {
         console.error("Erreur lors du chargement des séries:", error);
       } finally {
