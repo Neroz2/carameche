@@ -32,15 +32,19 @@ const Index = () => {
           console.log("Rafraîchissement des séries en arrière-plan");
           const freshData = await fetchPokemonSeries();
           console.log(`Récupération de ${freshData.length} séries fraîches`);
-          setSeries(freshData);
-          sessionStorage.setItem('pokemonSeries', JSON.stringify(freshData));
+          // Trier les séries par nom pour une meilleure présentation
+          const sortedSeries = [...freshData].sort((a, b) => a.name.localeCompare(b.name));
+          setSeries(sortedSeries);
+          sessionStorage.setItem('pokemonSeries', JSON.stringify(sortedSeries));
         } else {
           // Sinon, charger depuis l'API
           console.log("Aucune série en cache, chargement depuis l'API");
           const seriesData = await fetchPokemonSeries();
           console.log(`Récupération de ${seriesData.length} séries depuis l'API`);
-          setSeries(seriesData);
-          sessionStorage.setItem('pokemonSeries', JSON.stringify(seriesData));
+          // Trier les séries par nom pour une meilleure présentation
+          const sortedSeries = [...seriesData].sort((a, b) => a.name.localeCompare(b.name));
+          setSeries(sortedSeries);
+          sessionStorage.setItem('pokemonSeries', JSON.stringify(sortedSeries));
         }
       } catch (error) {
         console.error("Erreur lors du chargement des séries:", error);

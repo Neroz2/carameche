@@ -50,16 +50,23 @@ const SeriesGrid = ({ series }: SeriesGridProps) => {
                 hover3D
                 className="h-full transition-transform duration-300 hover:shadow-xl will-change-transform"
               >
-                <div className="relative aspect-[16/9] overflow-hidden">
+                <div className="relative aspect-[16/9] overflow-hidden bg-gradient-to-b from-blue-50 to-blue-100 dark:from-blue-950 dark:to-blue-900">
                   <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/50 z-10"></div>
                   <img 
                     src={item.logo} 
                     alt={`${item.name} series logo`}
-                    className="w-full h-full object-cover object-center transition-transform duration-500 hover:scale-110"
+                    className="w-full h-full object-contain object-center transition-transform duration-500 hover:scale-110 p-4"
                     onError={(e) => {
                       // Fallback si l'image est introuvable
                       const target = e.target as HTMLImageElement;
                       target.src = '/placeholder.svg';
+                      // Ajouter une classe pour styliser l'image de fallback
+                      target.classList.add('fallback-image');
+                      // Afficher le nom de la série comme texte alternatif
+                      const textNode = document.createElement('div');
+                      textNode.className = 'absolute inset-0 flex items-center justify-center text-2xl font-bold text-center p-4';
+                      textNode.textContent = item.name;
+                      target.parentNode?.appendChild(textNode);
                       target.onerror = null;
                     }}
                   />

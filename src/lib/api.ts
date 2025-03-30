@@ -158,6 +158,7 @@ const transformCardTraderData = async (data: any[]): Promise<PokemonCard[]> => {
   }));
 };
 
+// Cette fonction extrait toutes les séries uniques d'un ensemble de cartes
 const extractUniqueSeries = (cards: PokemonCard[]): PokemonSeries[] => {
   const seriesMap = new Map<string, PokemonSeries>();
   
@@ -187,19 +188,60 @@ const extractUniqueSeries = (cards: PokemonCard[]): PokemonSeries[] => {
 let cachedCards: PokemonCard[] = [];
 let cachedSeries: PokemonSeries[] = [];
 
+// Fonction modifiée pour charger toutes les séries, indépendamment de la pagination
 export const fetchPokemonSeries = async (): Promise<PokemonSeries[]> => {
+  // Si les séries sont déjà en cache, les retourner
   if (cachedSeries.length > 0) {
     console.log(`Retourne ${cachedSeries.length} séries en cache`);
     return cachedSeries;
   }
   
   console.log("Pas de séries en cache, chargement des cartes pour extraire les séries...");
-  const { cards } = await fetchPokemonCards();
-  console.log(`${cards.length} cartes chargées pour extraire les séries`);
-  const series = extractUniqueSeries(cards);
-  console.log(`${series.length} séries extraites des cartes`);
-  cachedSeries = series;
-  return series;
+  
+  // Charger toutes les cartes sans pagination pour extraire toutes les séries
+  try {
+    // S'assurer que les cartes sont chargées en premier
+    if (cachedCards.length === 0) {
+      // Récupérer toutes les cartes pour extraire toutes les séries
+      await fetchAllCards();
+    }
+    
+    // Extraire les séries des cartes en cache (qui devraient toutes être chargées)
+    const series = extractUniqueSeries(cachedCards);
+    console.log(`${series.length} séries extraites de toutes les cartes`);
+    cachedSeries = series;
+    return series;
+  } catch (error) {
+    console.error("Erreur lors de l'extraction des séries:", error);
+    return []; // Retourner un tableau vide en cas d'erreur
+  }
+};
+
+// Nouvelle fonction pour charger toutes les cartes sans pagination
+const fetchAllCards = async (): Promise<void> => {
+  if (cachedCards.length > 0) {
+    return; // Cartes déjà chargées
+  }
+  
+  try {
+    console.log("Chargement de toutes les cartes depuis l'API...");
+    const response = await fetch('https://api.cardtrader.com/api/v2/products/export', {
+      headers: {
+        'Authorization': `Bearer ${CARDTRADER_API_TOKEN}`
+      }
+    });
+    
+    if (response.ok) {
+      const data = await response.json();
+      console.log(`${data.length} cartes récupérées depuis l'API CardTrader`);
+      cachedCards = await transformCardTraderData(data);
+      console.log(`${cachedCards.length} cartes transformées et mises en cache`);
+    } else {
+      console.warn('Échec de la requête CardTrader, utilisation des données mockées');
+    }
+  } catch (error) {
+    console.error("Erreur lors du chargement des cartes:", error);
+  }
 };
 
 export const fetchPokemonCards = async (
@@ -208,33 +250,9 @@ export const fetchPokemonCards = async (
   pageSize: number = 100,
   filterOptions?: Partial<FilterOptions>
 ): Promise<{ cards: PokemonCard[], total: number }> => {
-  // Charger les cartes depuis l'API si elles ne sont pas déjà en cache
+  // Charger toutes les cartes si elles ne sont pas déjà en cache
   if (cachedCards.length === 0) {
-    try {
-      console.log("Pas de cartes en cache, chargement depuis l'API...");
-      const response = await fetch('https://api.cardtrader.com/api/v2/products/export', {
-        headers: {
-          'Authorization': `Bearer ${CARDTRADER_API_TOKEN}`
-        }
-      });
-      
-      if (response.ok) {
-        const data = await response.json();
-        console.log(`${data.length} cartes récupérées depuis l'API CardTrader`);
-        cachedCards = await transformCardTraderData(data);
-        console.log(`${cachedCards.length} cartes transformées et mises en cache`);
-        
-        // Extraire et mettre en cache les séries
-        cachedSeries = extractUniqueSeries(cachedCards);
-        console.log(`${cachedSeries.length} séries extraites et mises en cache`);
-      } else {
-        console.warn('Échec de la requête CardTrader, utilisation des données mockées');
-        return { cards: [], total: 0 };
-      }
-    } catch (error) {
-      console.error("Erreur lors du chargement des cartes:", error);
-      return { cards: [], total: 0 };
-    }
+    await fetchAllCards();
   }
   
   // Filtrer les cartes en fonction des critères

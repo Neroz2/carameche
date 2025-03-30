@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { 
@@ -25,6 +24,7 @@ const Inventory = () => {
   const [cards, setCards] = useState<PokemonCard[]>([]);
   const [series, setSeries] = useState<PokemonSeries[]>([]);
   const [loading, setLoading] = useState(true);
+  const [seriesLoading, setSeriesLoading] = useState(true);
   const [totalCards, setTotalCards] = useState(0);
   const [page, setPage] = useState(1);
   const [pageSize] = useState(100); // Changé à 100 cartes par page
@@ -46,16 +46,27 @@ const Inventory = () => {
   
   const { addToCart } = useCart();
 
-  // Chargement des séries dès l'initialisation de la page
+  // Chargement de toutes les séries dès l'initialisation de la page
   useEffect(() => {
     const loadSeries = async () => {
       try {
-        // S'assurer que les expansions sont chargées avant de récupérer les séries
+        setSeriesLoading(true);
+        console.log("Chargement de toutes les séries disponibles...");
+        
+        // S'assurer que les expansions sont chargées avant
         await fetchExpansions();
+        
+        // Récupérer toutes les séries (pas seulement celles de la première page)
         const seriesData = await fetchPokemonSeries();
-        setSeries(seriesData);
+        console.log(`${seriesData.length} séries chargées pour l'affichage dans les filtres`);
+        
+        // Trier les séries par nom
+        const sortedSeries = [...seriesData].sort((a, b) => a.name.localeCompare(b.name));
+        setSeries(sortedSeries);
       } catch (error) {
         console.error("Erreur lors du chargement des séries:", error);
+      } finally {
+        setSeriesLoading(false);
       }
     };
     
@@ -308,35 +319,49 @@ const Inventory = () => {
             
             <div className="mb-4">
               <label className="text-sm font-medium mb-1 block">
-                Série
+                Série {seriesLoading && "(chargement...)"}
               </label>
-              <div className="space-y-1 max-h-60 overflow-y-auto">
-                {series.map((serie) => (
-                  <div key={serie.id} className="flex items-center">
-                    <Checkbox
-                      id={`series-${serie.id}`}
-                      className="mr-2"
-                      checked={filterOptions.series.includes(serie.name)}
-                      onCheckedChange={(checked) => {
-                        if (checked) {
-                          setFilterOptions(prev => ({
-                            ...prev,
-                            series: [...prev.series, serie.name]
-                          }));
-                        } else {
-                          setFilterOptions(prev => ({
-                            ...prev,
-                            series: prev.series.filter(s => s !== serie.name)
-                          }));
-                        }
-                      }}
-                    />
-                    <label htmlFor={`series-${serie.id}`} className="text-sm cursor-pointer">
-                      {serie.name}
-                    </label>
-                  </div>
-                ))}
-              </div>
+              {seriesLoading ? (
+                <div className="py-2 flex justify-center">
+                  <Loader size="sm" />
+                </div>
+              ) : (
+                <div className="space-y-1 max-h-60 overflow-y-auto">
+                  {series.length === 0 ? (
+                    <p className="text-sm text-muted-foreground">Aucune série trouvée</p>
+                  ) : (
+                    series.map((serie) => (
+                      <div key={serie.id} className="flex items-center">
+                        <Checkbox
+                          id={`series-${serie.id}`}
+                          className="mr-2"
+                          checked={filterOptions.series.includes(serie.name)}
+                          onCheckedChange={(checked) => {
+                            if (checked) {
+                              setFilterOptions(prev => ({
+                                ...prev,
+                                series: [...prev.series, serie.name]
+                              }));
+                            } else {
+                              setFilterOptions(prev => ({
+                                ...prev,
+                                series: prev.series.filter(s => s !== serie.name)
+                              }));
+                            }
+                          }}
+                        />
+                        <label 
+                          htmlFor={`series-${serie.id}`} 
+                          className="text-sm cursor-pointer truncate"
+                          title={serie.name}
+                        >
+                          {serie.name}
+                        </label>
+                      </div>
+                    ))
+                  )}
+                </div>
+              )}
             </div>
             
             <div className="mb-4">
