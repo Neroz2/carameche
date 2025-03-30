@@ -3,7 +3,7 @@ import HeroSection from "@/components/home/HeroSection";
 import SeriesGrid from "@/components/home/SeriesGrid";
 import FeaturedCards from "@/components/home/FeaturedCards";
 import { useEffect, useState } from "react";
-import { fetchPokemonSeries } from "@/lib/api";
+import { fetchPokemonSeries, fetchExpansions } from "@/lib/api";
 import { PokemonSeries } from "@/lib/types";
 import Loader from "@/components/ui/Loader";
 
@@ -19,18 +19,26 @@ const Index = () => {
       try {
         setLoading(true);
         
+        // S'assurer que les expansions sont chargées d'abord
+        await fetchExpansions();
+        
         // Utiliser les données en cache si disponibles
         if (cachedSeries) {
+          console.log("Utilisation des séries en cache");
           setSeries(JSON.parse(cachedSeries));
           setLoading(false);
           
           // Rafraîchir les données en arrière-plan
+          console.log("Rafraîchissement des séries en arrière-plan");
           const freshData = await fetchPokemonSeries();
+          console.log(`Récupération de ${freshData.length} séries fraîches`);
           setSeries(freshData);
           sessionStorage.setItem('pokemonSeries', JSON.stringify(freshData));
         } else {
           // Sinon, charger depuis l'API
+          console.log("Aucune série en cache, chargement depuis l'API");
           const seriesData = await fetchPokemonSeries();
+          console.log(`Récupération de ${seriesData.length} séries depuis l'API`);
           setSeries(seriesData);
           sessionStorage.setItem('pokemonSeries', JSON.stringify(seriesData));
         }

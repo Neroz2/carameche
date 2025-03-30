@@ -23,7 +23,7 @@ const rarityMapping = {
   'Promo': 'Promo',
 };
 
-// Ceci sera remplacé par les données de l'API
+// Carte des expansions par défaut (fallback)
 const expansionMapping: Record<number, string> = {
   2152: 'Silver Lance',
   2153: 'Jet Black Spirit',
@@ -44,6 +44,18 @@ const expansionMapping: Record<number, string> = {
   2168: 'Unbroken Bonds',
   2169: 'Detective Pikachu',
   2170: 'Team Up',
+  // Ajout de nouvelles expansions connues
+  2171: 'Scarlet & Violet',
+  2172: 'Paldea Evolved',
+  2173: 'Obsidian Flames',
+  2174: 'Paradox Rift',
+  2175: 'Temporal Forces',
+  2176: 'Astral Radiance',
+  2177: 'Lost Origin',
+  2178: 'Silver Tempest',
+  2179: 'Crown Zenith',
+  2180: 'Brilliant Stars',
+  2181: 'Pokémon GO',
 };
 
 // Stockage des expansions récupérées de l'API
@@ -56,6 +68,7 @@ export const fetchExpansions = async (): Promise<Record<number, string>> => {
   }
 
   try {
+    console.log("Chargement des expansions depuis l'API...");
     const response = await fetch('https://api.cardtrader.com/api/v2/expansions', {
       headers: {
         'Authorization': `Bearer ${CARDTRADER_API_TOKEN}`
@@ -64,6 +77,7 @@ export const fetchExpansions = async (): Promise<Record<number, string>> => {
 
     if (response.ok) {
       const data = await response.json();
+      console.log(`Récupération de ${data.length} expansions depuis l'API`);
       
       // Création d'un mapping des IDs vers les noms
       expansionsData = data.reduce((acc: Record<number, string>, expansion: any) => {
@@ -71,9 +85,12 @@ export const fetchExpansions = async (): Promise<Record<number, string>> => {
         return acc;
       }, {});
       
+      // Fusion avec le mapping statique pour s'assurer d'avoir toutes les expansions
+      expansionsData = { ...expansionMapping, ...expansionsData };
+      
       return expansionsData;
     } else {
-      console.error('Échec de la récupération des expansions CardTrader');
+      console.error('Échec de la récupération des expansions CardTrader', await response.text());
       return expansionMapping; // Fallback au mapping statique
     }
   } catch (error) {
@@ -172,11 +189,15 @@ let cachedSeries: PokemonSeries[] = [];
 
 export const fetchPokemonSeries = async (): Promise<PokemonSeries[]> => {
   if (cachedSeries.length > 0) {
+    console.log(`Retourne ${cachedSeries.length} séries en cache`);
     return cachedSeries;
   }
   
+  console.log("Pas de séries en cache, chargement des cartes pour extraire les séries...");
   const { cards } = await fetchPokemonCards();
+  console.log(`${cards.length} cartes chargées pour extraire les séries`);
   const series = extractUniqueSeries(cards);
+  console.log(`${series.length} séries extraites des cartes`);
   cachedSeries = series;
   return series;
 };
@@ -184,12 +205,13 @@ export const fetchPokemonSeries = async (): Promise<PokemonSeries[]> => {
 export const fetchPokemonCards = async (
   seriesFilter?: string,
   page: number = 1,
-  pageSize: number = 24,
+  pageSize: number = 100,
   filterOptions?: Partial<FilterOptions>
 ): Promise<{ cards: PokemonCard[], total: number }> => {
   // Charger les cartes depuis l'API si elles ne sont pas déjà en cache
   if (cachedCards.length === 0) {
     try {
+      console.log("Pas de cartes en cache, chargement depuis l'API...");
       const response = await fetch('https://api.cardtrader.com/api/v2/products/export', {
         headers: {
           'Authorization': `Bearer ${CARDTRADER_API_TOKEN}`
@@ -198,8 +220,13 @@ export const fetchPokemonCards = async (
       
       if (response.ok) {
         const data = await response.json();
+        console.log(`${data.length} cartes récupérées depuis l'API CardTrader`);
         cachedCards = await transformCardTraderData(data);
+        console.log(`${cachedCards.length} cartes transformées et mises en cache`);
+        
+        // Extraire et mettre en cache les séries
         cachedSeries = extractUniqueSeries(cachedCards);
+        console.log(`${cachedSeries.length} séries extraites et mises en cache`);
       } else {
         console.warn('Échec de la requête CardTrader, utilisation des données mockées');
         return { cards: [], total: 0 };
@@ -220,10 +247,15 @@ export const fetchPokemonCards = async (
       }
       
       if (filterOptions) {
-        if (filterOptions.search && 
-            !card.name.toLowerCase().includes(filterOptions.search.toLowerCase()) &&
-            !card.nameFr.toLowerCase().includes(filterOptions.search.toLowerCase())) {
-          return false;
+        if (filterOptions.search && filterOptions.search.trim() !== '') {
+          const searchLower = filterOptions.search.toLowerCase();
+          // Recherche dans le nom anglais ET français
+          const nameMatch = card.name.toLowerCase().includes(searchLower);
+          const nameFrMatch = card.nameFr.toLowerCase().includes(searchLower);
+          
+          if (!nameMatch && !nameFrMatch) {
+            return false;
+          }
         }
         
         if (filterOptions.series && filterOptions.series.length > 0 && 
@@ -246,17 +278,17 @@ export const fetchPokemonCards = async (
           return false;
         }
         
-        if (filterOptions.priceMin && card.price < filterOptions.priceMin) {
+        if (filterOptions.priceMin !== undefined && filterOptions.priceMin > 0 && card.price < filterOptions.priceMin) {
           return false;
         }
-        if (filterOptions.priceMax && card.price > filterOptions.priceMax) {
+        if (filterOptions.priceMax !== undefined && filterOptions.priceMax > 0 && card.price > filterOptions.priceMax) {
           return false;
         }
         
-        if (filterOptions.isReverse !== null && card.isReverse !== filterOptions.isReverse) {
+        if (filterOptions.isReverse !== undefined && filterOptions.isReverse !== null && card.isReverse !== filterOptions.isReverse) {
           return false;
         }
-        if (filterOptions.isPromo !== null && card.isPromo !== filterOptions.isPromo) {
+        if (filterOptions.isPromo !== undefined && filterOptions.isPromo !== null && card.isPromo !== filterOptions.isPromo) {
           return false;
         }
         
