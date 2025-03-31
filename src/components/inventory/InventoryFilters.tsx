@@ -1,3 +1,4 @@
+
 import React from "react";
 import { FilterOptions, PokemonSeries } from "@/lib/types";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -6,6 +7,8 @@ import Button from "@/components/common/Button";
 import Loader from "@/components/ui/Loader";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Input } from "@/components/ui/input";
+import { Slider } from "@/components/ui/slider";
 
 const ALL_RARITIES = [
   'Common', 
@@ -68,6 +71,54 @@ const InventoryFilters: React.FC<InventoryFiltersProps> = ({
     }));
   };
 
+  // Organiser les séries par blocs
+  const seriesBlocks = React.useMemo(() => {
+    const blocks: Record<string, PokemonSeries[]> = {
+      "Scarlet & Violet": [],
+      "Sword & Shield": [],
+      "Sun & Moon": [],
+      "XY": [],
+      "Black & White": [],
+      "HeartGold & SoulSilver": [],
+      "Platinum": [],
+      "Diamond & Pearl": [],
+      "EX Series": [],
+      "Classic": [],
+      "Autres": []
+    };
+
+    if (series && series.length > 0) {
+      series.forEach(serie => {
+        if (serie.name.includes("Scarlet & Violet")) {
+          blocks["Scarlet & Violet"].push(serie);
+        } else if (serie.name.includes("Sword & Shield") || serie.name.startsWith("SWSH")) {
+          blocks["Sword & Shield"].push(serie);
+        } else if (serie.name.includes("Sun & Moon") || serie.name.startsWith("SM")) {
+          blocks["Sun & Moon"].push(serie);
+        } else if (serie.name.includes("XY") || serie.name.startsWith("XY")) {
+          blocks["XY"].push(serie);
+        } else if (serie.name.includes("Black & White") || serie.name.startsWith("BW")) {
+          blocks["Black & White"].push(serie);
+        } else if (serie.name.includes("HeartGold") || serie.name.includes("SoulSilver") || serie.name.includes("Call of Legends")) {
+          blocks["HeartGold & SoulSilver"].push(serie);
+        } else if (serie.name.includes("Platinum")) {
+          blocks["Platinum"].push(serie);
+        } else if (serie.name.includes("Diamond & Pearl") || serie.name.includes("DP")) {
+          blocks["Diamond & Pearl"].push(serie);
+        } else if (serie.name.includes("EX") || serie.name.includes("Aquapolis") || serie.name.includes("Skyridge") || serie.name.includes("Expedition")) {
+          blocks["EX Series"].push(serie);
+        } else if (serie.name.includes("Base Set") || serie.name.includes("Team Rocket") || serie.name.includes("Jungle") || serie.name.includes("Fossil") || serie.name.includes("Gym") || serie.name.includes("Neo")) {
+          blocks["Classic"].push(serie);
+        } else {
+          blocks["Autres"].push(serie);
+        }
+      });
+    }
+
+    // Filtrer les blocs vides
+    return Object.entries(blocks).filter(([_, blockSeries]) => blockSeries.length > 0);
+  }, [series]);
+
   const renderDesktopFilters = () => (
     <div className="hidden lg:block w-72 space-y-6">
       <div className="bg-card rounded-lg border p-5 shadow-sm transition-all duration-300 hover:shadow-md">
@@ -78,11 +129,11 @@ const InventoryFilters: React.FC<InventoryFiltersProps> = ({
             Recherche
           </label>
           <div className="relative">
-            <input
+            <Input
               id="search"
               type="text"
               placeholder="Nom de carte..."
-              className="w-full p-2.5 pl-9 rounded-md border border-input bg-background text-sm focus:outline-none focus:ring-2 focus:ring-primary/20"
+              className="pl-9"
               value={filterOptions.search}
               onChange={handleSearchInput}
             />
@@ -102,37 +153,42 @@ const InventoryFilters: React.FC<InventoryFiltersProps> = ({
                 </div>
               ) : (
                 <ScrollArea className="h-60 pr-4">
-                  <div className="space-y-1.5">
-                    {series.length === 0 ? (
+                  <div className="space-y-4">
+                    {seriesBlocks.length === 0 ? (
                       <p className="text-sm text-muted-foreground">Aucune série trouvée</p>
                     ) : (
-                      series.map((serie) => (
-                        <div key={serie.id} className="flex items-center group hover:bg-accent/30 rounded-md p-1 transition-colors">
-                          <Checkbox
-                            id={`series-${serie.id}`}
-                            className="mr-2 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground"
-                            checked={filterOptions.series.includes(serie.name)}
-                            onCheckedChange={(checked) => {
-                              if (checked) {
-                                setFilterOptions(prev => ({
-                                  ...prev,
-                                  series: [...prev.series, serie.name]
-                                }));
-                              } else {
-                                setFilterOptions(prev => ({
-                                  ...prev,
-                                  series: prev.series.filter(s => s !== serie.name)
-                                }));
-                              }
-                            }}
-                          />
-                          <label 
-                            htmlFor={`series-${serie.id}`} 
-                            className="text-sm cursor-pointer truncate text-foreground group-hover:text-foreground"
-                            title={serie.name}
-                          >
-                            {serie.name}
-                          </label>
+                      seriesBlocks.map(([blockName, blockSeries]) => (
+                        <div key={blockName} className="space-y-1.5">
+                          <h4 className="text-xs font-semibold uppercase text-muted-foreground mb-1.5 px-1">{blockName}</h4>
+                          {blockSeries.map((serie) => (
+                            <div key={serie.id} className="flex items-center group hover:bg-accent/30 rounded-md p-1 transition-colors">
+                              <Checkbox
+                                id={`series-${serie.id}`}
+                                className="mr-2 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground"
+                                checked={filterOptions.series.includes(serie.name)}
+                                onCheckedChange={(checked) => {
+                                  if (checked) {
+                                    setFilterOptions(prev => ({
+                                      ...prev,
+                                      series: [...prev.series, serie.name]
+                                    }));
+                                  } else {
+                                    setFilterOptions(prev => ({
+                                      ...prev,
+                                      series: prev.series.filter(s => s !== serie.name)
+                                    }));
+                                  }
+                                }}
+                              />
+                              <label 
+                                htmlFor={`series-${serie.id}`} 
+                                className="text-sm cursor-pointer truncate text-foreground group-hover:text-foreground"
+                                title={serie.name}
+                              >
+                                {serie.name}
+                              </label>
+                            </div>
+                          ))}
                         </div>
                       ))
                     )}
@@ -148,25 +204,29 @@ const InventoryFilters: React.FC<InventoryFiltersProps> = ({
             </AccordionTrigger>
             <AccordionContent>
               <div className="flex items-center space-x-2 py-2">
-                <input
+                <Input
                   type="number"
                   placeholder="Min"
-                  className="w-full p-2 rounded-md border border-input bg-background text-sm focus:outline-none focus:ring-2 focus:ring-primary/20"
+                  step="0.01"
+                  min="0"
+                  className="w-full"
                   value={filterOptions.priceMin || ""}
                   onChange={(e) => setFilterOptions(prev => ({
                     ...prev,
-                    priceMin: Number(e.target.value)
+                    priceMin: parseFloat(e.target.value) || 0
                   }))}
                 />
                 <span className="text-muted-foreground">-</span>
-                <input
+                <Input
                   type="number"
                   placeholder="Max"
-                  className="w-full p-2 rounded-md border border-input bg-background text-sm focus:outline-none focus:ring-2 focus:ring-primary/20"
+                  step="0.01"
+                  min="0"
+                  className="w-full"
                   value={filterOptions.priceMax || ""}
                   onChange={(e) => setFilterOptions(prev => ({
                     ...prev,
-                    priceMax: Number(e.target.value)
+                    priceMax: parseFloat(e.target.value) || 0
                   }))}
                 />
               </div>
@@ -379,11 +439,11 @@ const InventoryFilters: React.FC<InventoryFiltersProps> = ({
                 Recherche
               </label>
               <div className="relative">
-                <input
+                <Input
                   id="mobile-search"
                   type="text"
                   placeholder="Nom de carte..."
-                  className="w-full p-2.5 pl-9 rounded-md border border-input"
+                  className="pl-9"
                   value={filterOptions.search}
                   onChange={handleSearchInput}
                 />
@@ -398,25 +458,29 @@ const InventoryFilters: React.FC<InventoryFiltersProps> = ({
                 </AccordionTrigger>
                 <AccordionContent>
                   <div className="flex items-center space-x-2 py-2">
-                    <input
+                    <Input
                       type="number"
                       placeholder="Min"
-                      className="w-full p-2.5 rounded-md border border-input"
+                      step="0.01"
+                      min="0"
+                      className="w-full"
                       value={filterOptions.priceMin || ""}
                       onChange={(e) => setFilterOptions(prev => ({
                         ...prev,
-                        priceMin: Number(e.target.value)
+                        priceMin: parseFloat(e.target.value) || 0
                       }))}
                     />
                     <span className="text-muted-foreground">-</span>
-                    <input
+                    <Input
                       type="number"
                       placeholder="Max"
-                      className="w-full p-2.5 rounded-md border border-input"
+                      step="0.01"
+                      min="0"
+                      className="w-full"
                       value={filterOptions.priceMax || ""}
                       onChange={(e) => setFilterOptions(prev => ({
                         ...prev,
-                        priceMax: Number(e.target.value)
+                        priceMax: parseFloat(e.target.value) || 0
                       }))}
                     />
                   </div>
@@ -434,30 +498,35 @@ const InventoryFilters: React.FC<InventoryFiltersProps> = ({
                     </div>
                   ) : (
                     <ScrollArea className="h-52 pr-2">
-                      <div className="space-y-2 py-2">
-                        {series.map((serie) => (
-                          <div key={`mobile-${serie.id}`} className="flex items-center">
-                            <Checkbox
-                              id={`mobile-series-${serie.id}`}
-                              className="mr-2"
-                              checked={filterOptions.series.includes(serie.name)}
-                              onCheckedChange={(checked) => {
-                                if (checked) {
-                                  setFilterOptions(prev => ({
-                                    ...prev,
-                                    series: [...prev.series, serie.name]
-                                  }));
-                                } else {
-                                  setFilterOptions(prev => ({
-                                    ...prev,
-                                    series: prev.series.filter(s => s !== serie.name)
-                                  }));
-                                }
-                              }}
-                            />
-                            <label htmlFor={`mobile-series-${serie.id}`} className="text-sm">
-                              {serie.name}
-                            </label>
+                      <div className="space-y-4 py-2">
+                        {seriesBlocks.map(([blockName, blockSeries]) => (
+                          <div key={`mobile-${blockName}`} className="space-y-1.5">
+                            <h4 className="text-xs font-semibold uppercase text-muted-foreground mb-1.5 px-1">{blockName}</h4>
+                            {blockSeries.map((serie) => (
+                              <div key={`mobile-${serie.id}`} className="flex items-center">
+                                <Checkbox
+                                  id={`mobile-series-${serie.id}`}
+                                  className="mr-2"
+                                  checked={filterOptions.series.includes(serie.name)}
+                                  onCheckedChange={(checked) => {
+                                    if (checked) {
+                                      setFilterOptions(prev => ({
+                                        ...prev,
+                                        series: [...prev.series, serie.name]
+                                      }));
+                                    } else {
+                                      setFilterOptions(prev => ({
+                                        ...prev,
+                                        series: prev.series.filter(s => s !== serie.name)
+                                      }));
+                                    }
+                                  }}
+                                />
+                                <label htmlFor={`mobile-series-${serie.id}`} className="text-sm">
+                                  {serie.name}
+                                </label>
+                              </div>
+                            ))}
                           </div>
                         ))}
                       </div>
