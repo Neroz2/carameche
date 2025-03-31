@@ -1,4 +1,3 @@
-
 export interface PokemonSeries {
   id: string;
   name: string;
@@ -6,6 +5,7 @@ export interface PokemonSeries {
   symbol: string;
   releaseDate: string;
   totalCards: number;
+  block?: string; // Ajout du bloc
 }
 
 export interface PokemonCard {

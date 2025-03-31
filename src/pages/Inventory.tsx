@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { 
@@ -8,8 +9,7 @@ import {
   X,
   LayoutGrid,
   LayoutList,
-  Plus,
-  Minus
+  Star
 } from "lucide-react";
 import { PokemonCard, SortOption, FilterOptions, ViewMode, PokemonSeries } from "@/lib/types";
 import { fetchPokemonCards, fetchPokemonSeries, fetchExpansions } from "@/lib/api";

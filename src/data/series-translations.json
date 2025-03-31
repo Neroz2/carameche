@@ -1,0 +1,165 @@
+
+{
+  "translations": {
+    "Base Set": {
+      "fr": "Set de Base",
+      "logo": "https://assets.pokemon.com/assets/cms2/img/trading-card-game/_downloads/xy/xy11/logos/xy11_logo_169_en.jpg"
+    },
+    "Jungle": {
+      "fr": "Jungle",
+      "logo": "https://assets.pokemon.com/assets/cms2/img/trading-card-game/_downloads/sm/sm3/logos/sm3_logo_169_en.jpg"
+    },
+    "Fossil": {
+      "fr": "Fossile",
+      "logo": "https://assets.pokemon.com/assets/cms2/img/trading-card-game/_downloads/sm/sm4/logos/sm4_logo_169_en.jpg"
+    },
+    "Team Rocket": {
+      "fr": "Team Rocket",
+      "logo": "https://assets.pokemon.com/assets/cms2/img/trading-card-game/_downloads/sm/sm5/logos/sm5_logo_169_en.jpg"
+    },
+    "Gym Heroes": {
+      "fr": "Dresseurs Heroes",
+      "logo": "https://assets.pokemon.com/assets/cms2/img/trading-card-game/_downloads/sm/sm6/logos/sm6_logo_169_en.jpg"
+    },
+    "Gym Challenge": {
+      "fr": "Dresseurs Challenge",
+      "logo": "https://assets.pokemon.com/assets/cms2/img/trading-card-game/_downloads/sm/sm7/logos/sm7_logo_169_en.jpg"
+    },
+    "Neo Genesis": {
+      "fr": "Neo Genesis",
+      "logo": "https://assets.pokemon.com/assets/cms2/img/trading-card-game/_downloads/sm/sm8/logos/sm8_logo_169_en.jpg"
+    },
+    "Neo Discovery": {
+      "fr": "Neo Discovery",
+      "logo": "https://assets.pokemon.com/assets/cms2/img/trading-card-game/_downloads/sm/sm9/logos/sm9_logo_169_en.jpg"
+    },
+    "Neo Revelation": {
+      "fr": "Neo Revelation",
+      "logo": "https://assets.pokemon.com/assets/cms2/img/trading-card-game/_downloads/sm/sm10/logos/sm10_logo_169_en.jpg"
+    },
+    "Neo Destiny": {
+      "fr": "Neo Destiny",
+      "logo": "https://assets.pokemon.com/assets/cms2/img/trading-card-game/_downloads/sm/sm11/logos/sm11_logo_169_en.jpg"
+    },
+    "Legendary Collection": {
+      "fr": "Collection Légendaire",
+      "logo": "https://assets.pokemon.com/assets/cms2/img/trading-card-game/_downloads/sm/sm12/logos/sm12_logo_169_en.jpg"
+    },
+    "Expedition Base Set": {
+      "fr": "Expedition",
+      "logo": "https://assets.pokemon.com/assets/cms2/img/trading-card-game/_downloads/swsh/swsh1/logos/swsh1_logo_169_en.jpg"
+    },
+    "Aquapolis": {
+      "fr": "Aquapolis",
+      "logo": "https://assets.pokemon.com/assets/cms2/img/trading-card-game/_downloads/swsh/swsh2/logos/swsh2_logo_169_en.jpg"
+    },
+    "Skyridge": {
+      "fr": "Skyridge",
+      "logo": "https://assets.pokemon.com/assets/cms2/img/trading-card-game/_downloads/swsh/swsh3/logos/swsh3_logo_169_en.jpg"
+    },
+    "EX Ruby & Sapphire": {
+      "fr": "EX Rubis & Saphir",
+      "logo": "https://assets.pokemon.com/assets/cms2/img/trading-card-game/_downloads/swsh/swsh4/logos/swsh4_logo_169_en.jpg"
+    },
+    "EX Sandstorm": {
+      "fr": "EX Tempête de Sable",
+      "logo": "https://assets.pokemon.com/assets/cms2/img/trading-card-game/_downloads/swsh/swsh5/logos/swsh5_logo_169_en.jpg"
+    },
+    "EX Dragon": {
+      "fr": "EX Dragon",
+      "logo": "https://assets.pokemon.com/assets/cms2/img/trading-card-game/_downloads/swsh/swsh6/logos/swsh6_logo_169_en.jpg"
+    },
+    "EX Team Magma vs Team Aqua": {
+      "fr": "EX Team Magma vs Team Aqua",
+      "logo": "https://assets.pokemon.com/assets/cms2/img/trading-card-game/_downloads/swsh/swsh7/logos/swsh7_logo_169_en.jpg"
+    },
+    "EX Hidden Legends": {
+      "fr": "EX Légendes Oubliées",
+      "logo": "https://assets.pokemon.com/assets/cms2/img/trading-card-game/_downloads/swsh/swsh8/logos/swsh8_logo_169_en.jpg"
+    },
+    "EX FireRed & LeafGreen": {
+      "fr": "EX Rouge Feu & Vert Feuille",
+      "logo": "https://assets.pokemon.com/assets/cms2/img/trading-card-game/_downloads/swsh/swsh9/logos/swsh9_logo_169_en.jpg"
+    },
+    "EX Team Rocket Returns": {
+      "fr": "EX Team Rocket Returns",
+      "logo": "https://assets.pokemon.com/assets/cms2/img/trading-card-game/_downloads/swsh/swsh10/logos/swsh10_logo_169_en.jpg"
+    },
+    "EX Deoxys": {
+      "fr": "EX Deoxys",
+      "logo": "https://assets.pokemon.com/assets/cms2/img/trading-card-game/_downloads/swsh/swsh11/logos/swsh11_logo_169_en.jpg"
+    },
+    "EX Emerald": {
+      "fr": "EX Émeraude",
+      "logo": "https://assets.pokemon.com/assets/cms2/img/trading-card-game/_downloads/swsh/swsh12/logos/swsh12_logo_169_en.jpg"
+    },
+    "EX Unseen Forces": {
+      "fr": "EX Forces Cachées",
+      "logo": "https://assets.pokemon.com/assets/cms2/img/trading-card-game/_downloads/swsh/swsh12/logos/swsh12_logo_169_en.jpg"
+    },
+    "EX Delta Species": {
+      "fr": "EX Espèces Delta",
+      "logo": "https://assets.pokemon.com/assets/cms2/img/trading-card-game/_downloads/sv/sv1/logos/sv1_logo_169_en.jpg"
+    },
+    "EX Legend Maker": {
+      "fr": "EX Créateur de Légendes",
+      "logo": "https://assets.pokemon.com/assets/cms2/img/trading-card-game/_downloads/sv/sv2/logos/sv2_logo_169_en.jpg"
+    },
+    "EX Holon Phantoms": {
+      "fr": "EX Fantômes Holon",
+      "logo": "https://assets.pokemon.com/assets/cms2/img/trading-card-game/_downloads/sv/sv3/logos/sv3_logo_169_en.jpg"
+    },
+    "EX Crystal Guardians": {
+      "fr": "EX Gardiens de Cristal",
+      "logo": "https://assets.pokemon.com/assets/cms2/img/trading-card-game/_downloads/sv/sv4/logos/sv4_logo_169_en.jpg"
+    },
+    "EX Dragon Frontiers": {
+      "fr": "EX Frontières Dragon",
+      "logo": "https://assets.pokemon.com/assets/cms2/img/trading-card-game/_downloads/sv/sv4p5/logos/sv4p5_logo_169_en.jpg"
+    },
+    "EX Power Keepers": {
+      "fr": "EX Gardiens du Pouvoir",
+      "logo": "https://assets.pokemon.com/assets/cms2/img/trading-card-game/_downloads/pgo/pgo/logos/pgo_logo_169_en.jpg"
+    },
+    "Diamond & Pearl": {
+      "fr": "Diamant & Perle",
+      "logo": "https://assets.pokemon.com/assets/cms2/img/trading-card-game/_downloads/swsh/swsh9/logos/swsh9_logo_169_en.jpg"
+    },
+    "Platinum": {
+      "fr": "Platine",
+      "logo": "https://assets.pokemon.com/assets/cms2/img/trading-card-game/_downloads/sm/sm10/logos/sm10_logo_169_en.jpg"
+    },
+    "HeartGold & SoulSilver": {
+      "fr": "HeartGold & SoulSilver",
+      "logo": "https://assets.pokemon.com/assets/cms2/img/trading-card-game/_downloads/xy/xy12/logos/xy12_logo_169_en.jpg"
+    },
+    "Call of Legends": {
+      "fr": "Appel des Légendes",
+      "logo": "https://assets.pokemon.com/assets/cms2/img/trading-card-game/_downloads/xy/xy12/logos/xy12_logo_169_en.jpg"
+    },
+    "Black & White": {
+      "fr": "Noir & Blanc",
+      "logo": "https://assets.pokemon.com/assets/cms2/img/trading-card-game/_downloads/bw/bw1/logos/bw1_logo_169_en.jpg"
+    },
+    "XY": {
+      "fr": "XY",
+      "logo": "https://assets.pokemon.com/assets/cms2/img/trading-card-game/_downloads/xy/xy1/logos/xy1_logo_169_en.jpg"
+    },
+    "Sun & Moon": {
+      "fr": "Soleil & Lune",
+      "logo": "https://assets.pokemon.com/assets/cms2/img/trading-card-game/_downloads/sm/sm1/logos/sm1_logo_169_en.jpg"
+    },
+    "Sword & Shield": {
+      "fr": "Épée & Bouclier",
+      "logo": "https://assets.pokemon.com/assets/cms2/img/trading-card-game/_downloads/swsh/swsh1/logos/swsh1_logo_169_en.jpg"
+    },
+    "Scarlet & Violet": {
+      "fr": "Écarlate & Violet",
+      "logo": "https://assets.pokemon.com/assets/cms2/img/trading-card-game/_downloads/sv/sv1/logos/sv1_logo_169_en.jpg"
+    },
+    "Promo Cards": {
+      "fr": "Cartes Promo",
+      "logo": "https://assets.pokemon.com/assets/cms2/img/trading-card-game/_downloads/sv/svp/logos/svp_logo_169_en.jpg"
+    }
+  }
+}

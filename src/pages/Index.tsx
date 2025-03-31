@@ -1,4 +1,3 @@
-
 import HeroSection from "@/components/home/HeroSection";
 import SeriesGrid from "@/components/home/SeriesGrid";
 import FeaturedCards from "@/components/home/FeaturedCards";
@@ -6,12 +5,14 @@ import { useEffect, useState } from "react";
 import { fetchPokemonSeries, fetchExpansions } from "@/lib/api";
 import { PokemonSeries } from "@/lib/types";
 import Loader from "@/components/ui/Loader";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ArrowDownAZ, ArrowUpAZ, Calendar, ListFilter, Star } from "lucide-react";
 
 const Index = () => {
   const [series, setSeries] = useState<PokemonSeries[]>([]);
   const [loading, setLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState("series");
 
-  // Récupérer les séries depuis l'API avec mise en cache
   useEffect(() => {
     const cachedSeries = sessionStorage.getItem('pokemonSeries');
     
@@ -19,32 +20,24 @@ const Index = () => {
       try {
         setLoading(true);
         
-        // S'assurer que les expansions sont chargées d'abord
         await fetchExpansions();
         
-        // Utiliser les données en cache si disponibles
         if (cachedSeries) {
           console.log("Utilisation des séries en cache");
           setSeries(JSON.parse(cachedSeries));
           setLoading(false);
           
-          // Rafraîchir les données en arrière-plan
           console.log("Rafraîchissement des séries en arrière-plan");
           const freshData = await fetchPokemonSeries();
           console.log(`Récupération de ${freshData.length} séries fraîches`);
-          // Trier les séries par nom pour une meilleure présentation
-          const sortedSeries = [...freshData].sort((a, b) => a.name.localeCompare(b.name));
-          setSeries(sortedSeries);
-          sessionStorage.setItem('pokemonSeries', JSON.stringify(sortedSeries));
+          setSeries(freshData);
+          sessionStorage.setItem('pokemonSeries', JSON.stringify(freshData));
         } else {
-          // Sinon, charger depuis l'API
           console.log("Aucune série en cache, chargement depuis l'API");
           const seriesData = await fetchPokemonSeries();
           console.log(`Récupération de ${seriesData.length} séries depuis l'API`);
-          // Trier les séries par nom pour une meilleure présentation
-          const sortedSeries = [...seriesData].sort((a, b) => a.name.localeCompare(b.name));
-          setSeries(sortedSeries);
-          sessionStorage.setItem('pokemonSeries', JSON.stringify(sortedSeries));
+          setSeries(seriesData);
+          sessionStorage.setItem('pokemonSeries', JSON.stringify(seriesData));
         }
       } catch (error) {
         console.error("Erreur lors du chargement des séries:", error);
@@ -56,7 +49,6 @@ const Index = () => {
     loadSeries();
   }, []);
 
-  // Scroll to top when component mounts
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
@@ -64,16 +56,35 @@ const Index = () => {
   return (
     <div className="min-h-screen flex flex-col">
       <HeroSection />
-      {loading ? (
-        <div className="flex justify-center items-center py-20">
-          <Loader size="lg" text="Chargement des séries..." />
-        </div>
-      ) : (
-        <>
-          <FeaturedCards />
-          <SeriesGrid series={series} />
-        </>
-      )}
+      
+      <div className="container mx-auto px-4 mt-8">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+          <TabsList className="grid grid-cols-2 mb-8 w-full max-w-md mx-auto">
+            <TabsTrigger value="series" className="flex items-center justify-center">
+              <ListFilter className="mr-2 h-4 w-4" />
+              Séries
+            </TabsTrigger>
+            <TabsTrigger value="featured" className="flex items-center justify-center">
+              <Star className="mr-2 h-4 w-4" />
+              Cartes Vedettes
+            </TabsTrigger>
+          </TabsList>
+          
+          <TabsContent value="series" className="mt-0">
+            {loading ? (
+              <div className="flex justify-center items-center py-20">
+                <Loader size="lg" text="Chargement des séries..." />
+              </div>
+            ) : (
+              <SeriesGrid series={series} />
+            )}
+          </TabsContent>
+          
+          <TabsContent value="featured" className="mt-0">
+            <FeaturedCards />
+          </TabsContent>
+        </Tabs>
+      </div>
     </div>
   );
 };
