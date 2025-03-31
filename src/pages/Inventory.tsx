@@ -9,7 +9,9 @@ import {
   X,
   LayoutGrid,
   LayoutList,
-  Star
+  Star,
+  Minus,
+  Plus
 } from "lucide-react";
 import { PokemonCard, SortOption, FilterOptions, ViewMode, PokemonSeries } from "@/lib/types";
 import { fetchPokemonCards, fetchPokemonSeries, fetchExpansions } from "@/lib/api";
