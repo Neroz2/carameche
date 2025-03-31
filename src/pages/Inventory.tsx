@@ -1,7 +1,7 @@
 
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import { ShoppingCart, ChevronDown, Filter, Search, X, LayoutGrid, LayoutList, Star, Minus, Plus } from "lucide-react";
+import { ShoppingCart, ChevronDown, Filter, Search, X, LayoutGrid, LayoutList, Star } from "lucide-react";
 import { PokemonCard, SortOption, FilterOptions, ViewMode, PokemonSeries } from "@/lib/types";
 import { fetchPokemonCards, fetchPokemonSeries, fetchExpansions } from "@/lib/api";
 import Loader from "@/components/ui/Loader";
@@ -147,7 +147,7 @@ const Inventory = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col pb-12">
+    <div className="min-h-screen flex flex-col pb-12 bg-background/50">
       <InventoryHeader 
         totalCards={totalCards}
         filterOptions={filterOptions}

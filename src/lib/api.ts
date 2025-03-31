@@ -1,4 +1,3 @@
-
 import { PokemonSeries, PokemonCard, FilterOptions } from './types';
 
 const CARDTRADER_API_TOKEN = "eyJhbGciOiJSUzI1NiJ9.eyJpc3MiOiJjYXJkdHJhZGVyLXByb2R1Y3Rpb24iLCJzdWIiOiJhcHA6MTM5MzgiLCJhdWQiOiJhcHA6MTM5MzgiLCJleHAiOjQ4OTU2MzQ3MTcsImp0aSI6IjQxMjA3NmNjLTcyZTEtNDljOC1iODA2LTE3OTJiNmU3N2JhMyIsImlhdCI6MTczOTk2MTExNywibmFtZSI6Ik5lcm96YnJpY2tzIEFwcCAyMDI1MDIwODE3NDkxOSJ9.PkkEXit3MvxmVij_e5Eyz55k_3EYgQF-2ln9goSfMbQD3mIpDVrSkQa010BfnF9IR1L8fvswAyxk56qiUr2LKm2KXX0iKAvVRR373A3XEDwgNtGGBBAR-rxh8raL1hW8e4AH_bps1tVFTrdZ_W-Odg5egSxLFIxnLgi0a9It5KVeVkjdgLmxYuaCXspgml9TXfgJcJ2GH62izvB5eUsAj4NhobpH5q_Pyfbyw2cJu4HmilQjBSOm4NsmRW7Nd692tNT2semj1Oh1UqV1xel2WewtLaWlUAVHYt2LSMWrEw_kx9Yjk9Kz-rM67tk0nXosKklnIigJpcrmRUXf-O7qJA";
@@ -17,13 +16,33 @@ const rarityMapping = {
   'Common': 'Common',
   'Uncommon': 'Uncommon',
   'Rare': 'Rare',
-  'Holo Rare': 'Ultra Rare',
+  'Holo Rare': 'Holo Rare',
   'Ultra Rare': 'Ultra Rare',
   'Secret Rare': 'Secret Rare',
   'Promo': 'Promo',
+  'Amazing Rare': 'Amazing Rare',
+  'Rare BREAK': 'Rare BREAK',
+  'Rare Holo': 'Rare Holo',
+  'Rare Holo EX': 'Rare Holo EX',
+  'Rare Holo GX': 'Rare Holo GX',
+  'Rare Holo LV.X': 'Rare Holo LV.X',
+  'Rare Holo Star': 'Rare Holo Star',
+  'Rare Holo V': 'Rare Holo V',
+  'Rare Holo VMAX': 'Rare Holo VMAX',
+  'Rare Holo VSTAR': 'Rare Holo VSTAR',
+  'Rare Prime': 'Rare Prime',
+  'Rare Prism Star': 'Rare Prism Star',
+  'Rare Shiny': 'Rare Shiny',
+  'Rare Shiny GX': 'Rare Shiny GX',
+  'Rare Ultra': 'Rare Ultra',
+  'Legend': 'Legend',
+  'Radiant Rare': 'Radiant Rare',
+  'Illustration Rare': 'Illustration Rare',
+  'Special Illustration Rare': 'Special Illustration Rare',
+  'Trainer Gallery Rare': 'Trainer Gallery Rare',
+  'ACE SPEC': 'ACE SPEC',
 };
 
-// Carte des expansions par défaut (fallback)
 const expansionMapping: Record<number, string> = {
   2152: 'Silver Lance',
   2153: 'Jet Black Spirit',
@@ -44,7 +63,6 @@ const expansionMapping: Record<number, string> = {
   2168: 'Unbroken Bonds',
   2169: 'Detective Pikachu',
   2170: 'Team Up',
-  // Ajout de nouvelles expansions connues
   2171: 'Scarlet & Violet',
   2172: 'Paldea Evolved',
   2173: 'Obsidian Flames',
@@ -58,10 +76,8 @@ const expansionMapping: Record<number, string> = {
   2181: 'Pokémon GO',
 };
 
-// Stockage des expansions récupérées de l'API
 let expansionsData: Record<number, string> = {};
 
-// Fonction pour récupérer toutes les expansions depuis l'API
 export const fetchExpansions = async (): Promise<Record<number, string>> => {
   if (Object.keys(expansionsData).length > 0) {
     return expansionsData;
@@ -79,27 +95,24 @@ export const fetchExpansions = async (): Promise<Record<number, string>> => {
       const data = await response.json();
       console.log(`Récupération de ${data.length} expansions depuis l'API`);
       
-      // Création d'un mapping des IDs vers les noms
       expansionsData = data.reduce((acc: Record<number, string>, expansion: any) => {
         acc[expansion.id] = expansion.name;
         return acc;
       }, {});
       
-      // Fusion avec le mapping statique pour s'assurer d'avoir toutes les expansions
       expansionsData = { ...expansionMapping, ...expansionsData };
       
       return expansionsData;
     } else {
       console.error('Échec de la récupération des expansions CardTrader', await response.text());
-      return expansionMapping; // Fallback au mapping statique
+      return expansionMapping;
     }
   } catch (error) {
     console.error('Erreur lors de la récupération des expansions:', error);
-    return expansionMapping; // Fallback au mapping statique
+    return expansionMapping;
   }
 };
 
-// Fonction pour obtenir le nom d'une expansion par son ID
 export const getExpansionName = async (expansionId: number): Promise<string> => {
   const expansions = await fetchExpansions();
   return expansions[expansionId] || 'Unknown Series';
@@ -108,7 +121,6 @@ export const getExpansionName = async (expansionId: number): Promise<string> => 
 const translationCache: Record<string, string> = {};
 
 const transformCardTraderData = async (data: any[]): Promise<PokemonCard[]> => {
-  // Récupérer toutes les expansions dès le début
   const expansions = await fetchExpansions();
   
   return Promise.all(data.map(async (item) => {
@@ -128,7 +140,6 @@ const transformCardTraderData = async (data: any[]): Promise<PokemonCard[]> => {
     
     const image = `${IMAGE_BASE_URL}${item.blueprint_id}.jpg`;
 
-    // Traduire le nom immédiatement pour éviter les problèmes de recherche
     let nameFr;
     try {
       nameFr = await translateCardName(name);
@@ -158,7 +169,6 @@ const transformCardTraderData = async (data: any[]): Promise<PokemonCard[]> => {
   }));
 };
 
-// Cette fonction extrait toutes les séries uniques d'un ensemble de cartes
 const extractUniqueSeries = (cards: PokemonCard[]): PokemonSeries[] => {
   const seriesMap = new Map<string, PokemonSeries>();
   
@@ -188,9 +198,7 @@ const extractUniqueSeries = (cards: PokemonCard[]): PokemonSeries[] => {
 let cachedCards: PokemonCard[] = [];
 let cachedSeries: PokemonSeries[] = [];
 
-// Fonction modifiée pour charger toutes les séries, indépendamment de la pagination
 export const fetchPokemonSeries = async (): Promise<PokemonSeries[]> => {
-  // Si les séries sont déjà en cache, les retourner
   if (cachedSeries.length > 0) {
     console.log(`Retourne ${cachedSeries.length} séries en cache`);
     return cachedSeries;
@@ -198,29 +206,24 @@ export const fetchPokemonSeries = async (): Promise<PokemonSeries[]> => {
   
   console.log("Pas de séries en cache, chargement des cartes pour extraire les séries...");
   
-  // Charger toutes les cartes sans pagination pour extraire toutes les séries
   try {
-    // S'assurer que les cartes sont chargées en premier
     if (cachedCards.length === 0) {
-      // Récupérer toutes les cartes pour extraire toutes les séries
       await fetchAllCards();
     }
     
-    // Extraire les séries des cartes en cache (qui devraient toutes être chargées)
     const series = extractUniqueSeries(cachedCards);
     console.log(`${series.length} séries extraites de toutes les cartes`);
     cachedSeries = series;
     return series;
   } catch (error) {
     console.error("Erreur lors de l'extraction des séries:", error);
-    return []; // Retourner un tableau vide en cas d'erreur
+    return [];
   }
 };
 
-// Nouvelle fonction pour charger toutes les cartes sans pagination
 const fetchAllCards = async (): Promise<void> => {
   if (cachedCards.length > 0) {
-    return; // Cartes déjà chargées
+    return;
   }
   
   try {
@@ -250,12 +253,10 @@ export const fetchPokemonCards = async (
   pageSize: number = 100,
   filterOptions?: Partial<FilterOptions>
 ): Promise<{ cards: PokemonCard[], total: number }> => {
-  // Charger toutes les cartes si elles ne sont pas déjà en cache
   if (cachedCards.length === 0) {
     await fetchAllCards();
   }
   
-  // Filtrer les cartes en fonction des critères
   let filteredCards = cachedCards;
   
   if (filterOptions || seriesFilter) {
@@ -267,7 +268,6 @@ export const fetchPokemonCards = async (
       if (filterOptions) {
         if (filterOptions.search && filterOptions.search.trim() !== '') {
           const searchLower = filterOptions.search.toLowerCase();
-          // Recherche dans le nom anglais ET français
           const nameMatch = card.name.toLowerCase().includes(searchLower);
           const nameFrMatch = card.nameFr.toLowerCase().includes(searchLower);
           
@@ -348,15 +348,14 @@ export const translateCardName = async (englishName: string): Promise<string> =>
   }
   
   try {
-    // Normaliser le nom pour l'API Pokemon
     const normalizedName = englishName.toLowerCase()
-      .replace(/\s+v$/i, '') // Supprimer le "V" à la fin
-      .replace(/\s+vmax$/i, '') // Supprimer le "VMAX" à la fin
-      .replace(/\s+gx$/i, '') // Supprimer le "GX" à la fin
-      .replace(/\s+ex$/i, '') // Supprimer le "EX" à la fin
-      .replace(/[^a-z0-9]/g, '-') // Remplacer les caractères spéciaux par des tirets
-      .replace(/-+/g, '-') // Éviter les tirets multiples
-      .replace(/^-|-$/g, ''); // Supprimer les tirets au début et à la fin
+      .replace(/\s+v$/i, '')
+      .replace(/\s+vmax$/i, '')
+      .replace(/\s+gx$/i, '')
+      .replace(/\s+ex$/i, '')
+      .replace(/[^a-z0-9]/g, '-')
+      .replace(/-+/g, '-')
+      .replace(/^-|-$/g, '');
     
     const response = await fetch(`https://pokeapi.co/api/v2/pokemon-species/${normalizedName}`);
     
@@ -365,7 +364,6 @@ export const translateCardName = async (englishName: string): Promise<string> =>
       const frenchName = data.names.find((nameObj: any) => nameObj.language.name === 'fr')?.name;
       
       if (frenchName) {
-        // Ajouter les suffixes (V, VMAX, GX, etc.) au nom traduit si présents dans le nom anglais
         let suffixedName = frenchName;
         if (/\s+v$/i.test(englishName)) suffixedName += ' V';
         if (/\s+vmax$/i.test(englishName)) suffixedName += ' VMAX';
@@ -377,8 +375,6 @@ export const translateCardName = async (englishName: string): Promise<string> =>
       }
     }
     
-    // Fallback pour les noms qui ne sont pas des Pokémon standards
-    // ou si l'API ne répond pas correctement
     translationCache[englishName] = englishName;
     return englishName;
   } catch (error) {
