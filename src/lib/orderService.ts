@@ -42,7 +42,7 @@ export const fetchAllOrders = async (): Promise<Order[]> => {
           condition: '',
           language: '',
           isHolo: false,
-          isReverse: false,
+          isReverse: item.is_reverse || false,
           isPromo: false
         },
         quantity: item.quantity
@@ -107,7 +107,7 @@ export const fetchOrdersByUsername = async (username: string): Promise<Order[]> 
           condition: '',
           language: '',
           isHolo: false,
-          isReverse: false,
+          isReverse: item.is_reverse || false,
           isPromo: false
         },
         quantity: item.quantity
@@ -179,7 +179,8 @@ export const saveOrder = async (username: string, items: CartItem[]): Promise<st
       card_series: item.card.series,
       card_image: item.card.image,
       price: item.card.price,
-      quantity: item.quantity
+      quantity: item.quantity,
+      is_reverse: item.card.isReverse  // Ajout du champ isReverse
     }));
 
     // Insérer les items de la commande

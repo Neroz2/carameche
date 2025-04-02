@@ -1,7 +1,7 @@
 
 import React from "react";
 import Button from "@/components/common/Button";
-import { FileSearch } from "lucide-react";
+import { FileSearch, RefreshCw } from "lucide-react";
 
 interface InventoryEmptyProps {
   clearFilters: () => void;
@@ -20,8 +20,9 @@ const InventoryEmpty: React.FC<InventoryEmptyProps> = ({ clearFilters }) => {
       <Button 
         onClick={clearFilters} 
         variant="outline" 
-        className="animate-pulse"
+        className="animate-pulse flex items-center gap-2"
       >
+        <RefreshCw size={16} />
         Réinitialiser les filtres
       </Button>
     </div>
