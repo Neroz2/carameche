@@ -1,7 +1,6 @@
-
 import { useState, useEffect } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
-import { ShoppingCart, Trash, ArrowLeft, ChevronUp, ChevronDown, Search, Clock, CheckCircle, X, Package, Truck, CalendarDays, CalendarClock } from "lucide-react";
+import { ShoppingCart, Trash, ArrowLeft, ChevronUp, ChevronDown, Search, Clock, CheckCircle, X, Package, Truck, CalendarDays, CalendarClock, RotateCw } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 import Button from "@/components/common/Button";
 import { toast } from "sonner";
@@ -27,8 +26,6 @@ const Cart = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Si un nom d'utilisateur est fourni et que l'onglet est "orders",
-    // charger automatiquement les commandes
     if (initialUsername && initialTab === "orders") {
       fetchUserOrders(initialUsername);
     }
@@ -48,21 +45,16 @@ const Cart = () => {
     setIsSubmitting(true);
 
     try {
-      // Sauvegarder la commande dans Supabase
       const orderId = await saveOrder(username, items);
       
-      // Success
       toast.success("Commande envoyée avec succès !", {
         description: "Votre commande a été enregistrée et sera traitée prochainement."
       });
       
-      // Stocker l'ID de commande temporairement
       setSavedOrderId(orderId);
       
-      // Clear cart after successful order
       clearCart();
       
-      // Après 5 secondes, rediriger vers la page principale
       setTimeout(() => {
         navigate("/");
       }, 5000);
@@ -109,7 +101,6 @@ const Cart = () => {
     }
   };
 
-  // Formatage de la date
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('fr-FR', { 
       year: 'numeric', 
@@ -161,7 +152,6 @@ const Cart = () => {
 
   return (
     <div className="min-h-screen pb-12">
-      {/* Header section */}
       <div className="bg-card border-b">
         <div className="container mx-auto px-4 py-8">
           <h1 className="text-3xl font-bold">Votre Espace Client</h1>
@@ -229,7 +219,6 @@ const Cart = () => {
                 </div>
               ) : (
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                  {/* Cart items */}
                   <div className="lg:col-span-2">
                     <div className="bg-card rounded-lg border overflow-hidden animate-slide-up">
                       <div className="p-4 border-b bg-muted/30">
@@ -239,7 +228,6 @@ const Cart = () => {
                       <div className="divide-y">
                         {items.map((item) => (
                           <div key={item.card.id} className="p-4 flex flex-col sm:flex-row gap-4">
-                            {/* Card image */}
                             <div className="w-20 h-28 flex-shrink-0">
                               <img 
                                 src={item.card.image} 
@@ -248,7 +236,6 @@ const Cart = () => {
                               />
                             </div>
                             
-                            {/* Card details */}
                             <div className="flex-1">
                               <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start">
                                 <div>
@@ -290,7 +277,6 @@ const Cart = () => {
                                 </div>
                               </div>
                               
-                              {/* Actions */}
                               <div className="flex items-center justify-between mt-2">
                                 <div className="flex items-center space-x-1 border rounded-md">
                                   <button 
@@ -334,7 +320,6 @@ const Cart = () => {
                     </div>
                   </div>
                   
-                  {/* Order summary */}
                   <div className="lg:col-span-1">
                     <div className="bg-card rounded-lg border overflow-hidden sticky top-20 animate-slide-up" style={{ animationDelay: "0.1s" }}>
                       <div className="p-4 border-b bg-muted/30">
@@ -501,18 +486,31 @@ const Cart = () => {
                                     key={item.card.id}
                                     className="flex gap-2 p-2 border rounded-md bg-muted/20"
                                   >
-                                    <div className="w-10 h-14 flex-shrink-0">
+                                    <div className="w-10 h-14 flex-shrink-0 relative">
                                       <img 
                                         src={item.card.image}
                                         alt={item.card.nameFr || item.card.name}
                                         className="w-full h-full object-cover rounded"
                                         loading="lazy"
                                       />
+                                      {item.card.isReverse && (
+                                        <div className="absolute -top-1 -right-1 bg-purple-500 text-white rounded-full p-0.5">
+                                          <RotateCw size={12} />
+                                        </div>
+                                      )}
                                     </div>
                                     <div className="flex-1 min-w-0">
-                                      <p className="font-medium text-sm truncate">
-                                        {item.card.nameFr || item.card.name}
-                                      </p>
+                                      <div className="flex items-start gap-1">
+                                        <p className="font-medium text-sm truncate">
+                                          {item.card.nameFr || item.card.name}
+                                        </p>
+                                        {item.card.isReverse && (
+                                          <span className="text-xs bg-purple-500/20 text-purple-700 dark:text-purple-300 px-1 py-0.5 rounded inline-flex items-center gap-1">
+                                            <RotateCw size={10} />
+                                            Reverse
+                                          </span>
+                                        )}
+                                      </div>
                                       <p className="text-xs text-muted-foreground">
                                         {item.card.number} · {item.card.series}
                                       </p>
