@@ -408,82 +408,82 @@
     },
     "Sword & Shield": {
       "fr": "Épée & Bouclier",
-      "logo": "https://assets.pokemon.com/assets/cms2/img/trading-card-game/_downloads/swsh/swsh1/logos/swsh1_logo_169_en.jpg",
-      "block": "Sword & Shield"
+      "logo": "https://pokecardex.b-cdn.net/assets/images/logos/SWSH1.png",
+      "block": "Épée & Bouclier"
     },
-    "Sword & Shield—Rebel Clash": {
-      "fr": "Épée & Bouclier—Clash des Rebelles",
-      "logo": "https://assets.pokemon.com/assets/cms2/img/trading-card-game/_downloads/swsh/swsh2/logos/swsh2_logo_169_fr.jpg",
-      "block": "Sword & Shield"
+    "Rebel Clash": {
+      "fr": "Clash des Rebelles",
+      "logo": "https://pokecardex.b-cdn.net/assets/images/logos/SWSH2.png",
+      "block": "Épée & Bouclier"
     },
-    "Sword & Shield—Darkness Ablaze": {
-      "fr": "Épée & Bouclier—Ténèbres Embrasées",
-      "logo": "https://assets.pokemon.com/assets/cms2/img/trading-card-game/_downloads/swsh/swsh3/logos/swsh3_logo_169_fr.jpg",
-      "block": "Sword & Shield"
+    "Darkness Ablaze": {
+      "fr": "Ténèbres Embrasées",
+      "logo": "https://pokecardex.b-cdn.net/assets/images/logos/SWSH3.png",
+      "block": "Épée & Bouclier"
     },
-    "Sword & Shield—Vivid Voltage": {
-      "fr": "Épée & Bouclier—Voltage Éclatant",
-      "logo": "https://assets.pokemon.com/assets/cms2/img/trading-card-game/_downloads/swsh/swsh4/logos/swsh4_logo_169_fr.jpg",
-      "block": "Sword & Shield"
+    "Vivid Voltage": {
+      "fr": "Voltage Éclatant",
+      "logo": "https://pokecardex.b-cdn.net/assets/images/logos/SWSH4.png",
+      "block": "Épée & Bouclier"
     },
-    "Sword & Shield—Battle Styles": {
-      "fr": "Épée & Bouclier—Styles de Combat",
-      "logo": "https://assets.pokemon.com/assets/cms2/img/trading-card-game/_downloads/swsh/swsh5/logos/swsh5_logo_169_fr.jpg",
-      "block": "Sword & Shield"
+    "Battle Styles": {
+      "fr": "Styles de Combat",
+      "logo": "https://pokecardex.b-cdn.net/assets/images/logos/SWSH5.png",
+      "block": "Épée & Bouclier"
     },
-    "Sword & Shield—Chilling Reign": {
-      "fr": "Épée & Bouclier—Règne de Glace",
-      "logo": "https://assets.pokemon.com/assets/cms2/img/trading-card-game/_downloads/swsh/swsh6/logos/swsh6_logo_169_fr.jpg",
-      "block": "Sword & Shield"
+    "Chilling Reign": {
+      "fr": "Règne de Glace",
+      "logo": "https://pokecardex.b-cdn.net/assets/images/logos/CRE.png",
+      "block": "Épée & Bouclier"
     },
     "Evolving Skies": {
-      "fr": "Ciel Évolutif",
-      "logo": "https://assets.pokemon.com/assets/cms2/img/trading-card-game/_downloads/swsh/swsh7/logos/swsh7_logo_169_fr.jpg",
+      "fr": "Evolution Céleste",
+      "logo": "https://pokecardex.b-cdn.net/assets/images/logos/EVS.png",
       "block": "Épée & Bouclier"
     },
     "Fusion Strike": {
-      "fr": "Fusion de Styles",
-      "logo": "https://assets.pokemon.com/assets/cms2/img/trading-card-game/_downloads/swsh/swsh8/logos/swsh8_logo_169_fr.jpg",
+      "fr": "Poing de Fusion",
+      "logo": "https://pokecardex.b-cdn.net/assets/images/logos/FST.png",
       "block": "Épée & Bouclier"
     },
     "Brilliant Stars": {
-      "fr": "Étoiles Étincelantes",
-      "logo": "https://assets.pokemon.com/assets/cms2/img/trading-card-game/_downloads/swsh/swsh9/logos/swsh9_logo_169_fr.jpg",
+      "fr": "Stars Étincelantes",
+      "logo": "https://pokecardex.b-cdn.net/assets/images/logos/BRS.png",
       "block": "Épée & Bouclier"
     },
     "Astral Radiance": {
       "fr": "Astres Radieux",
-      "logo": "https://assets.pokemon.com/assets/cms2/img/trading-card-game/_downloads/swsh/swsh10/logos/swsh10_logo_169_fr.jpg",
+      "logo": "https://pokecardex.b-cdn.net/assets/images/logos/ASR.png",
       "block": "Épée & Bouclier"
     },
     "Lost Origin": {
-      "fr": "Épée & Bouclier—Origine Perdue",
-      "logo": "https://assets.pokemon.com/assets/cms2/img/trading-card-game/_downloads/swsh/swsh11/logos/swsh11_logo_169_fr.jpg",
+      "fr": "Origine Perdue",
+      "logo": "https://pokecardex.b-cdn.net/assets/images/logos/LOR.png",
       "block": "Épée & Bouclier"
     },
     "Silver Tempest": {
       "fr": "Tempête Argentée",
-      "logo": "https://assets.pokemon.com/assets/cms2/img/trading-card-game/_downloads/swsh/swsh12/logos/swsh12_logo_169_fr.jpg",
+      "logo": "https://pokecardex.b-cdn.net/assets/images/logos/SIT.png",
       "block": "Épée & Bouclier"
     },
     "Crown Zenith": {
       "fr": "Zénith Suprême",
-      "logo": "https://assets.pokemon.com/assets/cms2/img/trading-card-game/_downloads/swsh/swsh125/logos/swsh125_logo_169_fr.jpg",
+      "logo": "https://pokecardex.b-cdn.net/assets/images/logos/CRZ.png",
       "block": "Épée & Bouclier"
     },
     "Scarlet & Violet": {
       "fr": "Écarlate & Violet",
-      "logo": "https://assets.pokemon.com/assets/cms2/img/trading-card-game/_downloads/sv/sv1/logos/sv1_logo_169_en.jpg",
+      "logo": "https://pokecardex.b-cdn.net/assets/images/logos/SVI.png",
       "block": "Écarlate & Violet"
     },
     "Paldea Evolved": {
       "fr": "Évolution de Paldea",
-      "logo": "https://assets.pokemon.com/assets/cms2/img/trading-card-game/_downloads/sv/sv2/logos/sv2_logo_169_fr.jpg",
+      "logo": "https://pokecardex.b-cdn.net/assets/images/logos/PAL.png",
       "block": "Écarlate & Violet"
     },
     "Obsidian Flames": {
       "fr": "Flammes Obsidiennes",
-      "logo": "https://assets.pokemon.com/assets/cms2/img/trading-card-game/_downloads/sv/sv3/logos/sv3_logo_169_fr.jpg",
+      "logo": "https://pokecardex.b-cdn.net/assets/images/logos/OBF.png",
       "block": "Écarlate & Violet"
     },
     "151": {
