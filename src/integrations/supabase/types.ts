@@ -17,6 +17,7 @@ export type Database = {
           card_number: string
           card_series: string
           id: string
+          is_reverse: boolean | null
           order_id: string
           price: number
           quantity: number
@@ -28,6 +29,7 @@ export type Database = {
           card_number: string
           card_series: string
           id?: string
+          is_reverse?: boolean | null
           order_id: string
           price: number
           quantity: number
@@ -39,6 +41,7 @@ export type Database = {
           card_number?: string
           card_series?: string
           id?: string
+          is_reverse?: boolean | null
           order_id?: string
           price?: number
           quantity?: number

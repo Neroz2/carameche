@@ -180,7 +180,7 @@ export const saveOrder = async (username: string, items: CartItem[]): Promise<st
       card_image: item.card.image,
       price: item.card.price,
       quantity: item.quantity,
-      is_reverse: item.card.isReverse  // Ajout du champ isReverse
+      is_reverse: item.card.isReverse  // Utilisation du champ is_reverse dans le schema
     }));
 
     // Insérer les items de la commande
