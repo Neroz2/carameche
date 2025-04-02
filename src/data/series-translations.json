@@ -436,75 +436,75 @@
       "logo": "https://assets.pokemon.com/assets/cms2/img/trading-card-game/_downloads/swsh/swsh6/logos/swsh6_logo_169_fr.jpg",
       "block": "Sword & Shield"
     },
-    "Sword & Shield—Evolving Skies": {
-      "fr": "Épée & Bouclier—Ciel Évolutif",
+    "Evolving Skies": {
+      "fr": "Ciel Évolutif",
       "logo": "https://assets.pokemon.com/assets/cms2/img/trading-card-game/_downloads/swsh/swsh7/logos/swsh7_logo_169_fr.jpg",
-      "block": "Sword & Shield"
+      "block": "Épée & Bouclier"
     },
-    "Sword & Shield—Fusion Strike": {
-      "fr": "Épée & Bouclier—Fusion de Styles",
+    "Fusion Strike": {
+      "fr": "Fusion de Styles",
       "logo": "https://assets.pokemon.com/assets/cms2/img/trading-card-game/_downloads/swsh/swsh8/logos/swsh8_logo_169_fr.jpg",
-      "block": "Sword & Shield"
+      "block": "Épée & Bouclier"
     },
-    "Sword & Shield—Brilliant Stars": {
-      "fr": "Épée & Bouclier—Étoiles Étincelantes",
+    "Brilliant Stars": {
+      "fr": "Étoiles Étincelantes",
       "logo": "https://assets.pokemon.com/assets/cms2/img/trading-card-game/_downloads/swsh/swsh9/logos/swsh9_logo_169_fr.jpg",
-      "block": "Sword & Shield"
+      "block": "Épée & Bouclier"
     },
-    "Sword & Shield—Astral Radiance": {
-      "fr": "Épée & Bouclier—Astres Radieux",
+    "Astral Radiance": {
+      "fr": "Astres Radieux",
       "logo": "https://assets.pokemon.com/assets/cms2/img/trading-card-game/_downloads/swsh/swsh10/logos/swsh10_logo_169_fr.jpg",
-      "block": "Sword & Shield"
+      "block": "Épée & Bouclier"
     },
-    "Sword & Shield—Lost Origin": {
+    "Lost Origin": {
       "fr": "Épée & Bouclier—Origine Perdue",
       "logo": "https://assets.pokemon.com/assets/cms2/img/trading-card-game/_downloads/swsh/swsh11/logos/swsh11_logo_169_fr.jpg",
-      "block": "Sword & Shield"
+      "block": "Épée & Bouclier"
     },
-    "Sword & Shield—Silver Tempest": {
-      "fr": "Épée & Bouclier—Tempête Argentée",
+    "Silver Tempest": {
+      "fr": "Tempête Argentée",
       "logo": "https://assets.pokemon.com/assets/cms2/img/trading-card-game/_downloads/swsh/swsh12/logos/swsh12_logo_169_fr.jpg",
-      "block": "Sword & Shield"
+      "block": "Épée & Bouclier"
     },
-    "Sword & Shield—Crown Zenith": {
-      "fr": "Épée & Bouclier—Zénith Suprême",
+    "Crown Zenith": {
+      "fr": "Zénith Suprême",
       "logo": "https://assets.pokemon.com/assets/cms2/img/trading-card-game/_downloads/swsh/swsh125/logos/swsh125_logo_169_fr.jpg",
-      "block": "Sword & Shield"
+      "block": "Épée & Bouclier"
     },
     "Scarlet & Violet": {
       "fr": "Écarlate & Violet",
       "logo": "https://assets.pokemon.com/assets/cms2/img/trading-card-game/_downloads/sv/sv1/logos/sv1_logo_169_en.jpg",
-      "block": "Scarlet & Violet"
+      "block": "Écarlate & Violet"
     },
-    "Scarlet & Violet—Paldea Evolved": {
-      "fr": "Écarlate & Violet—Évolution de Paldea",
+    "Paldea Evolved": {
+      "fr": "Évolution de Paldea",
       "logo": "https://assets.pokemon.com/assets/cms2/img/trading-card-game/_downloads/sv/sv2/logos/sv2_logo_169_fr.jpg",
-      "block": "Scarlet & Violet"
+      "block": "Écarlate & Violet"
     },
-    "Scarlet & Violet—Obsidian Flames": {
-      "fr": "Écarlate & Violet—Flammes Obsidiennes",
+    "Obsidian Flames": {
+      "fr": "Flammes Obsidiennes",
       "logo": "https://assets.pokemon.com/assets/cms2/img/trading-card-game/_downloads/sv/sv3/logos/sv3_logo_169_fr.jpg",
-      "block": "Scarlet & Violet"
+      "block": "Écarlate & Violet"
     },
     "151": {
       "fr": "151",
       "logo": "https://pokecardex.b-cdn.net/assets/images/logos/MEW.png",
-      "block": "Scarlet & Violet"
+      "block": "Écarlate & Violet"
     },
-    "Scarlet & Violet—Paradox Rift": {
-      "fr": "Écarlate & Violet—Faille Temporelle",
+    "Paradox Rift": {
+      "fr": "Faille Temporelle",
       "logo": "https://assets.pokemon.com/assets/cms2/img/trading-card-game/_downloads/sv/sv4/logos/sv4_logo_169_fr.jpg",
-      "block": "Scarlet & Violet"
+      "block": "Écarlate & Violet"
     },
-    "Scarlet & Violet—Temporal Forces": {
-      "fr": "Écarlate & Violet—Forces Temporelles",
+    "Temporal Forces": {
+      "fr": "Forces Temporelles",
       "logo": "https://assets.pokemon.com/assets/cms2/img/trading-card-game/_downloads/sv/sv5/logos/sv5_logo_169_fr.jpg",
-      "block": "Scarlet & Violet"
+      "block": "Écarlate & Violet"
     },
-    "Scarlet & Violet—Twilight Masquerade": {
-      "fr": "Écarlate & Violet—Mascarade Crépusculaire",
+    "Twilight Masquerade": {
+      "fr": "Mascarade Crépusculaire",
       "logo": "https://assets.pokemon.com/assets/cms2/img/trading-card-game/_downloads/sv/sv6/logos/sv6_logo_169_fr.jpg",
-      "block": "Scarlet & Violet"
+      "block": "Écarlate & Violet"
     },
     "Promo Cards": {
       "fr": "Cartes Promo",
