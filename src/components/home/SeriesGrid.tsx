@@ -1,6 +1,6 @@
 
 import { Link } from "react-router-dom";
-import { ArrowRight, Calendar, ListFilter, Star, Bookmark } from "lucide-react";
+import { ArrowRight, Calendar, ListFilter, Star, Bookmark, Info } from "lucide-react";
 import { PokemonSeries } from "@/lib/types";
 import Card, { CardHeader, CardTitle, CardContent, CardFooter } from "@/components/common/Card";
 import { useEffect, useState } from "react";
@@ -17,11 +17,22 @@ const SeriesGrid = ({ series }: SeriesGridProps) => {
 
   // Fonction pour obtenir la traduction française et le bloc pour une série
   const getSeriesTranslation = (seriesName: string) => {
-    const translations = seriesTranslations.translations as Record<string, { fr: string, logo: string, block?: string }>;
+    const translations = seriesTranslations.translations as Record<string, { 
+      fr: string, 
+      logo: string, 
+      block?: string,
+      releaseDate?: string,
+      totalCards?: number,
+      description?: string
+    }>;
+    
     return {
       fr: translations[seriesName]?.fr || seriesName,
       logo: translations[seriesName]?.logo || "",
-      block: translations[seriesName]?.block || 'Autre'
+      block: translations[seriesName]?.block || 'Autre',
+      releaseDate: translations[seriesName]?.releaseDate,
+      totalCards: translations[seriesName]?.totalCards,
+      description: translations[seriesName]?.description
     };
   };
 
@@ -66,16 +77,32 @@ const SeriesGrid = ({ series }: SeriesGridProps) => {
         });
         break;
       case "release-asc":
-        filtered = filtered.sort((a, b) => new Date(a.releaseDate).getTime() - new Date(b.releaseDate).getTime());
+        filtered = filtered.sort((a, b) => {
+          const aDate = getSeriesTranslation(a.name).releaseDate || a.releaseDate;
+          const bDate = getSeriesTranslation(b.name).releaseDate || b.releaseDate;
+          return new Date(aDate).getTime() - new Date(bDate).getTime();
+        });
         break;
       case "release-desc":
-        filtered = filtered.sort((a, b) => new Date(b.releaseDate).getTime() - new Date(a.releaseDate).getTime());
+        filtered = filtered.sort((a, b) => {
+          const aDate = getSeriesTranslation(a.name).releaseDate || a.releaseDate;
+          const bDate = getSeriesTranslation(b.name).releaseDate || b.releaseDate;
+          return new Date(bDate).getTime() - new Date(aDate).getTime();
+        });
         break;
       case "cards-asc":
-        filtered = filtered.sort((a, b) => a.totalCards - b.totalCards);
+        filtered = filtered.sort((a, b) => {
+          const aCards = getSeriesTranslation(a.name).totalCards || a.totalCards;
+          const bCards = getSeriesTranslation(b.name).totalCards || b.totalCards;
+          return aCards - bCards;
+        });
         break;
       case "cards-desc":
-        filtered = filtered.sort((a, b) => b.totalCards - a.totalCards);
+        filtered = filtered.sort((a, b) => {
+          const bCards = getSeriesTranslation(b.name).totalCards || b.totalCards;
+          const aCards = getSeriesTranslation(a.name).totalCards || a.totalCards;
+          return bCards - aCards;
+        });
         break;
       default:
         break;
@@ -165,7 +192,17 @@ const SeriesGrid = ({ series }: SeriesGridProps) => {
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {sortedSeries.map((item) => {
-            const { fr: seriesFr, logo: seriesLogo } = getSeriesTranslation(item.name);
+            const { 
+              fr: seriesFr, 
+              logo: seriesLogo, 
+              releaseDate: translatedReleaseDate,
+              totalCards: translatedTotalCards,
+              description: seriesDescription
+            } = getSeriesTranslation(item.name);
+            
+            // Utiliser les données du fichier de traduction ou les données de l'API
+            const releaseDate = translatedReleaseDate || item.releaseDate;
+            const totalCards = translatedTotalCards || item.totalCards;
             
             return (
               <Link 
@@ -212,16 +249,27 @@ const SeriesGrid = ({ series }: SeriesGridProps) => {
                       <div className="flex items-center">
                         <Calendar className="mr-2 h-4 w-4 text-muted-foreground" />
                         <span className="text-sm">
-                          {new Date(item.releaseDate).toLocaleDateString('fr-FR')}
+                          {releaseDate ? new Date(releaseDate).toLocaleDateString('fr-FR') : 'Date inconnue'}
                         </span>
                       </div>
                       <div className="flex items-center">
                         <ListFilter className="mr-2 h-4 w-4 text-muted-foreground" />
                         <span className="text-sm">
-                          {item.totalCards} cartes
+                          {totalCards ? `${totalCards} cartes` : 'Nombre inconnu'}
                         </span>
                       </div>
                     </div>
+                    
+                    {seriesDescription && (
+                      <div className="mt-3 p-2 bg-muted/30 rounded-md">
+                        <div className="flex items-start">
+                          <Info className="mr-2 h-4 w-4 text-muted-foreground mt-0.5" />
+                          <span className="text-sm text-muted-foreground line-clamp-2" title={seriesDescription}>
+                            {seriesDescription}
+                          </span>
+                        </div>
+                      </div>
+                    )}
                   </CardContent>
                   <CardFooter className="justify-end border-t mt-2">
                     <span className="flex items-center text-sm text-primary group-hover:underline">
