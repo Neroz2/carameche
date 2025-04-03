@@ -1,3 +1,4 @@
+
 {
   "translations": {
     "Base Set": {
@@ -498,4 +499,8 @@
     },
     "Paradox Rift": {
       "fr": "Faille Temporelle",
-      "logo": "https://assets.pokemon.com/assets/cms
+      "logo": "https://assets.pokemon.com/assets/cms2/img/trading-card-game/_downloads/sv/sv4/logos/sv4_logo_169_en.jpg",
+      "block": "Écarlate & Violet"
+    }
+  }
+}
