@@ -62,7 +62,7 @@ const FeaturedCards = () => {
             "Ultra Rare",
             "Secret Rare"
           ],
-          priceMin: 5,
+          priceMin: 0,
           priceMax: 1000,
           condition: [],
           language: [],
