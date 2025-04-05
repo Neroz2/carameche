@@ -5,6 +5,7 @@ import { PokemonSeries } from "@/lib/types";
 import Card, { CardHeader, CardTitle, CardContent, CardFooter } from "@/components/common/Card";
 import { useEffect, useState } from "react";
 import seriesTranslations from "@/data/series-translations.json";
+import { getSeriesCardCount } from "@/lib/seriesUtils";
 
 interface SeriesGridProps {
   series: PokemonSeries[];
@@ -14,6 +15,7 @@ const SeriesGrid = ({ series }: SeriesGridProps) => {
   const [sortedSeries, setSortedSeries] = useState<PokemonSeries[]>([]);
   const [sortOption, setSortOption] = useState<string>("name-asc");
   const [selectedBlock, setSelectedBlock] = useState<string>("all");
+  const [seriesCardCounts, setSeriesCardCounts] = useState<Record<string, number>>({});
 
   // Fonction pour obtenir la traduction française et le bloc pour une série
   const getSeriesTranslation = (seriesName: string) => {
@@ -49,6 +51,20 @@ const SeriesGrid = ({ series }: SeriesGridProps) => {
   };
 
   const blocks = getUniqueBlocks();
+
+  // Charger le nombre de cartes en stock pour chaque série
+  useEffect(() => {
+    const loadSeriesCardCounts = async () => {
+      const counts: Record<string, number> = {};
+      for (const item of series) {
+        const count = await getSeriesCardCount(item.name);
+        counts[item.name] = count;
+      }
+      setSeriesCardCounts(counts);
+    };
+
+    loadSeriesCardCounts();
+  }, [series]);
 
   useEffect(() => {
     let filtered = [...series];
@@ -203,6 +219,7 @@ const SeriesGrid = ({ series }: SeriesGridProps) => {
             // Utiliser les données du fichier de traduction ou les données de l'API
             const releaseDate = translatedReleaseDate || item.releaseDate;
             const totalCards = translatedTotalCards || item.totalCards;
+            const stockCount = seriesCardCounts[item.name] || 0;
             
             return (
               <Link 
@@ -256,6 +273,16 @@ const SeriesGrid = ({ series }: SeriesGridProps) => {
                         <ListFilter className="mr-2 h-4 w-4 text-muted-foreground" />
                         <span className="text-sm">
                           {totalCards ? `${totalCards} cartes` : 'Nombre inconnu'}
+                        </span>
+                      </div>
+                    </div>
+                    
+                    {/* Affichage du nombre de cartes en stock */}
+                    <div className="mt-2 bg-primary/10 p-2 rounded-md">
+                      <div className="flex items-center">
+                        <Star className="mr-2 h-4 w-4 text-yellow-500" />
+                        <span className="text-sm font-medium">
+                          {stockCount} cartes en stock
                         </span>
                       </div>
                     </div>

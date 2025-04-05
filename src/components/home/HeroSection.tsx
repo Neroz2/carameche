@@ -3,7 +3,14 @@ import { ArrowRight } from "lucide-react";
 import Button from "@/components/common/Button";
 import { Link } from "react-router-dom";
 
-const HeroSection = () => {
+interface HeroSectionProps {
+  totalCards?: number;
+}
+
+const HeroSection = ({ totalCards = 0 }: HeroSectionProps) => {
+  // Formatter le nombre de cartes avec un séparateur de milliers
+  const formattedCardCount = totalCards.toLocaleString('fr-FR');
+
   return (
     <section className="relative overflow-hidden bg-gradient-to-b from-pokemon-blue/10 via-transparent to-transparent">
       <div className="container mx-auto px-4 py-16 md:py-24 relative z-10">
@@ -40,7 +47,7 @@ const HeroSection = () => {
             {/* Stats */}
             <div className="grid grid-cols-3 gap-4 pt-8 border-t">
               <div>
-                <p className="text-3xl font-bold">1000+</p>
+                <p className="text-3xl font-bold">{formattedCardCount}</p>
                 <p className="text-sm text-muted-foreground">Cartes uniques</p>
               </div>
               <div>

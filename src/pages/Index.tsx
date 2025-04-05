@@ -8,11 +8,13 @@ import { ArrowDownAZ, ArrowUpAZ, Calendar, ListFilter, Star, Sparkles } from "lu
 import HeroSection from "@/components/home/HeroSection";
 import SeriesGrid from "@/components/home/SeriesGrid";
 import FeaturedCards from "@/components/home/FeaturedCards";
+import { getTotalUniqueCardsCount } from "@/lib/seriesUtils";
 
 const Index = () => {
   const [series, setSeries] = useState<PokemonSeries[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("series");
+  const [totalCards, setTotalCards] = useState<number>(0);
 
   useEffect(() => {
     const cachedSeries = sessionStorage.getItem('pokemonSeries');
@@ -40,6 +42,10 @@ const Index = () => {
           setSeries(seriesData);
           sessionStorage.setItem('pokemonSeries', JSON.stringify(seriesData));
         }
+
+        // Récupérer le nombre total de cartes uniques
+        const count = await getTotalUniqueCardsCount();
+        setTotalCards(count);
       } catch (error) {
         console.error("Erreur lors du chargement des séries:", error);
       } finally {
@@ -56,7 +62,7 @@ const Index = () => {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <HeroSection />
+      <HeroSection totalCards={totalCards} />
       
       <div className="container mx-auto px-4 mt-8 pb-16">
         <div className="relative mb-12">
