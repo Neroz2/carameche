@@ -1,6 +1,6 @@
 
 import { supabase } from "@/integrations/supabase/client";
-import { CartItem, Order, PokemonCard } from "@/lib/types";
+import { CartItem, Order, PokemonCard, SupabaseOrder } from "@/lib/types";
 
 // Récupère toutes les commandes
 export const fetchAllOrders = async (): Promise<Order[]> => {
@@ -15,7 +15,7 @@ export const fetchAllOrders = async (): Promise<Order[]> => {
     if (!ordersData) return [];
 
     // Convertir les données JSON en objets Order
-    const orders: Order[] = ordersData.map(order => {
+    const orders: Order[] = ordersData.map((order: SupabaseOrder) => {
       // Parse the card_data JSON to get the items
       const items: CartItem[] = order.card_data.map((item: any) => ({
         card: {
@@ -69,7 +69,7 @@ export const fetchOrdersByUsername = async (username: string): Promise<Order[]> 
     if (!ordersData) return [];
 
     // Convertir les données JSON en objets Order
-    const orders: Order[] = ordersData.map(order => {
+    const orders: Order[] = ordersData.map((order: SupabaseOrder) => {
       // Parse the card_data JSON to get the items
       const items: CartItem[] = order.card_data.map((item: any) => ({
         card: {

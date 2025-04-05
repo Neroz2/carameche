@@ -60,3 +60,14 @@ export interface FilterOptions {
   isPromo: boolean | null;
   expansionId?: number | null;
 }
+
+// Add Supabase database types to align with our database schema
+export interface SupabaseOrder {
+  id: string;
+  username: string;
+  card_data: any[];
+  total_price: number;
+  total_items: number;
+  created_at: string;
+  status: 'pending' | 'completed' | 'cancelled';
+}
