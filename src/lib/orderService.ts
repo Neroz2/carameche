@@ -1,6 +1,6 @@
 
 import { supabase } from "@/integrations/supabase/client";
-import { CartItem, Order, SupabaseOrder, SupabaseOrderItem, PokemonCard } from "@/lib/types";
+import { CartItem, Order, PokemonCard } from "@/lib/types";
 
 // Récupère toutes les commandes
 export const fetchAllOrders = async (): Promise<Order[]> => {
@@ -14,20 +14,10 @@ export const fetchAllOrders = async (): Promise<Order[]> => {
     if (ordersError) throw ordersError;
     if (!ordersData) return [];
 
-    // Créer une liste pour stocker les commandes complètes (avec les items)
-    const fullOrders: Order[] = [];
-
-    // Pour chaque commande, récupérer ses items
-    for (const order of ordersData) {
-      const { data: itemsData, error: itemsError } = await supabase
-        .from('order_items')
-        .select('*')
-        .eq('order_id', order.id);
-
-      if (itemsError) throw itemsError;
-
-      // Convertir les items de la base de données en CartItems
-      const cartItems: CartItem[] = itemsData?.map(item => ({
+    // Convertir les données JSON en objets Order
+    const orders: Order[] = ordersData.map(order => {
+      // Parse the card_data JSON to get the items
+      const items: CartItem[] = order.card_data.map((item: any) => ({
         card: {
           id: item.card_id,
           name: item.card_name,
@@ -35,31 +25,30 @@ export const fetchAllOrders = async (): Promise<Order[]> => {
           nameFr: item.card_name,
           number: item.card_number,
           series: item.card_series,
-          rarity: '',
+          rarity: item.rarity || '',
           image: item.card_image,
           price: item.price,
           stock: 0,
-          condition: '',
-          language: '',
-          isHolo: false,
+          condition: item.condition || '',
+          language: item.language || '',
+          isHolo: item.is_holo || false,
           isReverse: item.is_reverse || false,
-          isPromo: false
+          isPromo: item.is_promo || false
         },
         quantity: item.quantity
-      })) || [];
+      }));
 
-      // Créer l'objet Order complet
-      fullOrders.push({
+      return {
         id: order.id,
         username: order.username,
-        items: cartItems,
+        items: items,
         totalPrice: order.total_price,
         createdAt: order.created_at,
         status: order.status as 'pending' | 'completed' | 'cancelled'
-      });
-    }
+      };
+    });
 
-    return fullOrders;
+    return orders;
   } catch (error) {
     console.error('Erreur lors de la récupération des commandes:', error);
     throw error;
@@ -79,20 +68,10 @@ export const fetchOrdersByUsername = async (username: string): Promise<Order[]> 
     if (ordersError) throw ordersError;
     if (!ordersData) return [];
 
-    // Créer une liste pour stocker les commandes complètes (avec les items)
-    const userOrders: Order[] = [];
-
-    // Pour chaque commande, récupérer ses items
-    for (const order of ordersData) {
-      const { data: itemsData, error: itemsError } = await supabase
-        .from('order_items')
-        .select('*')
-        .eq('order_id', order.id);
-
-      if (itemsError) throw itemsError;
-
-      // Convertir les items de la base de données en CartItems
-      const cartItems: CartItem[] = itemsData?.map(item => ({
+    // Convertir les données JSON en objets Order
+    const orders: Order[] = ordersData.map(order => {
+      // Parse the card_data JSON to get the items
+      const items: CartItem[] = order.card_data.map((item: any) => ({
         card: {
           id: item.card_id,
           name: item.card_name,
@@ -100,31 +79,30 @@ export const fetchOrdersByUsername = async (username: string): Promise<Order[]> 
           nameFr: item.card_name,
           number: item.card_number,
           series: item.card_series,
-          rarity: '',
+          rarity: item.rarity || '',
           image: item.card_image,
           price: item.price,
           stock: 0,
-          condition: '',
-          language: '',
-          isHolo: false,
+          condition: item.condition || '',
+          language: item.language || '',
+          isHolo: item.is_holo || false,
           isReverse: item.is_reverse || false,
-          isPromo: false
+          isPromo: item.is_promo || false
         },
         quantity: item.quantity
-      })) || [];
+      }));
 
-      // Créer l'objet Order complet
-      userOrders.push({
+      return {
         id: order.id,
         username: order.username,
-        items: cartItems,
+        items: items,
         totalPrice: order.total_price,
         createdAt: order.created_at,
         status: order.status as 'pending' | 'completed' | 'cancelled'
-      });
-    }
+      };
+    });
 
-    return userOrders;
+    return orders;
   } catch (error) {
     console.error(`Erreur lors de la récupération des commandes pour ${username}:`, error);
     throw error;
@@ -153,11 +131,29 @@ export const saveOrder = async (username: string, items: CartItem[]): Promise<st
     const totalPrice = items.reduce((total, item) => total + (item.card.price * item.quantity), 0);
     const totalItems = items.reduce((total, item) => total + item.quantity, 0);
 
-    // Insérer la commande
+    // Préparer les données du panier au format JSON
+    const cardData = items.map(item => ({
+      card_id: item.card.id,
+      card_name: item.card.nameFr || item.card.name,
+      card_number: item.card.number,
+      card_series: item.card.series,
+      card_image: item.card.image,
+      price: item.card.price,
+      quantity: item.quantity,
+      rarity: item.card.rarity,
+      condition: item.card.condition,
+      language: item.card.language,
+      is_holo: item.card.isHolo,
+      is_reverse: item.card.isReverse,
+      is_promo: item.card.isPromo
+    }));
+
+    // Insérer la commande avec toutes les données
     const { data: orderData, error: orderError } = await supabase
       .from('orders')
       .insert({
         username,
+        card_data: cardData,
         total_price: totalPrice,
         total_items: totalItems,
         status: 'pending'
@@ -168,29 +164,7 @@ export const saveOrder = async (username: string, items: CartItem[]): Promise<st
     if (orderError) throw orderError;
     if (!orderData) throw new Error("Échec de création de la commande");
 
-    const orderId = orderData.id;
-
-    // Préparer les items de la commande
-    const orderItems = items.map(item => ({
-      order_id: orderId,
-      card_id: item.card.id,
-      card_name: item.card.nameFr || item.card.name,
-      card_number: item.card.number,
-      card_series: item.card.series,
-      card_image: item.card.image,
-      price: item.card.price,
-      quantity: item.quantity,
-      is_reverse: item.card.isReverse  // Utilisation du champ is_reverse dans le schema
-    }));
-
-    // Insérer les items de la commande
-    const { error: itemsError } = await supabase
-      .from('order_items')
-      .insert(orderItems);
-
-    if (itemsError) throw itemsError;
-
-    return orderId;
+    return orderData.id;
   } catch (error) {
     console.error('Erreur lors de la sauvegarde de la commande:', error);
     throw error;

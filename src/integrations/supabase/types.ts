@@ -9,55 +9,9 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      order_items: {
-        Row: {
-          card_id: string
-          card_image: string
-          card_name: string
-          card_number: string
-          card_series: string
-          id: string
-          is_reverse: boolean | null
-          order_id: string
-          price: number
-          quantity: number
-        }
-        Insert: {
-          card_id: string
-          card_image: string
-          card_name: string
-          card_number: string
-          card_series: string
-          id?: string
-          is_reverse?: boolean | null
-          order_id: string
-          price: number
-          quantity: number
-        }
-        Update: {
-          card_id?: string
-          card_image?: string
-          card_name?: string
-          card_number?: string
-          card_series?: string
-          id?: string
-          is_reverse?: boolean | null
-          order_id?: string
-          price?: number
-          quantity?: number
-        }
-        Relationships: [
-          {
-            foreignKeyName: "order_items_order_id_fkey"
-            columns: ["order_id"]
-            isOneToOne: false
-            referencedRelation: "orders"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       orders: {
         Row: {
+          card_data: Json
           created_at: string
           id: string
           status: string
@@ -66,6 +20,7 @@ export type Database = {
           username: string
         }
         Insert: {
+          card_data: Json
           created_at?: string
           id?: string
           status?: string
@@ -74,6 +29,7 @@ export type Database = {
           username: string
         }
         Update: {
+          card_data?: Json
           created_at?: string
           id?: string
           status?: string

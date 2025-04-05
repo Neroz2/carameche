@@ -1,3 +1,4 @@
+
 export interface PokemonSeries {
   id: string;
   name: string;
@@ -40,27 +41,6 @@ export interface Order {
   totalPrice: number;
   createdAt: string;
   status: 'pending' | 'completed' | 'cancelled';
-}
-
-export interface SupabaseOrder {
-  id: string;
-  username: string;
-  total_price: number;
-  total_items: number;
-  status: 'pending' | 'completed' | 'cancelled';
-  created_at: string;
-}
-
-export interface SupabaseOrderItem {
-  id: string;
-  order_id: string;
-  card_id: string;
-  card_name: string;
-  card_number: string;
-  card_series: string;
-  card_image: string;
-  price: number;
-  quantity: number;
 }
 
 export type SortOption = "name-asc" | "name-desc" | "number-asc" | "number-desc" | "price-asc" | "price-desc";
