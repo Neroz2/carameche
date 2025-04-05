@@ -1,11 +1,10 @@
-
 import React from "react";
 import { ShoppingBag, ShoppingCart } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
 import CartItemsBySeries from "@/components/cart/CartItemsBySeries";
-import { createOrder } from "@/lib/orderService";
+import { saveOrder } from "@/lib/orderService";
 import { Button } from "@/components/ui/button";
 
 const Cart = () => {
@@ -27,16 +26,12 @@ const Cart = () => {
       // Supposons que nous avons un nom d'utilisateur fictif pour cette démo
       const username = "client@example.com";
       
-      const order = await createOrder({
-        username,
-        items,
-        totalPrice,
-      });
+      const orderId = await saveOrder(username, items);
 
-      if (order) {
+      if (orderId) {
         toast({
           title: "Commande passée avec succès",
-          description: `Commande #${order.id.substring(0, 8)} enregistrée`,
+          description: `Commande #${orderId.substring(0, 8)} enregistrée`,
         });
         
         clearCart();
