@@ -2,6 +2,7 @@
 import { createContext, useContext, useState, ReactNode, useEffect } from "react";
 import { PokemonCard, CartItem } from "@/lib/types";
 import { toast } from "sonner";
+import { getSeriesTranslation } from "@/lib/seriesUtils";
 
 interface CartContextType {
   items: CartItem[];
@@ -87,8 +88,10 @@ export const CartProvider = ({ children }: CartProviderProps) => {
         // Ne pas ajouter de carte si la quantité est négative ou nulle
         if (quantity <= 0) return prevItems;
         
+        const { fr: seriesFr } = getSeriesTranslation(card.series);
+        
         toast("Carte ajoutée au panier", {
-          description: card.nameFr || card.name,
+          description: `${card.nameFr || card.name} (${seriesFr})`,
         });
         
         return [...prevItems, { card, quantity: Math.min(quantity, card.stock) }];
@@ -100,8 +103,10 @@ export const CartProvider = ({ children }: CartProviderProps) => {
     setItems((prevItems) => {
       const item = prevItems.find((item) => item.card.id === cardId);
       if (item) {
+        const { fr: seriesFr } = getSeriesTranslation(item.card.series);
+        
         toast("Carte supprimée du panier", {
-          description: item.card.nameFr || item.card.name,
+          description: `${item.card.nameFr || item.card.name} (${seriesFr})`,
         });
       }
       return prevItems.filter((item) => item.card.id !== cardId);
