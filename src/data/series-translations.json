@@ -482,37 +482,37 @@
     "Scarlet & Violet": {
       "fr": "Écarlate & Violet",
       "logo": "https://pokecardex.b-cdn.net/assets/images/logos/SVI.png",
-      "block": "Écarlate & Violet"
+      "block": "Écarlate & Violet",
       "releaseDate": "2023-03-31",
-      "totalCards": 258,
+      "totalCards": 258
     },
     "Paldea Evolved": {
       "fr": "Évolution de Paldea",
       "logo": "https://pokecardex.b-cdn.net/assets/images/logos/PAL.png",
-      "block": "Écarlate & Violet"
+      "block": "Écarlate & Violet",
       "releaseDate": "2023-06-09",
-      "totalCards": 279,
+      "totalCards": 279
     },
     "Obsidian Flames": {
       "fr": "Flammes Obsidiennes",
       "logo": "https://pokecardex.b-cdn.net/assets/images/logos/OBF.png",
-      "block": "Écarlate & Violet"
+      "block": "Écarlate & Violet",
       "releaseDate": "2023-08-11",
-      "totalCards": 230,
+      "totalCards": 230
     },
     "151": {
       "fr": "151",
       "logo": "https://pokecardex.b-cdn.net/assets/images/logos/MEW.png",
-      "block": "Écarlate & Violet"
+      "block": "Écarlate & Violet",
       "releaseDate": "2023-09-22",
-      "totalCards": 207,
+      "totalCards": 207
     },
     "Paradox Rift": {
       "fr": "Faille Temporelle",
       "logo": "https://pokecardex.b-cdn.net/assets/images/logos/PAR.png",
-      "block": "Écarlate & Violet"
+      "block": "Écarlate & Violet",
       "releaseDate": "2023-11-03",
-      "totalCards": 266,
+      "totalCards": 266
     }
   }
 }
