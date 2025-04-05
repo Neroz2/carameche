@@ -175,13 +175,7 @@ const InventoryFilters: React.FC<InventoryFiltersProps> = ({
   const languageOptions = [
     "EN",
     "FR",
-    "DE",
-    "IT",
-    "ES",
-    "PT",
     "JP",
-    "KR",
-    "CN",
   ];
 
   return (
