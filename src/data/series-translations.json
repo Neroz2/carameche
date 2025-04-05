@@ -294,122 +294,122 @@
     },
     "XY": {
       "fr": "XY",
-      "logo": "https://assets.pokemon.com/assets/cms2/img/trading-card-game/_downloads/xy/xy1/logos/xy1_logo_169_en.jpg",
+      "logo": "https://pokecardex.b-cdn.net/assets/images/logos/XY.png",
       "block": "XY"
     },
-    "XY—Flashfire": {
-      "fr": "XY—Étincelles",
-      "logo": "https://assets.pokemon.com/assets/cms2/img/trading-card-game/_downloads/xy/xy2/logos/xy2_logo_169_fr.jpg",
+    "Flashfire": {
+      "fr": "Étincelles",
+      "logo": "https://pokecardex.b-cdn.net/assets/images/logos/FLF.png",
       "block": "XY"
     },
-    "XY—Furious Fists": {
-      "fr": "XY—Poings Furieux",
-      "logo": "https://assets.pokemon.com/assets/cms2/img/trading-card-game/_downloads/xy/xy3/logos/xy3_logo_169_fr.jpg",
+    "Furious Fists": {
+      "fr": "Poings Furieux",
+      "logo": "https://pokecardex.b-cdn.net/assets/images/logos/FFI.png",
       "block": "XY"
     },
-    "XY—Phantom Forces": {
-      "fr": "XY—Vigueur Spectrale",
-      "logo": "https://assets.pokemon.com/assets/cms2/img/trading-card-game/_downloads/xy/xy4/logos/xy4_logo_169_fr.jpg",
+    "Phantom Forces": {
+      "fr": "Vigueur Spectrale",
+      "logo": "https://pokecardex.b-cdn.net/assets/images/logos/PHF.png",
       "block": "XY"
     },
-    "XY—Primal Clash": {
-      "fr": "XY—Primo Choc",
-      "logo": "https://assets.pokemon.com/assets/cms2/img/trading-card-game/_downloads/xy/xy5/logos/xy5_logo_169_fr.jpg",
+    "Primal Clash": {
+      "fr": "Primo Choc",
+      "logo": "https://pokecardex.b-cdn.net/assets/images/logos/PRC.png",
       "block": "XY"
     },
-    "XY—Roaring Skies": {
-      "fr": "XY—Ciel Rugissant",
-      "logo": "https://assets.pokemon.com/assets/cms2/img/trading-card-game/_downloads/xy/xy6/logos/xy6_logo_169_fr.jpg",
+    "Roaring Skies": {
+      "fr": "Ciel Rugissant",
+      "logo": "https://pokecardex.b-cdn.net/assets/images/logos/ROS.png",
       "block": "XY"
     },
-    "XY—Ancient Origins": {
-      "fr": "XY—Origines Antiques",
-      "logo": "https://assets.pokemon.com/assets/cms2/img/trading-card-game/_downloads/xy/xy7/logos/xy7_logo_169_fr.jpg",
+    "Ancient Origins": {
+      "fr": "Origines Antiques",
+      "logo": "https://pokecardex.b-cdn.net/assets/images/logos/AOR.png",
       "block": "XY"
     },
-    "XY—BREAKthrough": {
-      "fr": "XY—Impulsion TURBO",
-      "logo": "https://assets.pokemon.com/assets/cms2/img/trading-card-game/_downloads/xy/xy8/logos/xy8_logo_169_fr.jpg",
+    "BREAKthrough": {
+      "fr": "Impulsion TURBO",
+      "logo": "https://pokecardex.b-cdn.net/assets/images/logos/BKT.png",
       "block": "XY"
     },
-    "XY—BREAKpoint": {
-      "fr": "XY—Point de Rupture",
-      "logo": "https://assets.pokemon.com/assets/cms2/img/trading-card-game/_downloads/xy/xy9/logos/xy9_logo_169_fr.jpg",
+    "BREAKpoint": {
+      "fr": "Rupture Turbo",
+      "logo": "https://pokecardex.b-cdn.net/assets/images/logos/BKP.png",
       "block": "XY"
     },
-    "XY—Fates Collide": {
-      "fr": "XY—Destinées Futures",
-      "logo": "https://assets.pokemon.com/assets/cms2/img/trading-card-game/_downloads/xy/xy10/logos/xy10_logo_169_fr.jpg",
+    "Fates Collide": {
+      "fr": "Impact des Destins",
+      "logo": "https://pokecardex.b-cdn.net/assets/images/logos/FAC.png",
       "block": "XY"
     },
-    "XY—Steam Siege": {
-      "fr": "XY—Assaut Vapeur",
-      "logo": "https://assets.pokemon.com/assets/cms2/img/trading-card-game/_downloads/xy/xy11/logos/xy11_logo_169_fr.jpg",
+    "Steam Siege": {
+      "fr": "Offensive Vapeur",
+      "logo": "https://pokecardex.b-cdn.net/assets/images/logos/STS.png",
       "block": "XY"
     },
-    "XY—Evolutions": {
-      "fr": "XY—Évolutions",
-      "logo": "https://assets.pokemon.com/assets/cms2/img/trading-card-game/_downloads/xy/xy12/logos/xy12_logo_169_fr.jpg",
+    "Evolutions": {
+      "fr": "Évolutions",
+      "logo": "https://pokecardex.b-cdn.net/assets/images/logos/EVO.png",
       "block": "XY"
     },
     "Sun & Moon": {
       "fr": "Soleil & Lune",
-      "logo": "https://assets.pokemon.com/assets/cms2/img/trading-card-game/_downloads/sm/sm1/logos/sm1_logo_169_en.jpg",
-      "block": "Sun & Moon"
+      "logo": "https://pokecardex.b-cdn.net/assets/images/logos/SM01.png",
+      "block": "Soleil et Lune"
     },
-    "Sun & Moon—Guardians Rising": {
-      "fr": "Soleil & Lune—Gardiens Ascendants",
-      "logo": "https://assets.pokemon.com/assets/cms2/img/trading-card-game/_downloads/sm/sm2/logos/sm2_logo_169_fr.jpg",
-      "block": "Sun & Moon"
+    "Guardians Rising": {
+      "fr": "Gardiens Ascendants",
+      "logo": "https://pokecardex.b-cdn.net/assets/images/logos/SM02.png",
+      "block": "Soleil et Lune"
     },
-    "Sun & Moon—Burning Shadows": {
-      "fr": "Soleil & Lune—Ombres Ardentes",
-      "logo": "https://assets.pokemon.com/assets/cms2/img/trading-card-game/_downloads/sm/sm3/logos/sm3_logo_169_fr.jpg",
-      "block": "Sun & Moon"
+    "Burning Shadows": {
+      "fr": "Ombres Ardentes",
+      "logo": "https://pokecardex.b-cdn.net/assets/images/logos/SM03.png",
+      "block": "Soleil et Lune"
     },
-    "Sun & Moon—Crimson Invasion": {
-      "fr": "Soleil & Lune—Invasion Carmin",
-      "logo": "https://assets.pokemon.com/assets/cms2/img/trading-card-game/_downloads/sm/sm4/logos/sm4_logo_169_fr.jpg",
-      "block": "Sun & Moon"
+    "Crimson Invasion": {
+      "fr": "Invasion Carmin",
+      "logo": "https://pokecardex.b-cdn.net/assets/images/logos/SM04.png",
+      "block": "Soleil et Lune"
     },
-    "Sun & Moon—Ultra Prism": {
-      "fr": "Soleil & Lune—Ultra-Prisme",
-      "logo": "https://assets.pokemon.com/assets/cms2/img/trading-card-game/_downloads/sm/sm5/logos/sm5_logo_169_fr.jpg",
-      "block": "Sun & Moon"
+    "Ultra Prism": {
+      "fr": "Ultra-Prisme",
+      "logo": "https://pokecardex.b-cdn.net/assets/images/logos/SM05.png",
+      "block": "Soleil et Lune"
     },
-    "Sun & Moon—Forbidden Light": {
-      "fr": "Soleil & Lune—Lumière Interdite",
-      "logo": "https://assets.pokemon.com/assets/cms2/img/trading-card-game/_downloads/sm/sm6/logos/sm6_logo_169_fr.jpg",
-      "block": "Sun & Moon"
+    "Forbidden Light": {
+      "fr": "Lumière Interdite",
+      "logo": "https://pokecardex.b-cdn.net/assets/images/logos/SM06.png",
+      "block": "Soleil et Lune"
     },
-    "Sun & Moon—Celestial Storm": {
-      "fr": "Soleil & Lune—Tempête Céleste",
-      "logo": "https://assets.pokemon.com/assets/cms2/img/trading-card-game/_downloads/sm/sm7/logos/sm7_logo_169_fr.jpg",
-      "block": "Sun & Moon"
+    "Celestial Storm": {
+      "fr": "Tempête Céleste",
+      "logo": "https://pokecardex.b-cdn.net/assets/images/logos/SM07.png",
+      "block": "Soleil et Lune"
     },
-    "Sun & Moon—Lost Thunder": {
-      "fr": "Soleil & Lune—Tonnerre Perdu",
-      "logo": "https://assets.pokemon.com/assets/cms2/img/trading-card-game/_downloads/sm/sm8/logos/sm8_logo_169_fr.jpg",
-      "block": "Sun & Moon"
+    "Lost Thunder": {
+      "fr": "Tonnerre Perdu",
+      "logo": "https://pokecardex.b-cdn.net/assets/images/logos/SM08.png",
+      "block": "Soleil et Lune"
     },
-    "Sun & Moon—Team Up": {
-      "fr": "Soleil & Lune—Alliance Infaillible",
-      "logo": "https://assets.pokemon.com/assets/cms2/img/trading-card-game/_downloads/sm/sm9/logos/sm9_logo_169_fr.jpg",
-      "block": "Sun & Moon"
+    "Team Up": {
+      "fr": "Alliance Infaillible",
+      "logo": "https://pokecardex.b-cdn.net/assets/images/logos/SM10.png",
+      "block": "Soleil et Lune"
     },
-    "Sun & Moon—Unbroken Bonds": {
-      "fr": "Soleil & Lune—Duo de Choc",
-      "logo": "https://assets.pokemon.com/assets/cms2/img/trading-card-game/_downloads/sm/sm10/logos/sm10_logo_169_fr.jpg",
-      "block": "Sun & Moon"
+    "Unbroken Bonds": {
+      "fr": "Duo de Choc",
+      "logo": "https://pokecardex.b-cdn.net/assets/images/logos/SM09.png",
+      "block": "Soleil et Lune"
     },
-    "Sun & Moon—Unified Minds": {
+    "Unified Minds": {
       "fr": "Soleil & Lune—Harmonie des Esprits",
-      "logo": "https://assets.pokemon.com/assets/cms2/img/trading-card-game/_downloads/sm/sm11/logos/sm11_logo_169_fr.jpg",
-      "block": "Sun & Moon"
+      "logo": "https://pokecardex.b-cdn.net/assets/images/logos/SM11.png",
+      "block": "Soleil et Lune"
     },
-    "Sun & Moon—Cosmic Eclipse": {
-      "fr": "Soleil & Lune—Éclipse Cosmique",
-      "logo": "https://assets.pokemon.com/assets/cms2/img/trading-card-game/_downloads/sm/sm12/logos/sm12_logo_169_fr.jpg",
+    "Cosmic Eclipse": {
+      "fr": "Éclipse Cosmique",
+      "logo": "https://pokecardex.b-cdn.net/assets/images/logos/SM12.png",
       "block": "Sun & Moon"
     },
     "Sword & Shield": {
@@ -476,33 +476,43 @@
       "fr": "Zénith Suprême",
       "logo": "https://pokecardex.b-cdn.net/assets/images/logos/CRZ.png",
       "releaseDate": "2023-01-20",
-      "totalCards": 230 cartes (71 secrètes),
+      "totalCards": 230,
       "block": "Épée & Bouclier"
     },
     "Scarlet & Violet": {
       "fr": "Écarlate & Violet",
       "logo": "https://pokecardex.b-cdn.net/assets/images/logos/SVI.png",
       "block": "Écarlate & Violet"
+      "releaseDate": "2023-03-31",
+      "totalCards": 258,
     },
     "Paldea Evolved": {
       "fr": "Évolution de Paldea",
       "logo": "https://pokecardex.b-cdn.net/assets/images/logos/PAL.png",
       "block": "Écarlate & Violet"
+      "releaseDate": "2023-06-09",
+      "totalCards": 279,
     },
     "Obsidian Flames": {
       "fr": "Flammes Obsidiennes",
       "logo": "https://pokecardex.b-cdn.net/assets/images/logos/OBF.png",
       "block": "Écarlate & Violet"
+      "releaseDate": "2023-08-11",
+      "totalCards": 230,
     },
     "151": {
       "fr": "151",
       "logo": "https://pokecardex.b-cdn.net/assets/images/logos/MEW.png",
       "block": "Écarlate & Violet"
+      "releaseDate": "2023-09-22",
+      "totalCards": 207,
     },
     "Paradox Rift": {
       "fr": "Faille Temporelle",
-      "logo": "https://assets.pokemon.com/assets/cms2/img/trading-card-game/_downloads/sv/sv4/logos/sv4_logo_169_en.jpg",
+      "logo": "https://pokecardex.b-cdn.net/assets/images/logos/PAR.png",
       "block": "Écarlate & Violet"
+      "releaseDate": "2023-11-03",
+      "totalCards": 266,
     }
   }
 }
