@@ -1,7 +1,5 @@
-
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import { ShoppingCart, ChevronDown, Filter, Search, X, LayoutGrid, LayoutList, Star } from "lucide-react";
 import { PokemonCard, SortOption, FilterOptions, ViewMode, PokemonSeries } from "@/lib/types";
 import { fetchPokemonCards, fetchPokemonSeries, fetchExpansions } from "@/lib/api";
 import Loader from "@/components/ui/Loader";
@@ -161,7 +159,7 @@ const Inventory = () => {
         setSearchParams={setSearchParams}
       />
 
-      <div className="container mx-auto px-4 flex flex-col lg:flex-row gap-6 mt-6">
+      <div className="container mx-auto px-4 flex flex-col lg:flex-row gap-6 mt-2">
         <InventoryFilters 
           filterOptions={filterOptions}
           setFilterOptions={setFilterOptions}

@@ -101,6 +101,26 @@
   .container-padding {
     @apply px-4 md:px-6 lg:px-8;
   }
+  
+  .card-hover-effect {
+    @apply relative overflow-hidden transition-all duration-300;
+  }
+  
+  .card-hover-effect::after {
+    @apply content-[''] absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 transition-opacity duration-300 z-10;
+  }
+  
+  .card-hover-effect:hover::after {
+    @apply opacity-100;
+  }
+  
+  .status-badge {
+    @apply inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full font-medium;
+  }
+  
+  .card-gradient {
+    @apply bg-gradient-to-br from-card to-secondary/80 backdrop-blur-sm;
+  }
 }
 
 /* Custom scrollbar */
@@ -169,4 +189,56 @@
 
 .pokemon-card:hover::before {
   opacity: 1;
+}
+
+/* Card shine effect */
+.card-shine {
+  position: relative;
+  overflow: hidden;
+  border-radius: 0.5rem;
+}
+
+.card-shine::before {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    to bottom right,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.1) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  transform: rotate(30deg);
+  animation: shine 6s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 2;
+}
+
+@keyframes shine {
+  0% {
+    transform: translateX(-100%) rotate(30deg);
+  }
+  20%, 100% {
+    transform: translateX(100%) rotate(30deg);
+  }
+}
+
+/* Admin dashboard styles */
+.stats-card {
+  @apply bg-card border rounded-lg p-4 transition-all duration-300 hover:shadow-md;
+}
+
+.stats-card-icon {
+  @apply p-3 rounded-full;
+}
+
+.order-table-row {
+  @apply border-b transition-colors hover:bg-muted/20;
+}
+
+.order-table-row-selected {
+  @apply bg-primary/5;
 }

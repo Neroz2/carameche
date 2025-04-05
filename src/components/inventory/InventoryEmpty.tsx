@@ -9,18 +9,18 @@ interface InventoryEmptyProps {
 
 const InventoryEmpty: React.FC<InventoryEmptyProps> = ({ clearFilters }) => {
   return (
-    <div className="bg-card rounded-lg border p-8 text-center flex flex-col items-center justify-center min-h-[300px] animate-in fade-in">
-      <div className="mb-4 bg-accent/50 p-4 rounded-full">
-        <FileSearch size={36} className="text-muted-foreground" />
+    <div className="bg-card rounded-lg shadow-sm border p-8 text-center flex flex-col items-center justify-center min-h-[400px] animate-in fade-in">
+      <div className="mb-6 bg-accent/50 p-6 rounded-full">
+        <FileSearch size={42} className="text-muted-foreground" />
       </div>
-      <h3 className="text-xl font-medium mb-2">Aucune carte trouvée</h3>
-      <p className="text-muted-foreground mb-6 max-w-md">
+      <h3 className="text-xl font-medium mb-3">Aucune carte trouvée</h3>
+      <p className="text-muted-foreground mb-8 max-w-md">
         Essayez de modifier vos filtres ou d'effectuer une recherche différente.
       </p>
       <Button 
         onClick={clearFilters} 
-        variant="outline" 
-        className="animate-pulse flex items-center gap-2"
+        variant="default" 
+        className="flex items-center gap-2"
       >
         <RefreshCw size={16} />
         Réinitialiser les filtres
