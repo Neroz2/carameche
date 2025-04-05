@@ -410,7 +410,7 @@
     "Cosmic Eclipse": {
       "fr": "Éclipse Cosmique",
       "logo": "https://pokecardex.b-cdn.net/assets/images/logos/SM12.png",
-      "block": "Sun & Moon"
+      "block": "Soleil et Lune"
     },
     "Sword & Shield": {
       "fr": "Épée & Bouclier",
@@ -448,7 +448,7 @@
       "block": "Épée & Bouclier"
     },
     "Celebrations": {
-      "fr": "Couronne Stellaire",
+      "fr": "Celebrations",
       "logo": "https://pokecardex.b-cdn.net/assets/images/logos/CEL.png",
       "block": "Épée & Bouclier",
       "releaseDate": "2021-10-08",
