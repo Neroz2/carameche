@@ -447,6 +447,13 @@
       "logo": "https://pokecardex.b-cdn.net/assets/images/logos/EVS.png",
       "block": "Épée & Bouclier"
     },
+    "Celebrations": {
+      "fr": "Couronne Stellaire",
+      "logo": "https://pokecardex.b-cdn.net/assets/images/logos/CEL.png",
+      "block": "Épée & Bouclier",
+      "releaseDate": "2021-10-08",
+      "totalCards": 50
+    }    
     "Fusion Strike": {
       "fr": "Poing de Fusion",
       "logo": "https://pokecardex.b-cdn.net/assets/images/logos/FST.png",
@@ -513,6 +520,20 @@
       "block": "Écarlate & Violet",
       "releaseDate": "2023-11-03",
       "totalCards": 266
+    }
+    "Paldean Fates": {
+      "fr": "Destinées de Paldea",
+      "logo": "https://pokecardex.b-cdn.net/assets/images/logos/PAF.png",
+      "block": "Écarlate & Violet",
+      "releaseDate": "2024-01-26",
+      "totalCards": 245
+    }
+    "Stellar Crown": {
+      "fr": "Couronne Stellaire",
+      "logo": "https://pokecardex.b-cdn.net/assets/images/logos/SCR.png",
+      "block": "Écarlate & Violet",
+      "releaseDate": "2024-09-13",
+      "totalCards": 175
     }
   }
 }
