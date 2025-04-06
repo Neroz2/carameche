@@ -11,6 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
+import { getSeriesTranslation } from "@/lib/seriesUtils";
 
 const OrderHistory: React.FC = () => {
   const [username, setUsername] = useState<string>("");
@@ -176,7 +177,7 @@ const OrderHistory: React.FC = () => {
                       {Object.entries(getCardsBySeries(order)).map(([series, items]) => (
                         <div key={series} className="border-b last:border-b-0">
                           <div className="bg-muted/30 p-3 font-medium text-sm">
-                            {series} ({items.length} carte{items.length > 1 ? 's' : ''})
+                            {getSeriesTranslation(series).fr} ({items.length} carte{items.length > 1 ? 's' : ''})
                           </div>
                           <div className="p-3">
                             <Table>

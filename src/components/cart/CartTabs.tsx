@@ -5,6 +5,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CartItem } from "@/lib/types";
 import CartItemsBySeries from "@/components/cart/CartItemsBySeries";
 import OrderHistory from "@/components/cart/OrderHistory";
+import { getSeriesTranslation } from "@/lib/seriesUtils";
 
 interface CartTabsProps {
   items: CartItem[];
