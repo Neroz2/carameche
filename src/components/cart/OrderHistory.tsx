@@ -7,7 +7,7 @@ import { useToast } from "@/hooks/use-toast";
 import { getStatusBgClass, getStatusIcon, getStatusText } from "@/lib/orderUtils";
 import Card, { CardHeader, CardTitle, CardContent } from "@/components/common/Card";
 import { Button } from "@/components/ui/button";
-import { Loader } from "@/components/ui/Loader";
+import Loader from "@/components/ui/Loader";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
 
