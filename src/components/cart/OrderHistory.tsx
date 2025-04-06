@@ -52,7 +52,7 @@ const OrderHistory: React.FC<OrderHistoryProps> = ({ username }) => {
 
   if (!username) {
     return (
-      <div className="text-center p-4 bg-muted/30 rounded-lg mt-8">
+      <div className="text-center p-4 bg-muted/30 rounded-lg">
         <p className="text-muted-foreground">
           Entrez votre pseudo dans le formulaire de commande pour voir votre historique.
         </p>
@@ -62,7 +62,7 @@ const OrderHistory: React.FC<OrderHistoryProps> = ({ username }) => {
 
   if (orders.length === 0) {
     return (
-      <div className="text-center p-4 bg-muted/30 rounded-lg mt-8">
+      <div className="text-center p-4 bg-muted/30 rounded-lg">
         <p className="text-muted-foreground">
           Aucune commande trouvée pour le pseudo "{username}".
         </p>
@@ -79,11 +79,7 @@ const OrderHistory: React.FC<OrderHistoryProps> = ({ username }) => {
   };
 
   return (
-    <div className="space-y-4 mt-8">
-      <h2 className="text-xl font-semibold flex items-center gap-2">
-        <Clock className="h-5 w-5" />
-        Historique des commandes
-      </h2>
+    <div className="space-y-4">
       <div className="space-y-4">
         {orders.map((order) => (
           <Card key={order.id} className="overflow-hidden">

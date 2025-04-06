@@ -1,6 +1,6 @@
 
 import React, { useState } from "react";
-import { ShoppingBag, ShoppingCart } from "lucide-react";
+import { ShoppingBag, ShoppingCart, History, Clock } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
@@ -17,6 +17,7 @@ import {
   FormItem,
   FormMessage
 } from "@/components/ui/form";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -100,14 +101,30 @@ const Cart = () => {
 
       <div className="grid md:grid-cols-3 gap-8">
         <div className="md:col-span-2">
-          <CartItemsBySeries 
-            items={items} 
-            removeFromCart={removeFromCart} 
-            updateQuantity={updateQuantity} 
-          />
-          
-          {/* Historique des commandes */}
-          <OrderHistory username={orderUsername} />
+          <Tabs defaultValue="cart" className="w-full">
+            <TabsList className="w-full mb-6">
+              <TabsTrigger value="cart" className="flex-1">
+                <ShoppingCart className="mr-2 h-4 w-4" />
+                Panier
+              </TabsTrigger>
+              <TabsTrigger value="history" className="flex-1">
+                <History className="mr-2 h-4 w-4" />
+                Historique
+              </TabsTrigger>
+            </TabsList>
+            
+            <TabsContent value="cart">
+              <CartItemsBySeries 
+                items={items} 
+                removeFromCart={removeFromCart} 
+                updateQuantity={updateQuantity} 
+              />
+            </TabsContent>
+            
+            <TabsContent value="history">
+              <OrderHistory username={orderUsername} />
+            </TabsContent>
+          </Tabs>
         </div>
 
         <div>
