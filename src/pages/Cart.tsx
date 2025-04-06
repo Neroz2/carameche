@@ -1,18 +1,50 @@
-import React from "react";
+
+import React, { useState } from "react";
 import { ShoppingBag, ShoppingCart } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
 import CartItemsBySeries from "@/components/cart/CartItemsBySeries";
+import OrderHistory from "@/components/cart/OrderHistory";
 import { saveOrder } from "@/lib/orderService";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { 
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormMessage
+} from "@/components/ui/form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+
+// Définir le schéma de validation pour le formulaire
+const formSchema = z.object({
+  username: z.string().min(3, {
+    message: "Le pseudo doit contenir au moins 3 caractères",
+  }),
+});
+
+type FormValues = z.infer<typeof formSchema>;
 
 const Cart = () => {
   const { items, removeFromCart, updateQuantity, clearCart, totalPrice } = useCart();
   const { toast } = useToast();
   const navigate = useNavigate();
+  const [orderUsername, setOrderUsername] = useState<string>("");
+  
+  // Initialiser le formulaire
+  const form = useForm<FormValues>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      username: "",
+    },
+  });
 
-  const handleCheckout = async () => {
+  const handleCheckout = async (values: FormValues) => {
     if (items.length === 0) {
       toast({
         title: "Panier vide",
@@ -23,8 +55,7 @@ const Cart = () => {
     }
 
     try {
-      // Supposons que nous avons un nom d'utilisateur fictif pour cette démo
-      const username = "client@example.com";
+      const username = values.username.trim();
       
       const orderId = await saveOrder(username, items);
 
@@ -35,7 +66,8 @@ const Cart = () => {
         });
         
         clearCart();
-        navigate("/");
+        setOrderUsername(username);
+        form.reset();
       }
     } catch (error) {
       console.error("Checkout error:", error);
@@ -45,6 +77,11 @@ const Cart = () => {
         variant: "destructive",
       });
     }
+  };
+
+  // Mettre à jour l'état du pseudo lorsque l'utilisateur soumet le formulaire ou recherche son historique
+  const handleSubmitUsername = (values: FormValues) => {
+    setOrderUsername(values.username.trim());
   };
 
   return (
@@ -68,6 +105,9 @@ const Cart = () => {
             removeFromCart={removeFromCart} 
             updateQuantity={updateQuantity} 
           />
+          
+          {/* Historique des commandes */}
+          <OrderHistory username={orderUsername} />
         </div>
 
         <div>
@@ -89,35 +129,70 @@ const Cart = () => {
               </div>
             </div>
             
-            <div className="space-y-3">
-              <Button 
-                onClick={handleCheckout}
-                className="w-full"
-                size="lg"
-                disabled={items.length === 0}
-              >
-                Passer commande
-              </Button>
-              
-              <Button
-                variant="outline"
-                className="w-full"
-                onClick={() => navigate("/inventory")}
-              >
-                <ShoppingBag className="mr-2 h-4 w-4" />
-                Continuer les achats
-              </Button>
-              
-              {items.length > 0 && (
-                <Button
-                  variant="link"
-                  className="w-full text-muted-foreground"
-                  onClick={clearCart}
-                >
-                  Vider le panier
-                </Button>
-              )}
-            </div>
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(handleCheckout)} className="space-y-3">
+                <FormField
+                  control={form.control}
+                  name="username"
+                  render={({ field }) => (
+                    <FormItem>
+                      <Label htmlFor="username">Votre pseudo</Label>
+                      <FormControl>
+                        <Input
+                          id="username"
+                          placeholder="Entrez votre pseudo"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                
+                <div className="space-y-3 pt-3">
+                  <Button 
+                    type="submit"
+                    className="w-full"
+                    size="lg"
+                    disabled={items.length === 0}
+                  >
+                    Passer commande
+                  </Button>
+                  
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="w-full"
+                    onClick={() => {
+                      form.handleSubmit(handleSubmitUsername)();
+                    }}
+                  >
+                    Voir mon historique
+                  </Button>
+                  
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="w-full"
+                    onClick={() => navigate("/inventory")}
+                  >
+                    <ShoppingBag className="mr-2 h-4 w-4" />
+                    Continuer les achats
+                  </Button>
+                  
+                  {items.length > 0 && (
+                    <Button
+                      type="button"
+                      variant="link"
+                      className="w-full text-muted-foreground"
+                      onClick={clearCart}
+                    >
+                      Vider le panier
+                    </Button>
+                  )}
+                </div>
+              </form>
+            </Form>
           </div>
         </div>
       </div>
