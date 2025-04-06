@@ -35,7 +35,7 @@ const Cart = () => {
   const { items, removeFromCart, updateQuantity, clearCart, totalPrice } = useCart();
   const { toast } = useToast();
   const navigate = useNavigate();
-  const [orderUsername, setOrderUsername] = useState<string>("");
+  const [activeTab, setActiveTab] = useState<string>("cart");
   
   // Initialiser le formulaire
   const form = useForm<FormValues>({
@@ -67,7 +67,6 @@ const Cart = () => {
         });
         
         clearCart();
-        setOrderUsername(username);
         form.reset();
       }
     } catch (error) {
@@ -80,11 +79,6 @@ const Cart = () => {
     }
   };
 
-  // Mettre à jour l'état du pseudo lorsque l'utilisateur soumet le formulaire ou recherche son historique
-  const handleSubmitUsername = (values: FormValues) => {
-    setOrderUsername(values.username.trim());
-  };
-
   return (
     <div className="container mx-auto px-4 py-8">
       <header className="mb-8">
@@ -93,15 +87,22 @@ const Cart = () => {
           Votre Panier
         </h1>
         <p className="text-muted-foreground mt-2">
-          {items.length === 0
-            ? "Votre panier est actuellement vide"
-            : `Vous avez ${items.reduce((sum, item) => sum + item.quantity, 0)} cartes dans votre panier`}
+          {activeTab === "cart" ? 
+            (items.length === 0
+              ? "Votre panier est actuellement vide"
+              : `Vous avez ${items.reduce((sum, item) => sum + item.quantity, 0)} cartes dans votre panier`) 
+            : "Consultez l'historique de vos commandes"
+          }
         </p>
       </header>
 
       <div className="grid md:grid-cols-3 gap-8">
         <div className="md:col-span-2">
-          <Tabs defaultValue="cart" className="w-full">
+          <Tabs 
+            defaultValue="cart" 
+            className="w-full"
+            onValueChange={(value) => setActiveTab(value)}
+          >
             <TabsList className="w-full mb-6">
               <TabsTrigger value="cart" className="flex-1">
                 <ShoppingCart className="mr-2 h-4 w-4" />
@@ -122,96 +123,87 @@ const Cart = () => {
             </TabsContent>
             
             <TabsContent value="history">
-              <OrderHistory username={orderUsername} />
+              <OrderHistory />
             </TabsContent>
           </Tabs>
         </div>
 
-        <div>
-          <div className="bg-card border rounded-lg p-6 sticky top-8">
-            <h2 className="text-xl font-semibold mb-4">Récapitulatif</h2>
-            
-            <div className="space-y-3 mb-6">
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">Sous-total</span>
-                <span>{totalPrice.toFixed(2)} €</span>
+        {activeTab === "cart" && (
+          <div>
+            <div className="bg-card border rounded-lg p-6 sticky top-8">
+              <h2 className="text-xl font-semibold mb-4">Récapitulatif</h2>
+              
+              <div className="space-y-3 mb-6">
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Sous-total</span>
+                  <span>{totalPrice.toFixed(2)} €</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Frais de livraison</span>
+                  <span>Gratuit</span>
+                </div>
+                <div className="pt-3 border-t flex justify-between font-semibold">
+                  <span>Total</span>
+                  <span className="text-xl text-primary">{totalPrice.toFixed(2)} €</span>
+                </div>
               </div>
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">Frais de livraison</span>
-                <span>Gratuit</span>
-              </div>
-              <div className="pt-3 border-t flex justify-between font-semibold">
-                <span>Total</span>
-                <span className="text-xl text-primary">{totalPrice.toFixed(2)} €</span>
-              </div>
-            </div>
-            
-            <Form {...form}>
-              <form onSubmit={form.handleSubmit(handleCheckout)} className="space-y-3">
-                <FormField
-                  control={form.control}
-                  name="username"
-                  render={({ field }) => (
-                    <FormItem>
-                      <Label htmlFor="username">Votre pseudo</Label>
-                      <FormControl>
-                        <Input
-                          id="username"
-                          placeholder="Entrez votre pseudo"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                
-                <div className="space-y-3 pt-3">
-                  <Button 
-                    type="submit"
-                    className="w-full"
-                    size="lg"
-                    disabled={items.length === 0}
-                  >
-                    Passer commande
-                  </Button>
+              
+              <Form {...form}>
+                <form onSubmit={form.handleSubmit(handleCheckout)} className="space-y-3">
+                  <FormField
+                    control={form.control}
+                    name="username"
+                    render={({ field }) => (
+                      <FormItem>
+                        <Label htmlFor="username">Votre pseudo</Label>
+                        <FormControl>
+                          <Input
+                            id="username"
+                            placeholder="Entrez votre pseudo"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
                   
-                  <Button
-                    type="button"
-                    variant="outline"
-                    className="w-full"
-                    onClick={() => {
-                      form.handleSubmit(handleSubmitUsername)();
-                    }}
-                  >
-                    Voir mon historique
-                  </Button>
-                  
-                  <Button
-                    type="button"
-                    variant="outline"
-                    className="w-full"
-                    onClick={() => navigate("/inventory")}
-                  >
-                    <ShoppingBag className="mr-2 h-4 w-4" />
-                    Continuer les achats
-                  </Button>
-                  
-                  {items.length > 0 && (
+                  <div className="space-y-3 pt-3">
+                    <Button 
+                      type="submit"
+                      className="w-full"
+                      size="lg"
+                      disabled={items.length === 0}
+                    >
+                      Passer commande
+                    </Button>
+                    
                     <Button
                       type="button"
-                      variant="link"
-                      className="w-full text-muted-foreground"
-                      onClick={clearCart}
+                      variant="outline"
+                      className="w-full"
+                      onClick={() => navigate("/inventory")}
                     >
-                      Vider le panier
+                      <ShoppingBag className="mr-2 h-4 w-4" />
+                      Continuer les achats
                     </Button>
-                  )}
-                </div>
-              </form>
-            </Form>
+                    
+                    {items.length > 0 && (
+                      <Button
+                        type="button"
+                        variant="link"
+                        className="w-full text-muted-foreground"
+                        onClick={clearCart}
+                      >
+                        Vider le panier
+                      </Button>
+                    )}
+                  </div>
+                </form>
+              </Form>
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );
