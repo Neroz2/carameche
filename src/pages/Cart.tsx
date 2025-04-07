@@ -1,6 +1,6 @@
 
 import React, { useState } from "react";
-import { ShoppingCart } from "lucide-react";
+import { ShoppingCart, Package } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 import CartTabs from "@/components/cart/CartTabs";
 import CartSummary from "@/components/cart/CartSummary";
@@ -10,18 +10,26 @@ const Cart = () => {
   const [activeTab, setActiveTab] = useState<string>("cart");
   
   return (
-    <div className="container mx-auto px-4 py-8">
-      <header className="mb-8">
-        <h1 className="text-3xl font-bold flex items-center gap-3">
+    <div className="container mx-auto px-4 py-8 animate-fade-in">
+      <header className="mb-8 border-b pb-4">
+        <h1 className="text-3xl font-bold flex items-center gap-3 mb-2 text-primary">
           <ShoppingCart className="h-8 w-8" />
-          Votre Panier
+          {activeTab === "cart" ? "Votre Panier" : "Historique des Commandes"}
         </h1>
-        <p className="text-muted-foreground mt-2">
+        <p className="text-muted-foreground mt-2 flex items-center gap-2">
           {activeTab === "cart" ? 
-            (items.length === 0
-              ? "Votre panier est actuellement vide"
-              : `Vous avez ${items.reduce((sum, item) => sum + item.quantity, 0)} cartes dans votre panier`) 
-            : "Consultez l'historique de vos commandes"
+            (items.length === 0 ? (
+              <span className="text-muted-foreground">Votre panier est actuellement vide</span>
+            ) : (
+              <span className="flex items-center gap-2">
+                <Package className="h-4 w-4" />
+                <span>
+                  Vous avez <span className="font-medium text-foreground">{items.reduce((sum, item) => sum + item.quantity, 0)}</span> cartes dans votre panier
+                </span>
+              </span>
+            )) : (
+              <span>Consultez l'historique de vos commandes passées</span>
+            )
           }
         </p>
       </header>
@@ -38,7 +46,7 @@ const Cart = () => {
         </div>
 
         {activeTab === "cart" && (
-          <div>
+          <div className="animate-fade-in">
             <CartSummary onOrderComplete={() => setActiveTab("history")} />
           </div>
         )}
