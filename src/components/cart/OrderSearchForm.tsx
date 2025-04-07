@@ -18,7 +18,7 @@ const OrderSearchForm: React.FC<OrderSearchFormProps> = ({
   return (
     <div className="bg-card border rounded-lg p-6 shadow-sm animate-fade-in transition-all hover:shadow">
       <form onSubmit={handleSearch} className="space-y-4">
-        <h3 className="text-lg font-medium mb-4 flex items-center gap-2 text-foreground">
+        <h3 className="text-xl font-semibold mb-4 flex items-center gap-2.5 text-foreground">
           <History className="h-5 w-5 text-primary" /> Rechercher vos commandes
         </h3>
         <div className="flex flex-col sm:flex-row gap-3">

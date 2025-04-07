@@ -87,6 +87,30 @@
   h1, h2, h3, h4, h5, h6 {
     font-family: 'Poppins', sans-serif;
   }
+
+  h1 {
+    @apply text-3xl font-bold md:text-4xl lg:text-5xl tracking-tight;
+  }
+  
+  h2 {
+    @apply text-2xl font-bold md:text-3xl tracking-tight;
+  }
+  
+  h3 {
+    @apply text-xl font-semibold md:text-2xl;
+  }
+  
+  h4 {
+    @apply text-lg font-semibold;
+  }
+  
+  p {
+    @apply text-base leading-relaxed;
+  }
+  
+  .small-text {
+    @apply text-sm text-muted-foreground;
+  }
 }
 
 @layer components {
@@ -120,6 +144,42 @@
   
   .card-gradient {
     @apply bg-gradient-to-br from-card to-secondary/80 backdrop-blur-sm;
+  }
+  
+  .section-title {
+    @apply text-2xl md:text-3xl font-bold tracking-tight mb-6;
+  }
+  
+  .section-subtitle {
+    @apply text-muted-foreground text-lg mb-8 max-w-3xl;
+  }
+  
+  .card-container {
+    @apply bg-card border rounded-lg shadow-sm overflow-hidden hover:shadow transition-shadow duration-300;
+  }
+  
+  .card-header {
+    @apply p-5 border-b bg-muted/30;
+  }
+  
+  .card-content {
+    @apply p-5;
+  }
+  
+  .card-footer {
+    @apply p-5 border-t bg-muted/20;
+  }
+  
+  .form-group {
+    @apply space-y-2 mb-4;
+  }
+  
+  .input-label {
+    @apply text-sm font-medium text-foreground;
+  }
+  
+  .text-balance {
+    text-wrap: balance;
   }
 }
 
