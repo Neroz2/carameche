@@ -1,6 +1,6 @@
 
 import React from "react";
-import { User, Search } from "lucide-react";
+import { User, Search, History } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
@@ -16,10 +16,10 @@ const OrderSearchForm: React.FC<OrderSearchFormProps> = ({
   handleSearch
 }) => {
   return (
-    <div className="bg-card border rounded-lg p-6 shadow-sm animate-fade-in">
+    <div className="bg-card border rounded-lg p-6 shadow-sm animate-fade-in transition-all hover:shadow">
       <form onSubmit={handleSearch} className="space-y-4">
-        <h3 className="text-lg font-medium mb-4 flex items-center gap-2 text-primary">
-          <User className="h-5 w-5" /> Rechercher vos commandes
+        <h3 className="text-lg font-medium mb-4 flex items-center gap-2 text-foreground">
+          <History className="h-5 w-5 text-primary" /> Rechercher vos commandes
         </h3>
         <div className="flex flex-col sm:flex-row gap-3">
           <div className="relative flex-1">
@@ -30,10 +30,10 @@ const OrderSearchForm: React.FC<OrderSearchFormProps> = ({
               value={searchUsername}
               onChange={(e) => setSearchUsername(e.target.value)}
               placeholder="Entrez votre pseudo"
-              className="ps-10"
+              className="ps-10 bg-background border-input focus-visible:ring-primary"
             />
           </div>
-          <Button type="submit" size="lg" className="min-w-[120px]">
+          <Button type="submit" size="default" className="min-w-[120px] bg-primary hover:bg-primary/90 transition-colors">
             <Search className="mr-2 h-4 w-4" />
             Rechercher
           </Button>
