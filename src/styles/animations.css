@@ -65,6 +65,57 @@
   }
 }
 
+/* Animation durations */
+.duration-xs {
+  transition-duration: 150ms;
+}
+
+.duration-sm {
+  transition-duration: 300ms;
+}
+
+.duration-md {
+  transition-duration: 500ms;
+}
+
+.duration-lg {
+  transition-duration: 700ms;
+}
+
+.duration-xl {
+  transition-duration: 1000ms;
+}
+
+/* Standard transitions */
+.transition-standard {
+  @apply transition-all duration-sm ease-in-out;
+}
+
+.transition-fast {
+  @apply transition-all duration-xs ease-in-out;
+}
+
+.transition-slow {
+  @apply transition-all duration-md ease-in-out;
+}
+
+/* Hover state animations */
+.hover-lift {
+  @apply transition-standard hover:-translate-y-1 hover:shadow-md;
+}
+
+.hover-grow {
+  @apply transition-standard hover:scale-105;
+}
+
+.hover-glow {
+  @apply transition-standard hover:shadow-lg hover:shadow-primary/20;
+}
+
+.hover-highlight {
+  @apply transition-standard hover:bg-primary/10;
+}
+
 /* Page transitions */
 .page-transition-enter {
   opacity: 0;
@@ -102,3 +153,29 @@
     animation: logo-spin infinite 20s linear;
   }
 }
+
+/* Standardized animation patterns */
+.fade-in {
+  @apply animate-fade-in;
+}
+
+.slide-up {
+  @apply animate-slide-up;
+}
+
+.slide-down {
+  @apply animate-slide-down;
+}
+
+.scale-in {
+  @apply animate-scale-in;
+}
+
+.float {
+  @apply animate-float;
+}
+
+.pulse-soft {
+  @apply animate-pulse-soft;
+}
+

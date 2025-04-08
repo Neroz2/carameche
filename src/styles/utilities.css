@@ -13,6 +13,53 @@
   @apply bg-primary/50 rounded-full transition-colors hover:bg-primary;
 }
 
+/* Design system spacing */
+.spacing-xs {
+  @apply p-2;
+}
+
+.spacing-sm {
+  @apply p-4;
+}
+
+.spacing-md {
+  @apply p-6;
+}
+
+.spacing-lg {
+  @apply p-8;
+}
+
+.spacing-xl {
+  @apply p-12;
+}
+
+/* Margin spacing utilities */
+.m-section {
+  @apply my-8 md:my-12 lg:my-16;
+}
+
+.m-component {
+  @apply my-4 md:my-6;
+}
+
+.m-element {
+  @apply my-2 md:my-3;
+}
+
+/* Padding spacing utilities */
+.p-section {
+  @apply py-8 md:py-12 lg:py-16 px-4 md:px-6 lg:px-8;
+}
+
+.p-component {
+  @apply py-4 md:py-6 px-4 md:px-6;
+}
+
+.p-element {
+  @apply py-2 md:py-3 px-3 md:px-4;
+}
+
 /* Admin dashboard styles */
 .stats-card {
   @apply bg-card border rounded-lg p-4 transition-all duration-300 hover:shadow-md;
@@ -79,3 +126,38 @@
 .card-body {
   @apply text-sm text-foreground;
 }
+
+/* Shadow system */
+.shadow-subtle {
+  @apply shadow-sm;
+}
+
+.shadow-standard {
+  @apply shadow;
+}
+
+.shadow-prominent {
+  @apply shadow-md;
+}
+
+.shadow-elevated {
+  @apply shadow-lg;
+}
+
+/* Elevation system */
+.elevation-1 {
+  @apply shadow-subtle bg-card border border-border;
+}
+
+.elevation-2 {
+  @apply shadow-standard bg-card border border-border;
+}
+
+.elevation-3 {
+  @apply shadow-prominent bg-card border border-border;
+}
+
+.elevation-4 {
+  @apply shadow-elevated bg-card border border-border;
+}
+
