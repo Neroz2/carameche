@@ -55,7 +55,7 @@
 
 /* Harmonized text styles applied consistently across the app */
 .title {
-  @apply text-2xl md:text-3xl font-bold tracking-tight text-foreground;
+  @apply text-2xl md:text-3xl font-bold tracking-tight text-primary;
 }
 
 .subtitle {
@@ -65,4 +65,31 @@
 /* Harmonized button styles */
 .btn {
   @apply rounded-lg font-medium transition-all duration-200;
+}
+
+/* Page title styles */
+.page-title {
+  @apply text-3xl font-bold tracking-tight text-primary mb-2;
+}
+
+.page-subtitle {
+  @apply text-lg text-muted-foreground mb-6;
+}
+
+/* Section title styles */
+.section-title {
+  @apply text-xl md:text-2xl font-semibold text-primary mb-4;
+}
+
+.section-subtitle {
+  @apply text-base text-muted-foreground mb-6;
+}
+
+/* Card styles */
+.card-title {
+  @apply text-lg font-medium text-primary mb-2;
+}
+
+.card-body {
+  @apply text-sm text-foreground;
 }

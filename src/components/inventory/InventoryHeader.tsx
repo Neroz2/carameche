@@ -45,15 +45,15 @@ const InventoryHeader: React.FC<InventoryHeaderProps> = ({
     <>
       <div className="bg-gradient-to-b from-primary/10 to-background border-b">
         <div className="container mx-auto px-4 py-8">
-          <h1 className="text-3xl font-bold">Inventaire des cartes</h1>
-          <p className="text-muted-foreground mt-1">
+          <h1 className="title text-3xl font-bold">Inventaire des cartes</h1>
+          <p className="subtitle text-muted-foreground mt-1">
             {totalCards} cartes disponibles
             {filterOptions.series.length > 0 && ` dans la série ${filterOptions.series[0]}`}
           </p>
         </div>
       </div>
 
-      <div className="container mx-auto px-4 my-4">
+      <div className="container mx-auto px-4 my-4 relative z-20">
         <div className="bg-card shadow-sm rounded-lg border p-4">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
             <div className="flex items-center gap-2 w-full sm:w-auto">
@@ -100,14 +100,14 @@ const InventoryHeader: React.FC<InventoryHeaderProps> = ({
             <div className="flex items-center gap-3 w-full sm:w-auto">
               <div className="flex items-center border rounded-md overflow-hidden">
                 <button 
-                  className={`p-2 ${viewMode === 'grid' ? 'bg-primary text-white' : 'hover:bg-accent'}`}
+                  className={`p-2 ${viewMode === 'grid' ? 'bg-primary text-primary-foreground' : 'hover:bg-accent'}`}
                   onClick={() => setViewMode('grid')}
                   title="Vue en grille"
                 >
                   <LayoutGrid size={16} />
                 </button>
                 <button 
-                  className={`p-2 ${viewMode === 'list' ? 'bg-primary text-white' : 'hover:bg-accent'}`}
+                  className={`p-2 ${viewMode === 'list' ? 'bg-primary text-primary-foreground' : 'hover:bg-accent'}`}
                   onClick={() => setViewMode('list')}
                   title="Vue en liste"
                 >

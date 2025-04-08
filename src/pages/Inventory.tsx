@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { PokemonCard, SortOption, FilterOptions, ViewMode, PokemonSeries } from "@/lib/types";
@@ -159,7 +160,7 @@ const Inventory = () => {
         setSearchParams={setSearchParams}
       />
 
-      <div className="container mx-auto px-4 flex flex-col lg:flex-row gap-6 mt-2">
+      <div className="container mx-auto px-4 flex flex-col lg:flex-row gap-6 mt-2 relative">
         <InventoryFilters 
           filterOptions={filterOptions}
           setFilterOptions={setFilterOptions}

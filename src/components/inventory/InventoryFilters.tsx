@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { X, Search, Filter, ChevronDown, ChevronUp } from "lucide-react";
 import { FilterOptions, PokemonSeries } from "@/lib/types";
@@ -74,7 +73,6 @@ const InventoryFilters: React.FC<InventoryFiltersProps> = ({
     }));
   };
 
-  // Obtenir la traduction française et le bloc pour une série
   const getSeriesTranslation = (seriesName: string) => {
     const translations = seriesTranslations.translations as Record<string, { fr: string, logo: string, block?: string }>;
     return {
@@ -83,7 +81,6 @@ const InventoryFilters: React.FC<InventoryFiltersProps> = ({
     };
   };
 
-  // Organiser les séries par bloc
   const getSeriesByBlock = () => {
     const blockMap: Record<string, { name: string, series: PokemonSeries[] }> = {};
     
@@ -100,7 +97,6 @@ const InventoryFilters: React.FC<InventoryFiltersProps> = ({
       blockMap[block].series.push(serie);
     });
     
-    // Trier les séries par nom à l'intérieur de chaque bloc
     Object.keys(blockMap).forEach(block => {
       blockMap[block].series.sort((a, b) => {
         const aName = getSeriesTranslation(a.name).fr;
@@ -109,7 +105,6 @@ const InventoryFilters: React.FC<InventoryFiltersProps> = ({
       });
     });
     
-    // Trier les blocs selon un ordre spécifique
     const blockOrder = [
       'Scarlet & Violet',
       'Sword & Shield', 
@@ -132,7 +127,6 @@ const InventoryFilters: React.FC<InventoryFiltersProps> = ({
   
   const seriesByBlock = getSeriesByBlock();
 
-  // Définir les options de rareté disponibles basées sur le mapping du fichier API
   const rarityOptions = [
     "Common",
     "Uncommon",
@@ -180,28 +174,26 @@ const InventoryFilters: React.FC<InventoryFiltersProps> = ({
 
   return (
     <>
-      {/* Mobile filter toggle button */}
-      <div className="lg:hidden fixed bottom-4 right-4 z-30">
+      <div className="lg:hidden fixed bottom-4 right-4 z-50">
         <button
-          className="bg-primary text-white rounded-full p-3 shadow-lg flex items-center"
+          className="bg-primary text-primary-foreground rounded-full p-3 shadow-lg flex items-center"
           onClick={() => setIsFilterOpen(!isFilterOpen)}
         >
           <Filter size={20} />
-          <span className="ml-2 mr-1">Filtres</span>
+          <span className="ml-2 mr-1 font-medium">Filtres</span>
           {isFilterOpen ? <ChevronDown size={20} /> : <ChevronUp size={20} />}
         </button>
       </div>
 
-      {/* Filter panel */}
       <div
-        className={`w-full lg:w-64 xl:w-72 bg-card border rounded-lg overflow-hidden transition-all duration-300 ease-in-out shadow-md z-20 ${
+        className={`w-full lg:w-64 xl:w-72 bg-card border rounded-lg overflow-hidden transition-all duration-300 ease-in-out shadow-md z-50 ${
           isFilterOpen
             ? "fixed inset-0 lg:relative h-full lg:h-auto transform-none lg:transform-none"
             : "fixed bottom-full lg:relative lg:h-auto lg:transform-none"
         }`}
       >
         <div className="p-4 border-b flex justify-between items-center sticky top-0 bg-card z-10">
-          <h3 className="font-medium flex items-center">
+          <h3 className="font-medium flex items-center text-foreground">
             <Filter size={18} className="mr-2" /> Filtres
           </h3>
           
@@ -222,9 +214,8 @@ const InventoryFilters: React.FC<InventoryFiltersProps> = ({
         </div>
 
         <div className="p-4 max-h-[calc(100vh-120px)] overflow-y-auto space-y-6">
-          {/* Search */}
           <div>
-            <h4 className="font-medium text-sm mb-2">Recherche</h4>
+            <h4 className="font-medium text-sm mb-2 text-foreground">Recherche</h4>
             <div className="relative">
               <input
                 type="text"
@@ -245,7 +236,6 @@ const InventoryFilters: React.FC<InventoryFiltersProps> = ({
             </div>
           </div>
 
-          {/* Price range */}
           <div>
             <h4 className="font-medium text-sm mb-2">Prix (€)</h4>
             <div className="flex gap-2 items-center">
@@ -287,7 +277,6 @@ const InventoryFilters: React.FC<InventoryFiltersProps> = ({
             </div>
           </div>
 
-          {/* Series/Expansions */}
           <div>
             <h4 className="font-medium text-sm mb-2">Séries</h4>
             {seriesLoading ? (
@@ -339,7 +328,6 @@ const InventoryFilters: React.FC<InventoryFiltersProps> = ({
             )}
           </div>
 
-          {/* Rarity */}
           <div>
             <h4 className="font-medium text-sm mb-2">Rareté</h4>
             <div className="space-y-1 max-h-48 overflow-y-auto pr-1">
@@ -365,7 +353,6 @@ const InventoryFilters: React.FC<InventoryFiltersProps> = ({
             </div>
           </div>
 
-          {/* Special types */}
           <div>
             <h4 className="font-medium text-sm mb-2">Types spéciaux</h4>
             <div className="space-y-2">
@@ -406,7 +393,6 @@ const InventoryFilters: React.FC<InventoryFiltersProps> = ({
             </div>
           </div>
 
-          {/* Condition */}
           <div>
             <h4 className="font-medium text-sm mb-2">État</h4>
             <div className="space-y-1">
@@ -434,7 +420,6 @@ const InventoryFilters: React.FC<InventoryFiltersProps> = ({
             </div>
           </div>
 
-          {/* Language */}
           <div>
             <h4 className="font-medium text-sm mb-2">Langue</h4>
             <div className="space-y-1">
