@@ -1,5 +1,5 @@
 
-import React from "react";
+import React, { memo, useCallback, useMemo } from "react";
 import Button from "@/components/common/Button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
@@ -20,8 +20,8 @@ const InventoryPagination: React.FC<InventoryPaginationProps> = ({
   
   if (totalPages <= 1) return null;
   
-  // Generate pagination numbers with ellipsis
-  const generatePagination = () => {
+  // Generate pagination numbers with ellipsis - memoized for performance
+  const paginationItems = useMemo(() => {
     let pages = [];
     const maxDisplayedPages = 5; // Maximum number of page buttons to display
     
@@ -62,16 +62,26 @@ const InventoryPagination: React.FC<InventoryPaginationProps> = ({
     }
     
     return pages;
-  };
+  }, [page, totalPages]);
   
-  const paginationItems = generatePagination();
+  const handlePrevPage = useCallback(() => {
+    setPage((p) => Math.max(1, p - 1));
+  }, [setPage]);
+  
+  const handleNextPage = useCallback(() => {
+    setPage((p) => p + 1);
+  }, [setPage]);
+  
+  const handlePageClick = useCallback((pageNum: number) => {
+    setPage(pageNum);
+  }, [setPage]);
   
   return (
     <div className="mt-8 flex justify-center items-center space-x-2">
       <Button
         variant="outline"
         size="sm"
-        onClick={() => setPage((p) => Math.max(1, p - 1))}
+        onClick={handlePrevPage}
         disabled={page === 1}
         className="h-9 w-9 p-0"
       >
@@ -88,7 +98,7 @@ const InventoryPagination: React.FC<InventoryPaginationProps> = ({
             key={`page-${item}`}
             variant={page === item ? "default" : "outline"}
             size="sm"
-            onClick={() => setPage(item as number)}
+            onClick={() => handlePageClick(item as number)}
             className={`h-9 w-9 p-0 ${page === item ? 'pointer-events-none' : ''}`}
           >
             {item}
@@ -99,7 +109,7 @@ const InventoryPagination: React.FC<InventoryPaginationProps> = ({
       <Button
         variant="outline"
         size="sm"
-        onClick={() => setPage((p) => p + 1)}
+        onClick={handleNextPage}
         disabled={page >= totalPages}
         className="h-9 w-9 p-0"
       >
@@ -109,4 +119,4 @@ const InventoryPagination: React.FC<InventoryPaginationProps> = ({
   );
 };
 
-export default InventoryPagination;
+export default memo(InventoryPagination);
