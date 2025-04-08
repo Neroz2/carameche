@@ -67,7 +67,7 @@
   @apply rounded-lg font-medium transition-all duration-200;
 }
 
-/* Page title styles */
+/* Page title styles - used consistently across all main pages */
 .page-title {
   @apply text-3xl font-bold tracking-tight text-primary mb-2;
 }

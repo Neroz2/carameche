@@ -45,7 +45,7 @@ const InventoryHeader: React.FC<InventoryHeaderProps> = ({
     <>
       <div className="bg-gradient-to-b from-primary/10 to-background border-b">
         <div className="container mx-auto px-4 py-8">
-          <h1 className="title text-3xl font-bold">Inventaire des cartes</h1>
+          <h1 className="page-title text-3xl font-bold text-primary">Inventaire des cartes</h1>
           <p className="subtitle text-muted-foreground mt-1">
             {totalCards} cartes disponibles
             {filterOptions.series.length > 0 && ` dans la série ${filterOptions.series[0]}`}

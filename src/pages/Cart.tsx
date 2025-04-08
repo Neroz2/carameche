@@ -12,11 +12,11 @@ const Cart = () => {
   return (
     <div className="container mx-auto px-4 py-8 animate-fade-in">
       <header className="mb-8 border-b pb-4">
-        <h1 className="text-3xl font-bold flex items-center gap-3 mb-2 text-primary">
+        <h1 className="page-title text-3xl font-bold flex items-center gap-3 mb-2 text-primary">
           <ShoppingCart className="h-8 w-8" />
           {activeTab === "cart" ? "Votre Panier" : "Historique des Commandes"}
         </h1>
-        <p className="text-muted-foreground mt-2 flex items-center gap-2">
+        <p className="subtitle text-muted-foreground mt-2 flex items-center gap-2">
           {activeTab === "cart" ? 
             (items.length === 0 ? (
               <span className="text-muted-foreground">Votre panier est actuellement vide</span>
