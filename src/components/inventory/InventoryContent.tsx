@@ -50,11 +50,13 @@ const InventoryContent: React.FC<InventoryContentProps> = ({
 
   return (
     <div className="flex-1 w-full">
-      {viewMode === "grid" ? (
-        <InventoryGrid cards={cards} addToCart={addToCart} />
-      ) : (
-        <InventoryList cards={cards} />
-      )}
+      <div className="pb-2">
+        {viewMode === "grid" ? (
+          <InventoryGrid cards={cards} addToCart={addToCart} />
+        ) : (
+          <InventoryList cards={cards} />
+        )}
+      </div>
 
       <div className="mt-8">
         <InventoryPagination 

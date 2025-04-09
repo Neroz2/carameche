@@ -33,9 +33,24 @@
 
 /* Layout helpers */
 .page-container {
-  @apply container mx-auto px-4 py-8 w-full;
+  @apply w-full mx-auto px-4 py-8;
 }
 
 .content-wrapper {
   @apply w-full mx-auto;
+}
+
+/* Text truncation for card elements */
+.line-clamp-1 {
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
