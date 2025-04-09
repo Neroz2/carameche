@@ -43,18 +43,18 @@ const InventoryHeader: React.FC<InventoryHeaderProps> = ({
 
   return (
     <>
-      <div className="bg-gradient-to-b from-primary/10 to-background border-b">
-        <div className="container mx-auto px-4 py-8">
-          <h1 className="page-title text-3xl font-bold text-primary">Inventaire des cartes</h1>
-          <p className="subtitle text-muted-foreground mt-1">
+      <div className="bg-gradient-to-b from-primary/10 to-background border-b w-full">
+        <div className="container mx-auto px-4 py-6 md:py-8">
+          <h1 className="page-title text-2xl md:text-3xl font-bold text-primary">Inventaire des cartes</h1>
+          <p className="subtitle text-sm md:text-base text-muted-foreground mt-1">
             {totalCards} cartes disponibles
             {filterOptions.series.length > 0 && ` dans la série ${filterOptions.series[0]}`}
           </p>
         </div>
       </div>
 
-      <div className="container mx-auto px-4 my-4 relative z-20">
-        <div className="bg-card shadow-sm rounded-lg border p-4">
+      <div className="container mx-auto px-4 my-4 relative z-20 w-full">
+        <div className="bg-card shadow-sm rounded-lg border p-3 md:p-4">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
             <div className="flex items-center gap-2 w-full sm:w-auto">
               <Button 

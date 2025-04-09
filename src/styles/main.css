@@ -5,12 +5,14 @@
 @import './animations.css';
 @import './utilities.css';
 
-/* Root styles */
+/* Root styles - removing max-width constraint for full screen */
 #root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+  width: 100%;
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
 }
 
 /* App-wide common styles */
@@ -29,20 +31,11 @@
   filter: drop-shadow(0 0 2em #61dafbaa);
 }
 
-/* These styles are now handled in the utilities.css and components.css files */
-.card {
-  padding: 2em;
-}
-
-.read-the-docs {
-  color: #888;
-}
-
 /* Layout helpers */
 .page-container {
-  @apply container mx-auto px-4 py-8;
+  @apply container mx-auto px-4 py-8 w-full;
 }
 
 .content-wrapper {
-  @apply max-w-7xl mx-auto;
+  @apply w-full mx-auto;
 }

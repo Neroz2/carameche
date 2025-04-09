@@ -46,16 +46,16 @@ const InventoryListItem = memo(({ card, onAddToCart }: { card: PokemonCard, onAd
           <div>
             <div className="flex justify-between items-start mb-2">
               <div>
-                <h3 className="font-medium truncate">
+                <h3 className="text-sm font-medium truncate">
                   {card.nameFr || card.name}
                 </h3>
                 <div className="flex items-center gap-2">
-                  <span className="text-sm text-muted-foreground">#{card.number}</span>
+                  <span className="text-xs text-muted-foreground">#{card.number}</span>
                   <Badge className="bg-amber-500/80 hover:bg-amber-500 text-xs text-white font-normal">
                     {card.rarity}
                   </Badge>
                 </div>
-                <div className="text-sm text-muted-foreground mt-1">{seriesFr}</div>
+                <div className="text-xs text-muted-foreground mt-1">{seriesFr}</div>
               </div>
               <div className="flex flex-col items-end">
                 <span className="text-lg font-semibold whitespace-nowrap text-primary">
@@ -133,7 +133,7 @@ const InventoryList: React.FC<InventoryListProps> = ({ cards }) => {
   }, [addToCart]);
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 w-full">
       {cards.map((card) => (
         <InventoryListItem 
           key={card.id} 

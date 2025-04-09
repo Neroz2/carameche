@@ -32,7 +32,7 @@ const InventoryContent: React.FC<InventoryContentProps> = ({
 }) => {
   if (loading) {
     return (
-      <div className="flex-1">
+      <div className="flex-1 w-full">
         <div className="min-h-[500px] flex items-center justify-center">
           <Loader size="lg" text="Chargement des cartes..." />
         </div>
@@ -42,26 +42,28 @@ const InventoryContent: React.FC<InventoryContentProps> = ({
 
   if (cards.length === 0) {
     return (
-      <div className="flex-1">
+      <div className="flex-1 w-full">
         <InventoryEmpty clearFilters={clearFilters} />
       </div>
     );
   }
 
   return (
-    <div className="flex-1">
+    <div className="flex-1 w-full">
       {viewMode === "grid" ? (
         <InventoryGrid cards={cards} addToCart={addToCart} />
       ) : (
         <InventoryList cards={cards} />
       )}
 
-      <InventoryPagination 
-        page={page}
-        setPage={setPage}
-        totalCards={totalCards}
-        pageSize={pageSize}
-      />
+      <div className="mt-8">
+        <InventoryPagination 
+          page={page}
+          setPage={setPage}
+          totalCards={totalCards}
+          pageSize={pageSize}
+        />
+      </div>
     </div>
   );
 };

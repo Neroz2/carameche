@@ -53,8 +53,8 @@ const InventoryCardItem = memo(({ card, onAddToCart }: { card: PokemonCard, onAd
       </div>
       <CardHeader className="pb-2">
         <div>
-          <h3 className="font-medium truncate">{card.nameFr || card.name}</h3>
-          <p className="text-sm text-muted-foreground truncate">
+          <h3 className="text-sm font-medium truncate">{card.nameFr || card.name}</h3>
+          <p className="text-xs text-muted-foreground truncate">
             {seriesFr}
           </p>
         </div>
@@ -127,7 +127,7 @@ const InventoryGrid: React.FC<InventoryGridProps> = ({ cards, addToCart }) => {
   }, [addToCart]);
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6">
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4">
       {cards.map((card) => (
         <InventoryCardItem 
           key={card.id} 
