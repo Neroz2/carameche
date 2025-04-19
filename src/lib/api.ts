@@ -262,10 +262,6 @@ export const fetchPokemonCards = async (
   
   if (filterOptions || seriesFilter) {
     filteredCards = cachedCards.filter(card => {
-      if (seriesFilter && card.series.toLowerCase() !== seriesFilter.toLowerCase()) {
-        return false;
-      }
-      
       if (filterOptions) {
         if (filterOptions.search && filterOptions.search.trim() !== '') {
           const searchLower = filterOptions.search.toLowerCase();
@@ -278,7 +274,7 @@ export const fetchPokemonCards = async (
         }
         
         if (filterOptions.series && filterOptions.series.length > 0 && 
-            !filterOptions.series.some(s => card.series.toLowerCase() === s.toLowerCase())) {
+            !filterOptions.series.includes(card.series)) {
           return false;
         }
         
