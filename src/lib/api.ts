@@ -6,11 +6,11 @@ const IMAGE_BASE_URL = "https://www.cardtrader.com/images/blueprint/";
 const conditionMapping = {
   'Near Mint': 'Near Mint',
   'Excellent': 'Excellent',
-  'Good': 'Slightly Played',
-  'Peu joué': 'Moderately Played',
-  'Joué': 'Played',
-  'très joué': 'Heavily Played',
-  'Mauvais': 'Poor',
+  'Slightly Played': 'Slightly Played',
+  'Moderately Played': 'Moderately Played',
+  'Played': 'Played',
+  'Heavily Played': 'Heavily Played',
+  'Poor': 'Poor',
 };
 
 const rarityMapping = {

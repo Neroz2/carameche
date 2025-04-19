@@ -161,9 +161,11 @@ const InventoryFilters: React.FC<InventoryFiltersProps> = ({
   const conditionOptions = [
     "Near Mint",
     "Excellent",
-    "Good",
-    "Light Played",
+    "Slightly Played",
+    "Moderately Played",
     "Played",
+    "Heavily Played",
+    "Poor",
   ];
 
   const languageOptions = [
