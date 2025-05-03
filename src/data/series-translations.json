@@ -277,10 +277,12 @@
       "logo": "https://assets.pokemon.com/assets/cms2/img/trading-card-game/_downloads/bw/bw8/logos/bw8_logo_169_fr.jpg",
       "block": "Black & White"
     },
-    "Black & White—Plasma Freeze": {
-      "fr": "Noir & Blanc—Glaciation Plasma",
-      "logo": "https://assets.pokemon.com/assets/cms2/img/trading-card-game/_downloads/bw/bw9/logos/bw9_logo_169_fr.jpg",
-      "block": "Black & White"
+    "Plasma Freeze": {
+      "fr": "Glaciation Plasma",
+      "logo": "https://pokecardex.b-cdn.net/assets/images/logos/PLF.png",
+      "block": "Noir & Blanc"
+      "releaseDate": "2023-08-14",
+      "totalCards": 122
     },
     "Black & White—Plasma Blast": {
       "fr": "Noir & Blanc—Explosion Plasma",
@@ -574,12 +576,47 @@
       "releaseDate": "2024-01-26",
       "totalCards": 245
     },
+    "Temporal Forces": {
+      "fr": "Forces Temporelles",
+      "logo": "https://pokecardex.b-cdn.net/assets/images/logos/TEF.png",
+      "block": "Écarlate & Violet",
+      "releaseDate": "2024-03-22",
+      "totalCards": 218
+    },    
+    "Twilight Masquerade": {
+      "fr": "Mascarade Crépusculaire",
+      "logo": "https://pokecardex.b-cdn.net/assets/images/logos/TWM.png",
+      "block": "Écarlate & Violet",
+      "releaseDate": "2024-05-24",
+      "totalCards": 226
+    },
+    "Shrouded Fable": {
+      "fr": "Fable Nébuleuse",
+      "logo": "https://pokecardex.b-cdn.net/assets/images/logos/SFA.png",
+      "block": "Écarlate & Violet",
+      "releaseDate": "2024-08-02",
+      "totalCards": 99
+    },
     "Stellar Crown": {
       "fr": "Couronne Stellaire",
       "logo": "https://pokecardex.b-cdn.net/assets/images/logos/SCR.png",
       "block": "Écarlate & Violet",
       "releaseDate": "2024-09-13",
       "totalCards": 175
+    },
+    "Surging Sparks": {
+      "fr": "Étincelles Déferlantes",
+      "logo": "https://pokecardex.b-cdn.net/assets/images/logos/SSP.png",
+      "block": "Écarlate & Violet",
+      "releaseDate": "2024-11-08",
+      "totalCards": 252
+    },
+    "Prismatic Evolutions": {
+      "fr": "Évolutions Prismatiques",
+      "logo": "https://pokecardex.b-cdn.net/assets/images/logos/PRE.png",
+      "block": "Écarlate & Violet",
+      "releaseDate": "2025-01-17",
+      "totalCards": 180
     }
   }
 }
