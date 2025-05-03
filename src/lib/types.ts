@@ -1,4 +1,3 @@
-
 export interface PokemonSeries {
   id: string;
   name: string;
@@ -27,6 +26,7 @@ export interface PokemonCard {
   isReverse: boolean;
   isPromo: boolean;
   expansionId?: number;
+  translatedName?: string; // Add this optional property
 }
 
 export interface CartItem {

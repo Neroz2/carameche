@@ -1,3 +1,4 @@
+
 import seriesTranslations from "@/data/series-translations.json";
 import { fetchPokemonCards } from "@/lib/api";
 import { PokemonCard } from "@/lib/types";
@@ -80,9 +81,14 @@ export const translatePokemonNames = (cards: PokemonCard[]): PokemonCard[] => {
     // Conserver les données originales
     const translatedCard = { ...card };
     
-    // Traduire le nom du Pokémon si nécessaire
-    // Cette fonction peut être étendue avec un dictionnaire de traductions ou une API
-    if (card.name && !card.translatedName) {
+    // Si la carte a déjà une traduction française, l'utiliser
+    if (card.nameFr) {
+      translatedCard.translatedName = card.nameFr;
+      return translatedCard;
+    }
+    
+    // Sinon, traduire le nom du Pokémon
+    if (card.name) {
       translatedCard.translatedName = getPokemonTranslation(card.name);
     }
     
