@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { X, Search, Filter, ChevronDown, ChevronUp } from "lucide-react";
 import { FilterOptions, PokemonSeries } from "@/lib/types";
@@ -74,10 +75,22 @@ const InventoryFilters: React.FC<InventoryFiltersProps> = ({
   };
 
   const getSeriesTranslation = (seriesName: string) => {
-    const translations = seriesTranslations.translations as Record<string, { fr: string, logo: string, block?: string }>;
+    const translations = seriesTranslations.translations as Record<string, { 
+      fr: string, 
+      logo?: string, 
+      block?: string,
+      releaseDate?: string,
+      totalCards?: number,
+      description?: string
+    }>;
+    
     return {
       fr: translations[seriesName]?.fr || seriesName,
-      block: translations[seriesName]?.block || 'Autre'
+      logo: translations[seriesName]?.logo || "",
+      block: translations[seriesName]?.block || 'Autre',
+      releaseDate: translations[seriesName]?.releaseDate,
+      totalCards: translations[seriesName]?.totalCards,
+      description: translations[seriesName]?.description
     };
   };
 
@@ -97,22 +110,34 @@ const InventoryFilters: React.FC<InventoryFiltersProps> = ({
       blockMap[block].series.push(serie);
     });
     
+    // Sort series by release date within each block (newest first)
     Object.keys(blockMap).forEach(block => {
       blockMap[block].series.sort((a, b) => {
-        const aName = getSeriesTranslation(a.name).fr;
-        const bName = getSeriesTranslation(b.name).fr;
+        const aTranslation = getSeriesTranslation(a.name);
+        const bTranslation = getSeriesTranslation(b.name);
+        
+        // Sort by release date if available
+        if (aTranslation.releaseDate && bTranslation.releaseDate) {
+          return new Date(bTranslation.releaseDate).getTime() - 
+                 new Date(aTranslation.releaseDate).getTime();
+        }
+        
+        // Fall back to alphabetical sorting if no dates available
+        const aName = aTranslation.fr;
+        const bName = bTranslation.fr;
         return aName.localeCompare(bName);
       });
     });
     
     const blockOrder = [
-      'Scarlet & Violet',
-      'Sword & Shield', 
-      'Sun & Moon', 
+      'Écarlate & Violet',
+      'Épée & Bouclier', 
+      'Soleil et Lune', 
       'XY', 
       'Black & White', 
       'Diamond & Pearl',
       'EX Series',
+      'Classic',
       'Autre'
     ];
     

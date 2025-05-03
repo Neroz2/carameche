@@ -1,6 +1,6 @@
-
 import seriesTranslations from "@/data/series-translations.json";
 import { fetchPokemonCards } from "@/lib/api";
+import { PokemonCard } from "@/lib/types";
 
 export const getSeriesTranslation = (seriesName: string) => {
   const translations = seriesTranslations.translations as Record<string, { 
@@ -72,4 +72,117 @@ export const getCardsByRegion = async (regionId: string, page = 1, pageSize = 12
     console.error(`Erreur lors de la récupération des cartes pour la région ${regionId}:`, error);
     return { cards: [], total: 0 };
   }
+};
+
+// Fonction pour traduire les noms des Pokémon pour toutes les cartes
+export const translatePokemonNames = (cards: PokemonCard[]): PokemonCard[] => {
+  return cards.map(card => {
+    // Conserver les données originales
+    const translatedCard = { ...card };
+    
+    // Traduire le nom du Pokémon si nécessaire
+    // Cette fonction peut être étendue avec un dictionnaire de traductions ou une API
+    if (card.name && !card.translatedName) {
+      translatedCard.translatedName = getPokemonTranslation(card.name);
+    }
+    
+    return translatedCard;
+  });
+};
+
+// Fonction pour obtenir la traduction d'un nom de Pokémon
+export const getPokemonTranslation = (pokemonName: string): string => {
+  // Dictionnaire des traductions de noms de Pokémon les plus communs
+  // Cette liste peut être étendue ou remplacée par une API de traduction
+  const pokemonTranslations: Record<string, string> = {
+    "Bulbasaur": "Bulbizarre",
+    "Ivysaur": "Herbizarre",
+    "Venusaur": "Florizarre",
+    "Charmander": "Salamèche",
+    "Charmeleon": "Reptincel",
+    "Charizard": "Dracaufeu",
+    "Squirtle": "Carapuce",
+    "Wartortle": "Carabaffe",
+    "Blastoise": "Tortank",
+    "Pikachu": "Pikachu",
+    "Raichu": "Raichu",
+    "Mew": "Mew",
+    "Mewtwo": "Mewtwo",
+    "Eevee": "Évoli",
+    "Vaporeon": "Aquali",
+    "Jolteon": "Voltali",
+    "Flareon": "Pyroli",
+    "Espeon": "Mentali",
+    "Umbreon": "Noctali",
+    "Leafeon": "Phyllali",
+    "Glaceon": "Givrali",
+    "Sylveon": "Nymphali",
+    "Lugia": "Lugia",
+    "Ho-Oh": "Ho-Oh",
+    "Celebi": "Celebi",
+    "Kyogre": "Kyogre",
+    "Groudon": "Groudon",
+    "Rayquaza": "Rayquaza",
+    "Lucario": "Lucario",
+    "Darkrai": "Darkrai",
+    "Arceus": "Arceus",
+    "Zekrom": "Zekrom",
+    "Reshiram": "Reshiram",
+    "Kyurem": "Kyurem",
+    "Xerneas": "Xerneas",
+    "Yveltal": "Yveltal",
+    "Zygarde": "Zygarde",
+    "Solgaleo": "Solgaleo",
+    "Lunala": "Lunala",
+    "Necrozma": "Necrozma",
+    "Zacian": "Zacian",
+    "Zamazenta": "Zamazenta",
+    "Eternatus": "Éthernatos",
+    "Calyrex": "Sylveroy",
+    "Koraidon": "Koraidon",
+    "Miraidon": "Miraidon",
+    "Terapagos": "Terapagos",
+    "Ogerpon": "Ogerpon",
+    "Pecharunt": "Pêcharunt"
+  };
+  
+  // Si le nom existe dans le dictionnaire, retourner la traduction
+  if (pokemonName in pokemonTranslations) {
+    return pokemonTranslations[pokemonName];
+  }
+  
+  // Si le nom contient "V" ou "VMAX", etc., traiter spécialement
+  if (pokemonName.includes(" V ") || pokemonName.endsWith(" V")) {
+    const baseName = pokemonName.replace(" V", "");
+    const translation = getPokemonTranslation(baseName);
+    return translation !== baseName ? `${translation} V` : pokemonName;
+  }
+  
+  if (pokemonName.includes(" VMAX")) {
+    const baseName = pokemonName.replace(" VMAX", "");
+    const translation = getPokemonTranslation(baseName);
+    return translation !== baseName ? `${translation} VMAX` : pokemonName;
+  }
+  
+  if (pokemonName.includes(" VSTAR")) {
+    const baseName = pokemonName.replace(" VSTAR", "");
+    const translation = getPokemonTranslation(baseName);
+    return translation !== baseName ? `${translation} VSTAR` : pokemonName;
+  }
+  
+  if (pokemonName.includes(" GX")) {
+    const baseName = pokemonName.replace(" GX", "");
+    const translation = getPokemonTranslation(baseName);
+    return translation !== baseName ? `${translation} GX` : pokemonName;
+  }
+  
+  if (pokemonName.includes(" EX")) {
+    const baseName = pokemonName.replace(" EX", "");
+    const translation = getPokemonTranslation(baseName);
+    return translation !== baseName ? `${translation} EX` : pokemonName;
+  }
+  
+  // Si aucune traduction n'est trouvée, retourner le nom original
+  // Vous pourriez aussi utiliser une API de traduction ici pour les cas non gérés
+  return pokemonName;
 };

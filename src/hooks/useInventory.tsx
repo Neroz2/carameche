@@ -1,7 +1,9 @@
+
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { useSearchParams } from "react-router-dom";
 import { PokemonCard, SortOption, FilterOptions, ViewMode, PokemonSeries } from "@/lib/types";
 import { fetchPokemonCards, fetchPokemonSeries, fetchExpansions } from "@/lib/api";
+import { translatePokemonNames } from "@/lib/seriesUtils";
 
 export function useInventory() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -68,7 +70,10 @@ export function useInventory() {
         setLoading(true);
         const { cards, total } = await fetchPokemonCards("", page, pageSize, filterOptions);
         
-        let sortedCards = [...cards];
+        // Translate Pokemon names
+        const translatedCards = translatePokemonNames(cards);
+        
+        let sortedCards = [...translatedCards];
         switch (sortOption) {
           case "name-asc":
             sortedCards.sort((a, b) => a.name.localeCompare(b.name));
